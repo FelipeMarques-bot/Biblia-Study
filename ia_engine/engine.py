@@ -4,30 +4,31 @@ from decouple import config
 logger = logging.getLogger(__name__)
 
 LLM_API_KEY = config('LLM_API_KEY', default='')
-LLM_MODEL = config('LLM_MODEL', default='gpt-3.5-turbo')
+LLM_MODEL = config('LLM_MODEL', default='gemini-2.5-flash')
+
+def _call_llm(prompt, temperature=0.3):
+    from langchain_google_genai import ChatGoogleGenerativeAI
+    llm = ChatGoogleGenerativeAI(
+        google_api_key=LLM_API_KEY,
+        model=LLM_MODEL,
+        temperature=temperature,
+    )
+    return llm.invoke(prompt).content.strip()
 
 def gerar_dica_exercicio(exercicio, resposta_usuario=None):
     if not LLM_API_KEY:
         return gerar_dica_fallback(exercicio)
 
     try:
-        from langchain.llms import OpenAI
-        from langchain.prompts import PromptTemplate
+        prompt = f"""
+Você é um tutor bíblico reformado. Dê uma dica curta e pastoral para este exercício:
 
-        llm = OpenAI(api_key=LLM_API_KEY, model=LLM_MODEL, temperature=0.3)
-        template = PromptTemplate(
-            input_variables=['enunciado', 'resposta'],
-            template="""
-            Você é um tutor bíblico reformado. Dê uma dica curta e pastoral para este exercício:
+Pergunta: {exercicio.enunciado}
+Resposta do aluno: {resposta_usuario or 'N/A'}
 
-            Pergunta: {enunciado}
-            Resposta do aluno: {resposta}
-
-            Dica (máximo 2 frases, mencione a referência bíblica se aplicável):
-            """
-        )
-        prompt = template.format(enunciado=exercicio.enunciado, resposta=resposta_usuario or 'N/A')
-        return llm(prompt).strip()
+Dica (máximo 2 frases, mencione a referência bíblica se aplicável):
+"""
+        return _call_llm(prompt, temperature=0.3)
     except Exception as e:
         logger.warning(f'Erro ao gerar dica com IA: {e}')
         return gerar_dica_fallback(exercicio)
@@ -38,24 +39,16 @@ def gerar_explicacao_licao(licao):
         return f'{licao.titulo}: {licao.resumo or licao.descricao}'
 
     try:
-        from langchain.llms import OpenAI
-        from langchain.prompts import PromptTemplate
+        prompt = f"""
+Explique esta lição bíblica de forma simples e pastoral (máximo 4 frases):
 
-        llm = OpenAI(api_key=LLM_API_KEY, model=LLM_MODEL, temperature=0.4)
-        template = PromptTemplate(
-            input_variables=['titulo', 'texto_base', 'objetivo'],
-            template="""
-            Explique esta lição bíblica de forma simples e pastoral (máximo 4 frases):
+Título: {licao.titulo}
+Texto Base: {licao.texto_base}
+Objetivo: {licao.objetivo}
 
-            Título: {titulo}
-            Texto Base: {texto_base}
-            Objetivo: {objetivo}
-
-            Explicação centrada em Cristo, com aplicação prática:
-            """
-        )
-        prompt = template.format(titulo=licao.titulo, texto_base=licao.texto_base, objetivo=licao.objetivo)
-        return llm(prompt).strip()
+Explicação centrada em Cristo, com aplicação prática:
+"""
+        return _call_llm(prompt, temperature=0.4)
     except Exception as e:
         logger.warning(f'Erro ao gerar explicação: {e}')
         return f'{licao.titulo}: {licao.resumo or licao.descricao}'
@@ -66,26 +59,18 @@ def gerar_devocional(tema, faixa_etaria='adulto', nivel='iniciante'):
         return gerar_devocional_fallback(tema)
 
     try:
-        from langchain.llms import OpenAI
-        from langchain.prompts import PromptTemplate
+        prompt = f"""
+Crie um devocional bíblico curto (3-4 frases) para {faixa_etaria} sobre "{tema}".
 
-        llm = OpenAI(api_key=LLM_API_KEY, model=LLM_MODEL, temperature=0.5)
-        template = PromptTemplate(
-            input_variables=['tema', 'faixa_etaria'],
-            template="""
-            Crie um devocional bíblico curto (3-4 frases) para {faixa_etaria} sobre "{tema}".
+Deve ser:
+- Centrado em Deus e em Cristo
+- Incluir uma referência bíblica
+- Ter aplicação prática
+- Tom pastoral e reformado
 
-            Deve ser:
-            - Centrado em Deus e em Cristo
-            - Incluir uma referência bíblica
-            - Ter aplicação prática
-            - Tom pastoral e reformado
-
-            Devocional:
-            """
-        )
-        prompt = template.format(tema=tema, faixa_etaria=faixa_etaria)
-        return llm(prompt).strip()
+Devocional:
+"""
+        return _call_llm(prompt, temperature=0.5)
     except Exception as e:
         logger.warning(f'Erro ao gerar devocional: {e}')
         return gerar_devocional_fallback(tema)
