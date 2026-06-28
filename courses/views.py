@@ -82,10 +82,19 @@ def verificar_resposta(request, licao_id):
     )
 
     correta = False
-    if exercicio.tipo == 'MULTIPLA_ESCOLHA':
+    if exercicio.tipo in ('MULTIPLA_ESCOLHA', 'VF'):
         correta = resposta == exercicio.dados.get('indice_correto')
-    elif exercicio.tipo == 'VF':
-        correta = resposta == exercicio.dados.get('correta')
+    elif exercicio.tipo == 'ASSOCIACAO':
+        pares = exercicio.dados.get('pares', [])
+        if isinstance(resposta, list) and len(resposta) == len(pares):
+            correta = all(
+                str(resposta[i]) == str(p['direita_correta'])
+                for i, p in enumerate(pares)
+            )
+    elif exercicio.tipo == 'ORDENACAO':
+        itens = exercicio.dados.get('itens', [])
+        if isinstance(resposta, list) and len(resposta) == len(itens):
+            correta = resposta == list(range(len(itens)))
 
     if correta:
         xp = exercicio.peso_dificuldade * 20
