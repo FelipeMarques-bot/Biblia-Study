@@ -1,41 +1,107 @@
 <!DOCTYPE html>
-<html lang="pt-BR">
+<html lang="pt-BR" class="dark">
 <head>
   <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover, user-scalable=no">
+  <meta name="theme-color" content="#0a0e1a">
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+  <meta name="apple-mobile-web-app-title" content="BibliaGamer">
+  <meta name="description" content="Estude a Bíblia com jogos, desafios e IA — estilo gaming">
+  <meta name="mobile-web-app-capable" content="yes">
   <title>{% block title %}Plataforma Bíblica{% endblock %}</title>
   {% load static %}
+  <link rel="manifest" href="{% static 'manifest.json' %}">
+  <link rel="apple-touch-icon" href="{% static 'icons/apple-touch-icon.png' %}">
+  <link rel="icon" type="image/png" sizes="192x192" href="{% static 'icons/icon-192.png' %}">
   <link rel="stylesheet" href="{% static 'css/output.css' %}">
   <script defer src="https://cdn.jsdelivr.net/npm/alpinejs@3.x.x/dist/cdn.min.js"></script>
   <script defer src="{% static 'js/app.js' %}"></script>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@500;600&family=Plus+Jakarta+Sans:wght@400;500&display=swap" rel="stylesheet">
   <style>
-    @import url('https://fonts.googleapis.com/css2?family=Outfit:wght@500;600&family=Plus+Jakarta+Sans:wght@400;500&display=swap');
+    *, *::before, *::after { -webkit-tap-highlight-color: transparent; }
+    html { -webkit-overflow-scrolling: touch; }
+    body { overscroll-behavior: none; }
+    @supports (padding: env(safe-area-inset-bottom)) {
+      .safe-bottom { padding-bottom: env(safe-area-inset-bottom); }
+      .safe-top { padding-top: env(safe-area-inset-top); }
+    }
   </style>
   {% block extra_head %}{% endblock %}
 </head>
-<body class="bg-background min-h-screen">
-  <div class="bg-accent/10 border-b border-accent/20" x-data="{ showDonation: true }" x-show="showDonation">
-    <div class="max-w-4xl mx-auto px-4 py-3 flex items-center justify-between gap-4">
-      <div class="flex items-center gap-3 text-sm">
-        <span class="text-xl">&#x2764;</span>
-        <p class="text-text/80">
-          <strong>Plataforma sem fins lucrativos.</strong>
-          Contribuições voluntárias ajudam a manter os custos da plataforma.
-          <br class="hidden sm:inline">
-          <span class="text-xs text-text/60">
-            Criador: <strong>Felipe da Cruz Marques</strong>
-            &mdash; Pix (chave aleatória): <code class="bg-accent/20 px-2 py-0.5 rounded text-accent font-mono text-xs">1b831057-321a-4580-9ebe-bff9b5fb2529</code>
-          </span>
-        </p>
-      </div>
-      <button @click="showDonation = false" class="shrink-0 text-text/40 hover:text-text/70 transition-colors" aria-label="Fechar">
-        <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"/>
-        </svg>
-      </button>
-    </div>
+<body class="bg-dark min-h-screen text-text-primary antialiased safe-top">
+
+  <!-- BANNER GLOBAL DE DOACAO -->
+  <div id="global-donation-banner" class="bg-gradient-to-r from-[#00d4ff]/10 via-[#a855f7]/10 to-[#ff0080]/10 border-b border-[#00d4ff]/20 px-4 py-2 text-center">
+    <p class="text-xs text-gray-300">
+      ❤️ <strong class="text-[#00ff88]">Apoie a Plataforma Bíblica!</strong> Ajude-nos a manter o app e alcançar mais vidas.
+      <span class="hidden sm:inline">Pix: <code class="text-[#00ff88] font-mono">1b831057-321a-4580-9ebe-bff9b5fb2529</code>
+        <button onclick="navigator.clipboard.writeText('1b831057-321a-4580-9ebe-bff9b5fb2529').then(()=>this.textContent='✅ Copiado!')" class="text-[#00d4ff] hover:text-white ml-1 underline">Copiar</button>
+      </span>
+      <button onclick="document.getElementById('global-donation-banner').style.display='none'" class="ml-2 text-gray-500 hover:text-white">✕</button>
+    </p>
   </div>
+
   {% block content %}{% endblock %}
   {% block extra_scripts %}{% endblock %}
+  <script>
+    if ('serviceWorker' in navigator) {
+      window.addEventListener('load', () => {
+        navigator.serviceWorker.register('{% static "sw.js" %}').catch(() => {});
+      });
+    }
+    let deferredPrompt;
+    window.addEventListener('beforeinstallprompt', (e) => {
+      e.preventDefault();
+      deferredPrompt = e;
+      const banner = document.getElementById('pwa-install-banner');
+      if (banner) banner.style.display = 'flex';
+    });
+    function installPWA() {
+      if (!deferredPrompt) return;
+      deferredPrompt.prompt();
+      deferredPrompt.userChoice.then((choice) => {
+        if (choice.outcome === 'accepted') {
+          const banner = document.getElementById('pwa-install-banner');
+          if (banner) banner.style.display = 'none';
+        }
+        deferredPrompt = null;
+      });
+    }
+    function dismissInstall() {
+      const banner = document.getElementById('pwa-install-banner');
+      if (banner) banner.style.display = 'none';
+      localStorage.setItem('pwa_install_dismissed', '1');
+    }
+    window.addEventListener('appinstalled', () => {
+      const banner = document.getElementById('pwa-install-banner');
+      if (banner) banner.style.display = 'none';
+    });
+  </script>
+
+  {# PWA Install Banner #}
+  <div id="pwa-install-banner"
+       class="hidden fixed bottom-20 md:bottom-6 left-4 right-4 md:left-auto md:right-6 md:w-80 z-40 card-glow p-4 animate-slide-up"
+       style="display: none;">
+    <div class="flex items-center gap-3">
+      <div class="w-10 h-10 rounded-xl flex items-center justify-center bg-neon-blue/10 border border-neon-blue/20 shrink-0">
+        <span class="text-xl">📲</span>
+      </div>
+      <div class="flex-1 min-w-0">
+        <p class="text-sm text-white font-medium">Instalar Bíblia Study</p>
+        <p class="text-[11px] text-text-muted">Acesse offline e tenha a melhor experiência</p>
+      </div>
+      <div class="flex items-center gap-1 shrink-0">
+        <button onclick="installPWA()" class="px-3 py-1.5 rounded-md bg-neon-blue text-dark text-xs font-semibold hover:shadow-neon-blue transition-all">
+          Instalar
+        </button>
+        <button onclick="dismissInstall()" class="p-1.5 text-text-muted hover:text-white transition-colors">
+          <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"/></svg>
+        </button>
+      </div>
+    </div>
+  </div>
 </body>
 </html>

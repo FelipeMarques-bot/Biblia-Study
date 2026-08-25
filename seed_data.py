@@ -335,10 +335,94 @@ criar_recompensa('versiculo', 'João 3:16', 'O amor de Deus em um versículo', '
 criar_recompensa('medalha', 'Colecionador de Estreak', 'Complete 30 dias de streak', '⭐', 1000, streak=30)
 criar_recompensa('xp_bonus', 'Bônus de 10 Lições', 'Complete 10 lições', '🎯', 400, licoes=10)
 
+# ============================================================
+# 13. POOL DE EXERCÍCIOS (para geração infinita)
+# ============================================================
+from courses.models import ExercisePool
+
+def criar_pool_exercicio(topico, tipo, enunciado, dados, dificuldade=1, faixa_etaria='adulto', ref='', peso=1):
+    ExercisePool.objects.get_or_create(
+        enunciado=enunciado[:200],
+        defaults=dict(tipo=tipo, topico=topico, dados=dados, dificuldade=dificuldade, faixa_etaria=faixa_etaria, referencia_biblica=ref, peso_dificuldade=peso)
+    )
+
+# --- Gênesis ---
+criar_pool_exercicio('genesis', 'MULTIPLA_ESCOLHA', 'O que Deus criou no primeiro dia?', {"alternativas":["O sol","A luz","Os peixes","As árvores"],"indice_correto":1,"dica":"Gn 1:3"}, 1, 'crianca', 'Gn 1:1-5')
+criar_pool_exercicio('genesis', 'VF', 'Deus criou o mundo em seis dias e descansou no sétimo.', {"afirmativa":"Deus criou o mundo em seis dias e descansou no sétimo.","alternativas":["Falso","Verdadeiro"],"indice_correto":1,"dica":"Gn 2:2"}, 1, 'crianca', 'Gn 2:1-3')
+criar_pool_exercicio('genesis', 'MULTIPLA_ESCOLHA', 'De quem é a terra?', {"alternativas":["Do homem","De Deus","Dos anjos","Do diabo"],"indice_correto":1,"dica":"Sl 24:1"}, 1, 'crianca', 'Gn 1:1')
+criar_pool_exercicio('genesis', 'ASSOCIACAO', 'Associe cada dia da criação:', {"pares":[{"esquerda":"Dia 1","direita_correta":"Luz"},{"esquerda":"Dia 2","direita_correta":"Firmamento"},{"esquerda":"Dia 3","direita_correta":"Terra e plantas"},{"esquerda":"Dia 4","direita_correta":"Sol, lua e estrelas"},{"esquerda":"Dia 5","direita_correta":"Peixes e pássaros"},{"esquerda":"Dia 6","direita_correta":"Animais e homem"}]}, 2, 'crianca', 'Gn 1')
+
+# --- Êxodo ---
+criar_pool_exercicio('exodo', 'MULTIPLA_ESCOLHA', 'Quem Deus enviou para libertar Israel do Egito?', {"alternativas":["Abraão","Isaque","Moisés","Davi"],"indice_correto":2,"dica":"Êxodo 3"}, 1, 'adulto', 'Êxodo 3:1-15')
+criar_pool_exercicio('exodo', 'VF', 'As dez pragas recaíram apenas sobre o Egito.', {"afirmativa":"As dez pragas recaíram apenas sobre o Egito.","alternativas":["Falso","Verdadeiro"],"indice_correto":0,"dica":"A décima praga afetou os primogênitos de todo o Egito, mas Israel também foi afetado em其他 coisas."}, 2, 'adulto', 'Êxodo 7-12')
+criar_pool_exercicio('exodo', 'ORDENACAO', 'Ordene as dez pragas do Egito:', {"itens":["Água em sangue","Rãs","Piolhos","Moscas","Peste","Úlceras","Granizo","Gafanhotos","Trevas","Morte dos primogênitos"]}, 3, 'adulto', 'Êxodo 7-12')
+
+# --- Salmos ---
+criar_pool_exercicio('psalmos', 'MULTIPLA_ESCOLHA', 'Quem escreveu a maioria dos Salmos?', {"alternativas":["Moisés","Davi","Salomão","Paulo"],"indice_correto":1,"dica":"Tradicionalmente atribuído a Davi"}, 1, 'adulto', 'Salmos')
+criar_pool_exercicio('psalmos', 'VF', 'O Salmo 23 compara Deus a um pastor.', {"afirmativa":"O Salmo 23 compara Deus a um pastor.","alternativas":["Falso","Verdadeiro"],"indice_correto":1,"dica":"Sl 23:1 — O Senhor é o meu pastor"}, 1, 'adulto', 'Sl 23')
+criar_pool_exercicio('psalmos', 'MULTIPLA_ESCOLHA', 'O que o Salmo 119:105 diz sobre a Palavra de Deus?', {"alternativas":["É opcional","É lâmpada para os pés e luz para o caminho","É difícil de entender","Só para pastores"],"indice_correto":1,"dica":"Sl 119:105"}, 1, 'crianca', 'Sl 119:105')
+
+# --- Provérbios ---
+criar_pool_exercicio('proverbios', 'MULTIPLA_ESCOLHA', 'O começo da sabedoria é:', {"alternativas":["Riqueza","Conhecimento","Temor do Senhor","Fama"],"indice_correto":2,"dica":"Pv 1:7"}, 1, 'adolescente', 'Pv 1:7')
+criar_pool_exercicio('proverbios', 'VF', 'Provérbios ensina que o orgulho precede a destruição.', {"afirmativa":"Provérbios ensina que o orgulho precede a destruição.","alternativas":["Falso","Verdadeiro"],"indice_correto":1,"dica":"Pv 16:18"}, 2, 'adolescente', 'Pv 16:18')
+
+# --- Isaías ---
+criar_pool_exercicio('isaias', 'MULTIPLA_ESCOLHA', 'O que Isaías 53 descreve?', {"alternativas":["A criação do mundo","O sofrimento do Servo Suficiente","A queda de Jerusalém","A lei de Moisés"],"indice_correto":1,"dica":"Isaías 53 é profecia messiânica"}, 3, 'adulto', 'Is 53')
+criar_pool_exercicio('isaias', 'VF', 'Isaías 9:6 profetiza o nascimento de Jesus.', {"afirmativa":"Isaías 9:6 profetiza o nascimento de Jesus.","alternativas":["Falso","Verdadeiro"],"indice_correto":1,"dica":"Is 9:6 — Um menino nos é nascido"}, 2, 'adulto', 'Is 9:6')
+
+# --- Mateus ---
+criar_pool_exercicio('mateus', 'MULTIPLA_ESCOLHA', 'Qual o primeiro milagre de Jesus em João 2?', {"alternativas":["Cego ver","Água em vinho","Multiplicação de pães","Caminhar sobre águas"],"indice_correto":1,"dica":"Jo 2:1-11"}, 2, 'adulto', 'Jo 2:1-11')
+criar_pool_exercicio('mateus', 'VF', 'Jesus nasceu em Belém.', {"afirmativa":"Jesus nasceu em Belém.","alternativas":["Falso","Verdadeiro"],"indice_correto":1,"dica":"Mt 2:1"}, 1, 'crianca', 'Mt 2:1')
+criar_pool_exercicio('mateus', 'MULTIPLA_ESCOLHA', 'O que as bem-aventuranças ensinam?', {"alternativas":["Como ser rico","O caráter do Reino de Deus","Como governar","Como ser famoso"],"indice_correto":1,"dica":"Mt 5:1-12"}, 2, 'adolescente', 'Mt 5:1-12')
+
+# --- João ---
+criar_pool_exercicio('joao', 'MULTIPLA_ESCOLHA', 'O que João 1:1 diz sobre o Verbo?', {"alternativas":["Era um anjo","Era Deus","Era um profeta","Era um homem"],"indice_correto":1,"dica":"Jo 1:1 — E o Verbo era Deus"}, 2, 'adulto', 'Jo 1:1')
+criar_pool_exercicio('joao', 'VF', 'Jesus disse: Eu sou o caminho, a verdade e a vida.', {"afirmativa":"Jesus disse: Eu sou o caminho, a verdade e a vida.","alternativas":["Falso","Verdadeiro"],"indice_correto":1,"dica":"Jo 14:6"}, 1, 'adulto', 'Jo 14:6')
+criar_pool_exercicio('joao', 'MULTIPLA_ESCOLHA', 'Para quem Deus mandou o Seu Filho?', {"alternativas":["Só para judeus","Para o mundo inteiro","Só para religiosos","Só para os bons"],"indice_correto":1,"dica":"Jo 3:16"}, 1, 'crianca', 'Jo 3:16')
+
+# --- Romanos ---
+criar_pool_exercicio('romanos', 'MULTIPLA_ESCOLHA', 'O que Romanos 3:23 diz?', {"alternativas":["Só os gentios pecaram","Todos pecaram","Ninguém pecou","Só os judeus pecaram"],"indice_correto":1,"dica":"Rm 3:23"}, 2, 'adulto', 'Rm 3:23')
+criar_pool_exercicio('romanos', 'VF', 'A justiça de Deus se revela no evangelho.', {"afirmativa":"A justiça de Deus se revela no evangelho.","alternativas":["Falso","Verdadeiro"],"indice_correto":1,"dica":"Rm 1:17"}, 3, 'adulto', 'Rm 1:17')
+criar_pool_exercicio('romanos', 'ORDENACAO', 'Ordene o argumento de Romanos:', {"itens":["Todos pecaram","Ninguém é justo pela lei","A justiça vem pela fé","A graça de Deus","Justificação pela fé","Vida nova no Espírito"]}, 3, 'adulto', 'Rm 1-8')
+
+# --- Efésios ---
+criar_pool_exercicio('efesios', 'MULTIPLA_ESCOLHA', 'Como somos salvos segundo Efésios 2?', {"alternativas":["Pelos bons trabalhos","Pela graça, pela fé","Pelos sacramentos","Pela lei"],"indice_correto":1,"dica":"Ef 2:8-9"}, 2, 'adulto', 'Ef 2:8-9')
+criar_pool_exercicio('efesios', 'VF', 'Somos feitos para boas obras.', {"afirmativa":"Somos feitos para boas obras.","alternativas":["Falso","Verdadeiro"],"indice_correto":1,"dica":"Ef 2:10"}, 2, 'adulto', 'Ef 2:10')
+criar_pool_exercicio('efesios', 'ASSOCIACAO', 'Associe cada dom à função:', {"pares":[{"esquerda":"Apóstolo","direita_correta":"Fundar igrejas"},{"esquerda":"Profeta","direita_correta":"Falar de Deus"},{"esquerda":"Evangelista","direita_correta":"Levar o evangelho"},{"esquerda":"Pastor","direita_correta":"Cuidar do rebanho"},{"esquerda":"Doutor","direita_correta":"Ensinar a Palavra"}]}, 3, 'adulto', 'Ef 4:11')
+
+# --- Hebreus ---
+criar_pool_exercicio('hebreus', 'MULTIPLA_ESCOLHA', 'O que Hebreus 11 diz sobre a fé?', {"alternativas":["É opcional","É a certeza do que esperamos","Não é necessária","É sentir emocões"],"indice_correto":1,"dica":"Hb 11:1"}, 2, 'adulto', 'Hb 11:1')
+criar_pool_exercicio('hebreus', 'VF', 'Jesus é o mesmo ontem, hoje e sempre.', {"afirmativa":"Jesus é o mesmo ontem, hoje e sempre.","alternativas":["Falso","Verdadeiro"],"indice_correto":1,"dica":"Hb 13:8"}, 2, 'adulto', 'Hb 13:8')
+
+# --- Apocalipse ---
+criar_pool_exercicio('revelacao', 'MULTIPLA_ESCOLHA', 'O que Apocalipse 21:4 promete?', {"alternativas":["Mais sofrimento","Sem mais morte, nem pranto, nem dor","Um novo governo","O fim de Deus"],"indice_correto":1,"dica":"Ap 21:4"}, 3, 'adulto', 'Ap 21:4')
+criar_pool_exercicio('revelacao', 'VF', 'Deus fará novas todas as coisas.', {"afirmativa":"Deus fará novas todas as coisas.","alternativas":["Falso","Verdadeiro"],"indice_correto":1,"dica":"Ap 21:5"}, 3, 'adulto', 'Ap 21:5')
+
+# --- Atos ---
+criar_pool_exercicio('atos', 'MULTIPLA_ESCOLHA', 'Quem desceu sobre os discípulos no Pentecostes?', {"alternativas":["Jesus","O Espírito Santo","Um anjo","Deus Pai"],"indice_correto":1,"dica":"At 2:1-4"}, 2, 'adulto', 'At 2:1-4')
+criar_pool_exercicio('atos', 'VF', 'Pedro prega no dia de Pentecostes e três mil se convertem.', {"afirmativa":"Pedro prega no dia de Pentecostes e três mil se convertem.","alternativas":["Falso","Verdadeiro"],"indice_correto":1,"dica":"At 2:41"}, 2, 'adulto', 'At 2:41')
+
+# --- Evangelhos ---
+criar_pool_exercicio('gospels', 'MULTIPLA_ESCOLHA', 'Quatro evangelhos narram a vida de Jesus. Qual NÃO é um deles?', {"alternativas":["Mateus","Marcos","Pedro","João"],"indice_correto":2,"dica":"Os quatro são Mateus, Marcos, Lucas e João"}, 1, 'crianca', 'Evangelhos')
+criar_pool_exercicio('gospels', 'VF', 'Jesus nasceu de uma virgem.', {"afirmativa":"Jesus nasceu de uma virgem.","alternativas":["Falso","Verdadeiro"],"indice_correto":1,"dica":"Mt 1:23"}, 1, 'crianca', 'Mt 1:23')
+
+# --- Epístolas ---
+criar_pool_exercicio('epistolas', 'MULTIPLA_ESCOLHA', 'Quem escreveu a maioria das epístolas do Novo Testamento?', {"alternativas":["Pedro","Paulo","João","Tiago"],"indice_correto":1,"dica":"Paulo escreveu 13 epístolas"}, 2, 'adolescente', 'NT')
+criar_pool_exercicio('epistolas', 'VF', '1 Coríntios 13 diz que o amor é paciente e bondoso.', {"afirmativa":"1 Coríntios 13 diz que o amor é paciente e bondoso.","alternativas":["Falso","Verdadeiro"],"indice_correto":1,"dica":"1 Co 13:4"}, 1, 'adolescente', '1 Co 13')
+
+# --- Antigo Testamento ---
+criar_pool_exercicio('antigo_testamento', 'MULTIPLA_ESCOLHA', 'Quem liderou o povo de Israel para fora do Egito?', {"alternativas":["Josué","Moisés","Aarão","Calebe"],"indice_correto":1,"dica":"Êxodo 3-14"}, 1, 'crianca', 'Êxodo')
+criar_pool_exercicio('antigo_testamento', 'VF', 'O Antigo Testamento aponta para Jesus.', {"afirmativa":"O Antigo Testamento aponta para Jesus.","alternativas":["Falso","Verdadeiro"],"indice_correto":1,"dica":"Lc 24:27"}, 2, 'adulto', 'AT')
+
+# --- Novo Testamento ---
+criar_pool_exercicio('novo_testamento', 'MULTIPLA_ESCOLHA', 'Qual é a mensagem central do Novo Testamento?', {"alternativas":["Leis religiosas","Jesus Cristo e Sua obra redentora","Profecias antigas","Regras para viver"],"indice_correto":1,"dica":"O NT é centrado em Cristo"}, 1, 'adulto', 'NT')
+criar_pool_exercicio('novo_testamento', 'VF', 'O Grande Comissionamento é encontrado em Mateus 28.', {"afirmativa":"O Grande Comissionamento é encontrado em Mateus 28.","alternativas":["Falso","Verdadeiro"],"indice_correto":1,"dica":"Mt 28:18-20"}, 2, 'adulto', 'Mt 28:18-20')
+
 print("Seed concluído com sucesso!")
 print(f"  Trilhas: {Trilha.objects.count()}")
 print(f"  Lições: {LicaoBiblica.objects.count()}")
 print(f"  Exercícios: {Exercicio.objects.count()}")
+print(f"  Pool de Exercícios: {ExercisePool.objects.count()}")
 print(f"  Desafios Diários: {DesafioDiario.objects.count()}")
 print(f"  Recompensas: {Recompensa.objects.count()}")
 print(f"  Série Ouro: {SerieOuroDesafio.objects.count()}")

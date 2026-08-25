@@ -123,18 +123,37 @@ def serie_ouro_view(request):
 
 @login_required
 def abrir_bau_divino(request):
+    import random
     profile = request.user.profile
     if profile.xp_total < 100:
         return JsonResponse({'error': 'XP insuficiente'}, status=400)
     xp_gasto = 50
     profile.xp_total -= xp_gasto
     profile.save()
+    recompensas_bau = [
+        {'tipo': 'Medalha de Ouro', 'texto': 'Fé Inabalável', 'xp': 500},
+        {'tipo': 'Versículo', 'texto': 'Filipenses 4:13', 'xp': 200},
+        {'tipo': 'Medalha', 'texto': 'Guerreiro da Palavra', 'xp': 300},
+        {'tipo': 'Curiosidade', 'texto': 'A Bíblia tem 66 livros, 1189 capítulos e 31.102 versículos', 'xp': 150},
+        {'tipo': 'Medalha de Prata', 'texto': 'Estudante Dedicado', 'xp': 350},
+        {'tipo': 'Versículo', 'texto': 'Jeremias 29:11', 'xp': 200},
+        {'tipo': 'XP Bônus', 'texto': 'XP Extra!', 'xp': 750},
+        {'tipo': 'Medalha', 'texto': 'Corredor da Fé', 'xp': 400},
+        {'tipo': 'Versículo', 'texto': 'Romanos 8:28', 'xp': 250},
+        {'tipo': 'Medalha de Ouro', 'texto': 'Mestre da Escritura', 'xp': 600},
+    ]
+    premio = random.choice(recompensas_bau)
+    profile.xp_total += premio['xp']
+    profile.save()
+    log_activity(
+        request.user, 'RECOMPENSA',
+        descricao=f'Baú Divino: {premio["texto"]}',
+        referencia='bau_divino',
+        xp_ganho=premio['xp'],
+    )
     return JsonResponse({
         'success': True,
+        'xp_gasto': xp_gasto,
         'xp_restante': profile.xp_total,
-        'recompensa': {
-            'tipo': 'Medalha de Ouro',
-            'texto': 'Fé Inabalável',
-            'xp': 500,
-        }
+        'recompensa': premio,
     })

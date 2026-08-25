@@ -2,99 +2,93 @@
 {% load static %}
 {% block title %}Série Ouro - Plataforma Bíblica{% endblock %}
 {% block content %}
-<div class="bg-[#08162E] min-h-screen" x-data="serieOuro()" x-init='init({{ desafios_data|safe }}, {{ user_xp }})'>
-  <div class="min-h-screen">
-    <header class="bg-[#0B2046]/80 border-b border-accent/20 px-8 py-4 flex items-center justify-between">
-      <div class="flex items-center gap-4">
-        <a href="{% url 'dashboard' %}" class="text-accent/60 hover:text-accent transition-colors">
-          <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M15 19l-7-7 7-7"/>
-          </svg>
-        </a>
-        <h1 class="font-heading text-heading-sm text-accent">Série Ouro</h1>
-      </div>
-      <div class="flex items-center gap-2">
-        <svg class="w-5 h-5 text-accent" fill="currentColor" viewBox="0 0 24 24">
-          <path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z"/>
-        </svg>
-        <span class="font-body text-sm text-accent font-medium" x-text="userXp + ' XP'"></span>
-      </div>
-    </header>
+<div class="min-h-screen bg-dark" x-data="serieOuro()" x-init='init({{ desafios_data|safe }}, {{ user_xp }})'>
 
-    <main class="max-w-4xl mx-auto px-8 py-12">
-      <div class="text-center mb-16">
-        <h2 class="font-heading text-[32px] text-accent mb-2">Baú Divino</h2>
-        <p class="font-body text-sm text-accent/60 mb-8">Complete desafios para desbloquear recompensas</p>
+  <header class="fixed top-0 left-0 right-0 z-40 game-hud px-4 md:px-8 py-3 md:py-4 flex items-center justify-between safe-top">
+    <div class="flex items-center gap-3 md:gap-4">
+      <a href="{% url 'dashboard' %}" class="text-neon-gold/60 hover:text-neon-gold transition-colors">
+        <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M15 19l-7-7 7-7"/>
+        </svg>
+      </a>
+      <h1 class="font-heading text-base md:text-lg text-neon-gold">Série Ouro</h1>
+    </div>
+    <div class="flex items-center gap-2 px-3 py-1.5 rounded-full bg-neon-gold/10 border border-neon-gold/30">
+      <span class="text-sm">⭐</span>
+      <span class="text-sm font-semibold text-neon-gold" x-text="userXp + ' XP'"></span>
+    </div>
+  </header>
+
+  <main class="pt-16 md:pt-20 pb-24 md:pb-16 px-4 md:px-8">
+    <div class="max-w-4xl mx-auto">
+
+      {# Baú Divino #}
+      <div class="text-center mb-12 md:mb-16">
+        <h2 class="font-heading text-2xl md:text-3xl mb-2" style="background: linear-gradient(135deg, #ffd700, #ff6b35); -webkit-background-clip: text; -webkit-text-fill-color: transparent;">Baú Divino</h2>
+        <p class="text-sm text-text-muted mb-8">Complete desafios para desbloquear recompensas</p>
+
         <div class="relative inline-block">
-          <div :class="{ 'chest-shake': chestShaking }">
+          <div :class="{ 'animate-shake': chestShaking }">
             <template x-if="!aberto">
-              <div class="w-60 h-60 mx-auto cursor-pointer" @click="openChest()">
-                <svg viewBox="0 0 240 240" fill="none" class="w-full h-full">
-                  <rect x="40" y="100" width="160" height="100" rx="8" fill="#D4AF37" opacity="0.9"/>
-                  <rect x="40" y="100" width="160" height="100" rx="8" stroke="#0B2046" stroke-width="2"/>
-                  <path d="M35 100 L120 65 L205 100" fill="#D4AF37" stroke="#0B2046" stroke-width="2"/>
-                  <rect x="35" y="95" width="170" height="10" rx="3" fill="#F0D060"/>
-                  <circle cx="120" cy="150" r="15" fill="#0B2046"/>
-                  <circle cx="120" cy="150" r="8" fill="#D4AF37"/>
-                  <line x1="80" y1="120" x2="80" y2="180" stroke="#0B2046" stroke-width="1.5" opacity="0.3"/>
-                  <line x1="160" y1="120" x2="160" y2="180" stroke="#0B2046" stroke-width="1.5" opacity="0.3"/>
-                </svg>
+              <div class="w-48 h-48 md:w-60 md:h-60 mx-auto cursor-pointer group" @click="openChest()">
+                <div class="chest-glow rounded-2xl flex items-center justify-center transition-all duration-300 group-hover:scale-105 h-full">
+                  <span class="text-6xl md:text-7xl group-hover:scale-110 transition-transform">🎁</span>
+                </div>
               </div>
             </template>
             <template x-if="aberto">
-              <div class="w-60 h-60 mx-auto relative">
-                <svg viewBox="0 0 240 240" fill="none" class="w-full h-full">
-                  <rect x="40" y="100" width="160" height="100" rx="8" fill="#D4AF37" opacity="0.9"/>
-                  <rect x="40" y="100" width="160" height="100" rx="8" stroke="#0B2046" stroke-width="2"/>
-                  <path d="M35 100 L120 40 L205 100" fill="#D4AF37" stroke="#0B2046" stroke-width="2" opacity="0.6"/>
-                  <text x="120" y="155" text-anchor="middle" font-size="28">✨</text>
-                </svg>
-                <div class="absolute inset-0 flex items-center justify-center pointer-events-none">
-                  <div class="w-80 h-80 bg-accent/20 rounded-full light-burst"></div>
+              <div class="w-48 h-48 md:w-60 md:h-60 mx-auto relative">
+                <div class="rounded-2xl flex items-center justify-center h-full" style="background: linear-gradient(135deg, rgba(255,215,0,0.2), rgba(255,107,53,0.2)); border: 2px solid rgba(255,215,0,0.3);">
+                  <span class="text-6xl md:text-7xl animate-bounce-slow">✨</span>
                 </div>
-                <template x-if="baúAberto && recompensa">
-                  <div class="absolute -bottom-20 left-1/2 -translate-x-1/2 w-64">
-                    <div class="bg-surface rounded-md p-4 shadow-gold text-center">
+                <div class="absolute inset-0 flex items-center justify-center pointer-events-none">
+                  <div class="w-64 h-64 bg-neon-gold/10 rounded-full light-burst"></div>
+                </div>
+                <template x-if="bauAberto && recompensa">
+                  <div class="absolute -bottom-28 md:-bottom-24 left-1/2 -translate-x-1/2 w-56 md:w-64">
+                    <div class="card-glow p-4 md:p-5 text-center animate-boss-intro">
                       <span class="text-3xl block mb-2">🏅</span>
-                      <p class="font-heading text-heading-sm text-primary" x-text="recompensa.tipo"></p>
-                      <p class="font-body text-accent font-medium" x-text="'&quot;' + recompensa.texto + '&quot;'"></p>
-                      <p class="font-body text-sm text-text/60 mt-1" x-text="'+' + recompensa.xp + ' XP'"></p>
-                      <button @click="resetChest()" class="mt-3 text-sm text-primary hover:text-accent font-medium transition-colors">Fechar</button>
+                      <p class="font-heading text-sm md:text-base text-white" x-text="recompensa.tipo"></p>
+                      <p class="text-neon-gold font-medium text-sm" x-text="'\"' + recompensa.texto + '\"'"></p>
+                      <p class="text-xs text-text-muted mt-1" x-text="'+' + recompensa.xp + ' XP'"></p>
+                      <button @click="resetChest()" class="mt-3 text-xs text-neon-gold hover:text-white font-medium transition-colors">Fechar</button>
                     </div>
                   </div>
                 </template>
               </div>
             </template>
           </div>
+
           <template x-if="!aberto">
-            <div class="mt-6">
-              <button class="bg-accent text-primary font-heading font-medium text-[15px] px-8 py-3 rounded-full hover:shadow-gold transition-all duration-300" @click="openChest()">
-                Abrir Baú Divino
+            <div class="mt-8">
+              <button class="btn-gold text-sm" @click="openChest()">
+                <span>⭐ Abrir Baú Divino</span>
               </button>
             </div>
           </template>
         </div>
       </div>
 
+      {# Desafios de Elite #}
       <div>
-        <h3 class="font-heading text-[24px] text-accent mb-6">Desafios de Elite</h3>
-        <div class="grid grid-cols-3 gap-6">
+        <h3 class="font-heading text-xl md:text-2xl text-neon-gold mb-6">Desafios de Elite</h3>
+        <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 md:gap-6">
           <template x-for="desafio in desafios" :key="desafio.id">
-            <div class="bg-[#0B2046] border border-accent/40 rounded-md p-6 hover:shadow-gold transition-all duration-300 cursor-pointer group">
-              <div class="w-12 h-12 bg-accent/20 rounded-full flex items-center justify-center mb-4">
-                <svg class="w-6 h-6 text-accent" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M11.049 2.927c.3-.921 1.603-.921 1.902 0l1.519 4.674a1 1 0 00.95.69h4.915c.969 0 1.371 1.24.588 1.81l-3.976 2.888a1 1 0 00-.363 1.118l1.518 4.674c.3.922-.755 1.688-1.538 1.118l-3.976-2.888a1 1 0 00-1.176 0l-3.976 2.888c-.783.57-1.838-.197-1.538-1.118l1.518-4.674a1 1 0 00-.363-1.118l-3.976-2.888c-.784-.57-.38-1.81.588-1.81h4.914a1 1 0 00.951-.69l1.519-4.674z"/>
-                </svg>
+            <div class="card-neon p-5 md:p-6 group hover:border-neon-gold/40 transition-all duration-300 cursor-pointer">
+              <div class="w-12 h-12 rounded-full flex items-center justify-center mb-4 bg-neon-gold/10 border border-neon-gold/20">
+                <span class="text-xl">⭐</span>
               </div>
-              <h4 class="font-heading text-heading-sm text-surface mb-1" x-text="desafio.titulo"></h4>
-              <p class="font-body text-sm text-accent/70 mb-3" x-text="desafio.questoes + ' questões'"></p>
-              <span class="inline-block font-body text-label text-accent border border-accent/40 px-3 py-1 rounded-full">Avançado</span>
+              <h4 class="font-heading text-sm md:text-base text-white mb-1" x-text="desafio.titulo"></h4>
+              <p class="text-xs text-neon-gold mb-3" x-text="desafio.questoes + ' questões'"></p>
+              <span class="inline-block text-[11px] text-neon-gold border border-neon-gold/30 px-3 py-1 rounded-full bg-neon-gold/5">Avançado</span>
             </div>
           </template>
         </div>
       </div>
-    </main>
-  </div>
+    </div>
+  </main>
+
+  {% include 'includes/bottom_tab_bar.html' %}
 </div>
 {% endblock %}
 
@@ -104,7 +98,7 @@
     Alpine.data('serieOuro', () => ({
       desafios: [],
       userXp: 0,
-      baúAberto: false,
+      bauAberto: false,
       recompensa: null,
       aberto: false,
       chestShaking: false,
@@ -118,11 +112,11 @@
           this.chestShaking = false
           this.aberto = true
           this.recompensa = { tipo: 'Medalha de Ouro', texto: 'Fé Inabalável', xp: 500 }
-          setTimeout(() => { this.baúAberto = true }, 600)
+          setTimeout(() => { this.bauAberto = true }, 600)
         }, 600)
       },
       resetChest() {
-        this.baúAberto = false; this.recompensa = null; this.aberto = false; this.chestShaking = false
+        this.bauAberto = false; this.recompensa = null; this.aberto = false; this.chestShaking = false
       }
     }))
   })

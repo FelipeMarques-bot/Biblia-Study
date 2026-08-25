@@ -1,44 +1,51 @@
 {% extends 'base.html' %}
+{% load static %}
 {% block title %}Entrar - Plataforma Bíblica{% endblock %}
 {% block content %}
-<div class="min-h-screen bg-background flex items-center justify-center px-4">
-  <div class="stat-card max-w-md w-full">
+<div class="min-h-screen bg-dark flex items-center justify-center px-4 py-8">
+  <div class="max-w-md w-full animate-slide-up">
+
+    {# Logo / Brand #}
     <div class="text-center mb-8">
-      <div class="w-16 h-16 bg-accent/10 rounded-full flex items-center justify-center mx-auto mb-4">
-        <svg class="w-8 h-8 text-accent" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M12 6.253v13m0-13C10.832 5.477 9.246 5 7.5 5S4.168 5.477 3 6.253v13C4.168 18.477 5.754 18 7.5 18s3.332.477 4.5 1.253m0-13C13.168 5.477 14.754 5 16.5 5c1.747 0 3.332.477 4.5 1.253v13C19.832 18.477 18.247 18 16.5 18c-1.746 0-3.332.477-4.5 1.253" />
-        </svg>
+      <div class="w-20 h-20 mx-auto mb-4 rounded-2xl flex items-center justify-center" style="background: linear-gradient(135deg, rgba(0,212,255,0.15), rgba(168,85,247,0.15)); border: 2px solid rgba(0,212,255,0.2); box-shadow: 0 0 40px rgba(0,212,255,0.1);">
+        <span class="text-4xl">📖</span>
       </div>
-      <h1 class="font-heading text-heading-md text-primary">Plataforma Bíblica</h1>
-      <p class="font-body text-text/60 mt-1">Entre para continuar sua jornada</p>
+      <h1 class="font-heading text-2xl md:text-3xl text-white mb-1">Plataforma Bíblica</h1>
+      <p class="text-sm text-text-muted">Entre para continuar sua jornada</p>
     </div>
 
-    {% if messages %}
-      {% for message in messages %}
-        <div class="bg-red-50 border border-red-200 text-red-700 px-4 py-3 rounded-md mb-4 font-body text-sm">
-          {{ message }}
+    {# Card #}
+    <div class="card-neon p-6 md:p-8">
+
+      {% if messages %}
+        {% for message in messages %}
+          <div class="mb-4 px-4 py-3 rounded-md bg-neon-pink/10 border border-neon-pink/30 text-neon-pink text-sm">
+            {{ message }}
+          </div>
+        {% endfor %}
+      {% endif %}
+
+      <form method="post" class="space-y-4">
+        {% csrf_token %}
+        <div>
+          <label class="text-xs text-text-muted uppercase tracking-wider block mb-1.5">Usuário</label>
+          <input type="text" name="username" required
+            class="chat-input w-full text-sm" placeholder="Digite seu usuário">
         </div>
-      {% endfor %}
-    {% endif %}
+        <div>
+          <label class="text-xs text-text-muted uppercase tracking-wider block mb-1.5">Senha</label>
+          <input type="password" name="password" required
+            class="chat-input w-full text-sm" placeholder="Digite sua senha">
+        </div>
+        <button type="submit" class="btn-primary w-full text-center text-sm mt-2">
+          ⚡ Entrar
+        </button>
+      </form>
+    </div>
 
-    <form method="post" class="space-y-4">
-      {% csrf_token %}
-      <div>
-        <label class="font-body text-label text-text/70 block mb-1">Usuário</label>
-        <input type="text" name="username" required
-          class="w-full bg-background border border-muted rounded-md px-4 py-3 font-body text-text outline-none focus:border-primary transition-colors">
-      </div>
-      <div>
-        <label class="font-body text-label text-text/70 block mb-1">Senha</label>
-        <input type="password" name="password" required
-          class="w-full bg-background border border-muted rounded-md px-4 py-3 font-body text-text outline-none focus:border-primary transition-colors">
-      </div>
-      <button type="submit" class="btn-primary w-full text-center">Entrar</button>
-    </form>
-
-    <p class="text-center mt-6 font-body text-sm text-text/60">
+    <p class="text-center mt-6 text-sm text-text-muted">
       Não tem conta?
-      <a href="{% url 'registro' %}" class="text-accent font-medium hover:underline">Criar conta</a>
+      <a href="{% url 'registro' %}" class="text-neon-blue font-medium hover:text-neon-purple transition-colors">Criar conta</a>
     </p>
   </div>
 </div>

@@ -1,129 +1,317 @@
 {% extends 'base.html' %}
 {% load static %}
-{% block title %}Chat Devocional - Plataforma Bíblica{% endblock %}
+
+{% block title %}Chat Devocional - Plataforma Biblica{% endblock %}
+
 {% block content %}
-<div class="bg-background min-h-screen" x-data="chatDevocional()" x-init='init({{ mensagens_data|safe }})'>
-  <div class="flex min-h-screen">
-    <div class="w-[420px] shrink-0 bg-[#F4F3F0] border-r border-muted/50 flex flex-col p-8">
-      <a href="{% url 'dashboard' %}" class="text-text/60 hover:text-primary transition-colors mb-8 inline-flex items-center gap-2">
-        <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M15 19l-7-7 7-7"/>
-        </svg>
-        <span class="font-body text-sm">Voltar</span>
-      </a>
-      <div class="flex-1 flex flex-col justify-center">
-        <div class="mb-2">
-          <span class="font-body text-label text-accent">Escritura do Dia</span>
-        </div>
-        <blockquote class="font-heading text-[28px] text-primary leading-relaxed mb-6" x-text="scripture.text">O SENHOR é o meu pastor; nada me faltará.</blockquote>
-        <p class="font-body text-sm text-text/70 mb-3" x-text="'— ' + scripture.reference">— Salmos 23:1</p>
-        <div class="border-t border-muted/50 pt-4">
-          <p class="font-body text-sm text-text/60 italic" x-text="scripture.note">Uma declaração de confiança total na provisão divina.</p>
-        </div>
+<div x-data="chatDevocional()" x-init="init()" class="min-h-screen bg-[#0a0e1a] text-white">
+
+  <!-- BANNER DE DOACAO -->
+  <div id="donation-banner" class="bg-gradient-to-r from-[#00d4ff]/10 via-[#a855f7]/10 to-[#ff0080]/10 border-b border-[#00d4ff]/20 px-4 py-3 text-center" style="display:none;">
+    <p class="text-sm text-gray-300">
+      ❤️ <strong class="text-[#00ff88]">Apoie esta plataforma!</strong> Ajude-nos a manter o app funcionando e alcançando mais vidas.
+    </p>
+    <div class="mt-2 flex items-center justify-center gap-3 flex-wrap">
+      <div class="flex items-center gap-2 bg-[#0a0e1a] border border-[#00ff88]/30 rounded-lg px-3 py-1.5">
+        <span class="text-xs text-gray-400">Chave Pix:</span>
+        <code class="text-xs text-[#00ff88] font-mono" id="pix-key">1b831057-321a-4580-9ebe-bff9b5fb2529</code>
+        <button onclick="navigator.clipboard.writeText('1b831057-321a-4580-9ebe-bff9b5fb2529');this.innerHTML='✅'" class="text-xs text-[#00ff88] hover:text-white ml-1">📋 Copiar</button>
+      </div>
+      <button onclick="document.getElementById('donation-banner').style.display='none'" class="text-xs text-gray-500 hover:text-white">Fechar</button>
+    </div>
+  </div>
+
+  <!-- SIDEBAR MOBILE -->
+  <div x-show="showSidebar" x-transition class="fixed inset-0 z-40 bg-black/50 lg:hidden" @click="showSidebar=false"></div>
+
+  <!-- SIDEBAR DESKTOP/MOBILE -->
+  <aside :class="showSidebar ? 'translate-x-0' : '-translate-x-full lg:translate-x-0'" class="fixed left-0 top-0 h-full w-80 bg-[#0d1225] border-r border-[#00d4ff]/20 z-50 transform transition-transform overflow-y-auto">
+
+    <!-- Header da Sidebar -->
+    <div class="p-4 border-b border-[#00d4ff]/10">
+      <div class="flex items-center justify-between">
+        <h2 class="text-lg font-bold text-[#00d4ff]">✝️ Chat Devocional</h2>
+        <button @click="showSidebar=false" class="lg:hidden text-gray-400 hover:text-white">✕</button>
+      </div>
+
+      <!-- Seletor de Idioma -->
+      <div class="mt-3 flex gap-1">
+        <button @click="idioma='pt'" :class="idioma==='pt' ? 'bg-[#00d4ff] text-black' : 'bg-[#1a1f35] text-gray-400'" class="px-2 py-1 rounded text-xs font-bold transition-all">🇧🇷 PT</button>
+        <button @click="idioma='en'" :class="idioma==='en' ? 'bg-[#00d4ff] text-black' : 'bg-[#1a1f35] text-gray-400'" class="px-2 py-1 rounded text-xs font-bold transition-all">🇺🇸 EN</button>
+        <button @click="idioma='es'" :class="idioma==='es' ? 'bg-[#00d4ff] text-black' : 'bg-[#1a1f35] text-gray-400'" class="px-2 py-1 rounded text-xs font-bold transition-all">🇪🇸 ES</button>
       </div>
     </div>
 
-    <div class="flex-1 flex flex-col">
-      <header class="bg-surface border-b border-muted/30 px-8 py-4 flex items-center justify-between">
-        <div>
-          <h2 class="font-heading text-heading-sm text-primary">Chat Devocional</h2>
-          <p class="font-body text-sm text-text/60">Reflexão guiada com IA</p>
-        </div>
-        <div class="flex gap-2">
-          <select x-model="selectedTema" class="bg-background border border-muted rounded-md px-3 py-2 text-sm font-body text-text">
-            <option value="fe">Fé</option>
-            <option value="esperanca">Esperança</option>
-            <option value="gratidao">Gratidão</option>
-            <option value="perdao">Perdão</option>
-            <option value="oracao">Oração</option>
-          </select>
-          <button @click="novaSessao()" class="bg-accent/20 text-accent px-3 py-2 rounded-md text-sm font-medium hover:bg-accent/30 transition-colors">Novo Tema</button>
-        </div>
-      </header>
-
-      <div class="flex-1 overflow-y-auto px-8 py-6 space-y-4">
-        <template x-for="(msg, idx) in mensagens" :key="idx">
-          <div class="flex" :class="msg.tipo === 'usuario' ? 'justify-end' : 'justify-start'">
-            <div class="max-w-[70%] px-5 py-3 rounded-md transition-all duration-300"
-              :class="{'bg-primary text-surface': msg.tipo === 'usuario', 'bg-surface text-text shadow-soft': msg.tipo === 'ia'}">
-              <p class="font-body text-sm leading-relaxed" x-text="msg.texto"></p>
-            </div>
+    <!-- Devocional do Dia -->
+    <div class="p-4 border-b border-[#00d4ff]/10">
+      <h3 class="text-sm font-bold text-[#ffd700] mb-2">📖 Devocional do Dia</h3>
+      <div class="bg-[#0a0e1a] rounded-lg p-3 text-sm text-gray-300">
+        <template x-if="devocionalDoDia">
+          <div>
+            <p class="font-bold text-[#00ff88]" x-text="devocionalDoDia.titulo"></p>
+            <p class="text-xs text-[#00d4ff] mt-1" x-text="devocionalDoDia.passagem"></p>
+            <p class="mt-2 text-xs text-gray-400 line-clamp-4" x-text="devocionalDoDia.reflexao"></p>
+            <template x-if="devocionalDoDia.oracao">
+              <p class="mt-2 text-xs text-[#a855f7] italic">🙏 <span x-text="devocionalDoDia.oracao.substring(0,120)+'...'"></span></p>
+            </template>
           </div>
         </template>
-        <div x-show="isTyping" class="flex justify-start">
-          <div class="bg-surface shadow-soft rounded-md px-5 py-4 flex items-center gap-1">
-            <span class="typing-dot w-2 h-2 bg-text/40 rounded-full inline-block"></span>
-            <span class="typing-dot w-2 h-2 bg-text/40 rounded-full inline-block"></span>
-            <span class="typing-dot w-2 h-2 bg-text/40 rounded-full inline-block"></span>
+        <template x-if="!devocionalDoDia">
+          <p class="text-xs text-gray-500">Carregando devocional...</p>
+        </template>
+      </div>
+    </div>
+
+    <!-- Categorias de Conversa -->
+    <div class="p-4 border-b border-[#00d4ff]/10">
+      <h3 class="text-sm font-bold text-gray-400 mb-2">💬 Categoria</h3>
+      <div class="grid grid-cols-2 gap-2">
+        <template x-for="cat in categorias" :key="cat.id">
+          <button @click="selectedCategoria=cat.id"
+                  :class="selectedCategoria===cat.id ? 'bg-[#00d4ff]/20 border-[#00d4ff]' : 'bg-[#1a1f35] border-transparent'"
+                  class="border rounded-lg p-2 text-center hover:bg-[#00d4ff]/10 transition-all">
+            <span class="text-lg" x-text="cat.icon"></span>
+            <p class="text-xs mt-1" x-text="cat.nome"></p>
+          </button>
+        </template>
+      </div>
+    </div>
+
+    <!-- Temas do Devocional -->
+    <div class="p-4 border-b border-[#00d4ff]/10">
+      <h3 class="text-sm font-bold text-gray-400 mb-2">🎯 Tema</h3>
+      <div class="flex flex-wrap gap-2">
+        <template x-for="t in temas" :key="t.id">
+          <button @click="selectedTema=t.id"
+                  :class="selectedTema===t.id ? 'bg-[#ff0080]/20 border-[#ff0080]' : 'bg-[#1a1f35] border-transparent'"
+                  class="border rounded-full px-3 py-1 text-xs hover:bg-[#ff0080]/10 transition-all">
+            <span x-text="t.icon + ' ' + t.nome"></span>
+          </button>
+        </template>
+      </div>
+    </div>
+
+    <!-- Nova Conversa -->
+    <div class="p-4">
+      <button @click="novaSessao()" class="w-full bg-gradient-to-r from-[#00d4ff] to-[#a855f7] text-black font-bold py-2 rounded-lg hover:opacity-80 transition-all">
+        ✨ Nova Conversa
+      </button>
+    </div>
+
+    <!-- Versiculo do Dia -->
+    <div class="p-4 border-t border-[#00d4ff]/10">
+      <div class="bg-[#0a0e1a] rounded-lg p-3">
+        <p class="text-xs text-[#ffd700] font-bold">✨ Versículo do Dia</p>
+        <p class="text-xs text-gray-300 mt-1 italic">"Porque Deus amou o mundo de tal maneira que deu o Seu Filho unigênito, para que todo aquele que nele crê não pereça, mas tenha a vida eterna." — João 3:16</p>
+      </div>
+    </div>
+  </aside>
+
+  <!-- CONTEUDO PRINCIPAL -->
+  <div class="lg:ml-80 min-h-screen flex flex-col">
+
+    <!-- Header Mobile -->
+    <header class="bg-[#0d1225] border-b border-[#00d4ff]/20 px-4 py-3 flex items-center gap-3">
+      <button @click="showSidebar=true" class="lg:hidden text-gray-400 hover:text-white">
+        <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16"/></svg>
+      </button>
+      <div class="flex-1">
+        <h1 class="font-bold text-[#00d4ff]">✝️ Chat Devocional</h1>
+        <p class="text-xs text-gray-400" x-text="'Tema: ' + temas.find(t => t.id === selectedTema)?.nome + ' | ' + categorias.find(c => c.id === selectedCategoria)?.nome"></p>
+      </div>
+      <div class="flex items-center gap-1 bg-[#1a1f35] rounded-lg px-2 py-1">
+        <span class="text-xs text-gray-400">🌐</span>
+        <span class="text-xs text-[#00ff88]" x-text="idiomas_nomes[idioma]"></span>
+      </div>
+    </header>
+
+    <!-- Area de Mensagens -->
+    <div class="flex-1 overflow-y-auto p-4 space-y-4" id="chat-messages">
+
+      <!-- Mensagem de Boas-Vindas -->
+      <template x-if="mensagens.length === 0 && !carregando">
+        <div class="flex gap-3">
+          <div class="w-8 h-8 rounded-full bg-[#00d4ff] flex items-center justify-center text-black text-sm font-bold flex-shrink-0">✝️</div>
+          <div class="bg-[#1a1f35] rounded-2xl rounded-tl-none p-4 max-w-2xl">
+            <p class="text-sm text-gray-300" x-html="htmlParse('Bem-vindo ao **Chat Devocional**! 📖\n\nSou um assistente baseado na teologia reformada. Posso ajudar com:\n\n• **Devocional do dia** com passagens biblicas\n• **Estudo biblico** aprofundado\n• **Oração** e intercessão\n• **Conselho pastoral** biblico\n• **Teologia** da fe reformada\n\nEscolha um **tema** e uma **categoria** ao lado, ou simplesmente me pergunte algo!')"></p>
           </div>
         </div>
-      </div>
+      </template>
 
-      <div class="bg-surface border-t border-muted/30 px-8 py-4">
-        <div class="flex items-center gap-3">
-          <input type="text" x-model="inputMessage" @keydown.enter="sendMessage()" placeholder="Digite sua reflexão..."
-            class="flex-1 bg-background border border-muted rounded-md px-5 py-3 font-body text-sm text-text outline-none focus:border-primary transition-colors">
-          <button @click="sendMessage()" class="w-11 h-11 bg-primary rounded-full flex items-center justify-center hover:scale-105 transition-all duration-300"
-            :class="{ 'opacity-50': !inputMessage.trim() }" :disabled="!inputMessage.trim()">
-            <svg class="w-5 h-5 text-surface" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 19V5m0 0l-7 7m7-7l7 7"/>
-            </svg>
-          </button>
+      <!-- Mensagens do Chat -->
+      <template x-for="(msg, idx) in mensagens" :key="idx">
+        <div :class="msg.remetente === 'ia' ? 'flex gap-3' : 'flex gap-3 justify-end'">
+          <template x-if="msg.remetente === 'ia'">
+            <div class="w-8 h-8 rounded-full bg-[#00d4ff] flex items-center justify-center text-black text-sm font-bold flex-shrink-0">✝️</div>
+          </template>
+          <div :class="msg.remetente === 'ia' ? 'bg-[#1a1f35] rounded-2xl rounded-tl-none' : 'bg-gradient-to-r from-[#00d4ff] to-[#a855f7] rounded-2xl rounded-tr-none'"
+               class="p-4 max-w-2xl">
+            <div class="text-sm" :class="msg.remetente === 'ia' ? 'text-gray-300' : 'text-white'" x-html="htmlParse(msg.texto)"></div>
+          </div>
+          <template x-if="msg.remetente !== 'ia'">
+            <div class="w-8 h-8 rounded-full bg-[#a855f7] flex items-center justify-center text-white text-sm font-bold flex-shrink-0" x-text="userInitial"></div>
+          </template>
         </div>
+      </template>
+
+      <!-- Indicador de Carregamento -->
+      <template x-if="carregando">
+        <div class="flex gap-3">
+          <div class="w-8 h-8 rounded-full bg-[#00d4ff] flex items-center justify-center text-black text-sm font-bold flex-shrink-0">✝️</div>
+          <div class="bg-[#1a1f35] rounded-2xl rounded-tl-none p-4">
+            <div class="flex gap-1">
+              <div class="w-2 h-2 bg-[#00d4ff] rounded-full animate-bounce" style="animation-delay:0ms"></div>
+              <div class="w-2 h-2 bg-[#00d4ff] rounded-full animate-bounce" style="animation-delay:150ms"></div>
+              <div class="w-2 h-2 bg-[#00d4ff] rounded-full animate-bounce" style="animation-delay:300ms"></div>
+            </div>
+          </div>
+        </div>
+      </template>
+    </div>
+
+    <!-- BARRA DE ENTRADA -->
+    <div class="border-t border-[#00d4ff]/20 bg-[#0d1225] p-4">
+      <div class="max-w-3xl mx-auto flex gap-3">
+        <div class="flex-1 relative">
+          <input type="text"
+                 x-model="novaMensagem"
+                 @keyup.enter="enviarMensagem()"
+                 :placeholder="placeholders[idioma]"
+                 class="w-full bg-[#1a1f35] border border-[#00d4ff]/30 rounded-xl px-4 py-3 text-white placeholder-gray-500 focus:outline-none focus:border-[#00d4ff] transition-all text-sm">
+        </div>
+        <button @click="enviarMensagem()"
+                :disabled="!novaMensagem.trim() || carregando"
+                class="bg-gradient-to-r from-[#00d4ff] to-[#a855f7] text-black font-bold px-6 py-3 rounded-xl hover:opacity-80 disabled:opacity-40 transition-all">
+          <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" viewBox="0 0 20 20" fill="currentColor"><path d="M10.894 2.553a1 1 0 00-1.788 0l-7 14a1 1 0 001.169 1.409l5-1.429A1 1 0 009 15.571V11a1 1 0 112 0v4.571a1 1 0 00.725.962l5 1.428a1 1 0 001.17-1.408l-7-14z"/></svg>
+        </button>
       </div>
+      <p class="text-center text-xs text-gray-600 mt-2">
+        Baseado na teologia reformada. As respostas são geradas por IA e não substituem aconselhamento pastoral presencial.
+      </p>
     </div>
   </div>
 </div>
-{% endblock %}
 
-{% block extra_scripts %}
 <script>
-  document.addEventListener('alpine:init', () => {
-    Alpine.data('chatDevocional', () => ({
-      mensagens: [],
-      inputMessage: '',
-      isTyping: false,
-      selectedTema: 'fe',
-      sessaoId: {{ sessao_atual.id }},
-      scripture: { text: 'O SENHOR é o meu pastor; nada me faltará.', reference: 'Salmos 23:1', note: 'Uma declaração de confiança total na provisão divina.' },
-      init(data) { if (data) this.mensagens = data },
-      sendMessage() {
-        if (!this.inputMessage.trim() || !this.sessaoId) return
-        const texto = this.inputMessage
-        this.mensagens.push({ tipo: 'usuario', texto })
-        this.inputMessage = ''
-        this.isTyping = true
-        fetch('/chat/' + this.sessaoId + '/enviar/', {
+function chatDevocional() {
+  return {
+    mensagens: [],
+    novaMensagem: '',
+    sessaoId: null,
+    carregando: false,
+    showSidebar: false,
+    selectedCategoria: 'devocional',
+    selectedTema: 'fe',
+    idioma: 'pt',
+    devocionalDoDia: null,
+    categorias: {{ categorias|safe }},
+    temas: {{ temas|safe }},
+    userInitial: '{{ request.user.username|first|upper }}',
+
+    idiomas_nomes: { pt: 'Portugues', en: 'English', es: 'Espanol' },
+    placeholders: {
+      pt: 'Pergunte sobre a Biblia, fé, oração...',
+      en: 'Ask about the Bible, faith, prayer...',
+      es: 'Pregunta sobre la Biblia, fe, oracion...'
+    },
+
+    async init() {
+      // Carregar devocional do dia
+      try {
+        const r = await fetch('/chat/devocional-hoje/');
+        if (r.ok) this.devocionalDoDia = await r.json();
+      } catch(e) {}
+
+      // Pegar sessao existente ou criar nova
+      {% if sessao %}
+        this.sessaoId = {{ sessao.id }};
+        // Carregar mensagens existentes
+        {% if mensagens %}
+          this.mensagens = [
+            {% for msg in mensagens %}
+              { remetente: '{{ msg.remetente }}', texto: `{{ msg.texto|escapejs }}` },
+            {% endfor %}
+          ];
+        {% endif %}
+      {% else %}
+        await this.novaSessao();
+      {% endif %}
+    },
+
+    async enviarMensagem() {
+      if (!this.novaMensagem.trim() || this.carregando) return;
+
+      const msg = this.novaMensagem.trim();
+      this.novaMensagem = '';
+      this.mensagens.push({ remetente: 'usuario', texto: msg });
+      this.carregando = true;
+      this.scrollToBottom();
+
+      try {
+        const resp = await fetch(`/chat/${this.sessaoId ? this.sessaoId + '/' : ''}enviar/`, {
           method: 'POST',
-          headers: {
-            'X-CSRFToken': '{{ csrf_token }}',
-            'Content-Type': 'application/json',
-          },
-          body: JSON.stringify({ texto }),
-        })
-        .then(r => r.json())
-        .then(data => {
-          this.isTyping = false
-          this.mensagens.push({ tipo: 'ia', texto: data.resposta })
-        })
-        .catch(() => { this.isTyping = false })
-      },
-      novaSessao() {
-        fetch('/chat/nova-sessao/', {
-          method: 'POST',
-          headers: {
-            'X-CSRFToken': '{{ csrf_token }}',
-            'Content-Type': 'application/json',
-          },
-          body: JSON.stringify({ tema: this.selectedTema }),
-        })
-        .then(r => r.json())
-        .then(data => {
-          this.sessaoId = data.sessao_id
-          this.mensagens = [{ tipo: 'ia', texto: data.mensagem_ia }]
-        })
+          headers: { 'Content-Type': 'application/json', 'X-CSRFToken': this.getCSRF() },
+          body: JSON.stringify({
+            mensagem: msg,
+            sessao_id: this.sessaoId,
+            categoria: this.selectedCategoria,
+            tema: this.selectedTema,
+          })
+        });
+
+        const data = await resp.json();
+        if (data.resposta) {
+          this.mensagens.push({ remetente: 'ia', texto: data.resposta });
+          this.sessaoId = data.sessao_id;
+        }
+      } catch(e) {
+        this.mensagens.push({ remetente: 'ia', texto: 'Desculpe, houve um erro. Por favor, tente novamente.' });
       }
-    }))
-  })
+
+      this.carregando = false;
+      this.scrollToBottom();
+    },
+
+    async novaSessao() {
+      this.carregando = true;
+      try {
+        const resp = await fetch('/chat/nova-sessao/', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json', 'X-CSRFToken': this.getCSRF() },
+          body: JSON.stringify({ tema: this.selectedTema, categoria: this.selectedCategoria })
+        });
+        const data = await resp.json();
+        this.sessaoId = data.sessao_id;
+        this.mensagens = [{ remetente: 'ia', texto: data.mensagem }];
+      } catch(e) {
+        this.mensagens = [{ remetente: 'ia', texto: 'Erro ao criar sessao. Tente novamente.' }];
+      }
+      this.carregando = false;
+      this.scrollToBottom();
+    },
+
+    scrollToBottom() {
+      setTimeout(() => {
+        const el = document.getElementById('chat-messages');
+        if (el) el.scrollTop = el.scrollHeight;
+      }, 100);
+    },
+
+    getCSRF() {
+      const cookie = document.cookie.split(';').find(c => c.trim().startsWith('csrftoken='));
+      return cookie ? cookie.split('=')[1] : '';
+    },
+
+    htmlParse(text) {
+      if (!text) return '';
+      return text
+        .replace(/\*\*(.*?)\*\*/g, '<strong class="text-[#00ff88]">$1</strong>')
+        .replace(/\*(.*?)\*/g, '<em class="text-[#00d4ff]">$1</em>')
+        .replace(/📖 \*Referências?\*:(.*?)(?=\n\n|$)/gs, '<div class="mt-3 p-2 bg-[#0a0e1a] rounded text-xs text-[#ffd700]"><strong>📖 Referências:</strong>$1</div>')
+        .replace(/🙏 \*\*Oração:\*\*/g, '<div class="mt-3 text-[#a855f7]"><strong>🙏 Oração:</strong>')
+        .replace(/\n/g, '<br>');
+    }
+  }
+}
 </script>
 {% endblock %}

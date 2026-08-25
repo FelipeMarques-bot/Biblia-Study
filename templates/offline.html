@@ -1,0 +1,57 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Sem Conexão</title>
+  <link rel="stylesheet" href="/static/css/output.css">
+  <style>
+    body {
+      background: #0a0e1a;
+      color: #e2e8f0;
+      font-family: 'Plus Jakarta Sans', sans-serif;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      min-height: 100vh;
+      margin: 0;
+      text-align: center;
+      padding: 2rem;
+    }
+    .offline-card {
+      background: #111827;
+      border: 1px solid rgba(0, 212, 255, 0.2);
+      border-radius: 16px;
+      padding: 3rem 2rem;
+      max-width: 400px;
+      width: 100%;
+      box-shadow: 0 0 30px rgba(0, 212, 255, 0.1);
+    }
+    .offline-icon { font-size: 4rem; margin-bottom: 1rem; }
+    h1 { font-family: 'Outfit', sans-serif; color: #00d4ff; font-size: 1.5rem; }
+    p { color: #94a3b8; margin-top: 0.75rem; line-height: 1.6; }
+    .btn-retry {
+      display: inline-block;
+      margin-top: 1.5rem;
+      padding: 0.75rem 2rem;
+      background: #00d4ff;
+      color: #0a0e1a;
+      border: none;
+      border-radius: 999px;
+      font-family: 'Outfit', sans-serif;
+      font-weight: 600;
+      font-size: 15px;
+      cursor: pointer;
+    }
+    .btn-retry:active { transform: scale(0.96); }
+  </style>
+</head>
+<body>
+  <div class="offline-card">
+    <div class="offline-icon">📡</div>
+    <h1>Sem Conexão</h1>
+    <p>Parece que você ficou offline. Verifique sua conexão com a internet e tente novamente.</p>
+    <button class="btn-retry" onclick="window.location.reload()">Tentar Novamente</button>
+  </div>
+</body>
+</html>

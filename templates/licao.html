@@ -2,87 +2,95 @@
 {% load static %}
 {% block title %}{{ licao.titulo }} - Plataforma Bíblica{% endblock %}
 {% block content %}
-<div class="bg-background min-h-screen" x-data="licao()" x-init='init({{ exercicios_data|safe }}, {{ licao.id }})'>
+<div class="min-h-screen bg-dark" x-data="licao()" x-init='init({{ exercicios_data|safe }}, {{ licao.id }})'>
 
+  {# Tela de Resultado #}
   <template x-if="showResult">
-    <div class="fixed inset-0 z-50 bg-background flex items-center justify-center">
-      <div class="stat-card max-w-lg w-full mx-4 text-center">
-        <div class="w-20 h-20 bg-accent/10 rounded-full flex items-center justify-center mx-auto mb-6">
-          <svg class="w-10 h-10 text-accent" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"/>
-          </svg>
+    <div class="fixed inset-0 z-50 bg-dark flex items-center justify-center px-4">
+      <div class="card-glow max-w-md w-full text-center animate-boss-intro p-8">
+        <div class="w-20 h-20 rounded-full flex items-center justify-center mx-auto mb-6"
+             style="background: linear-gradient(135deg, rgba(0,255,136,0.1), rgba(0,212,255,0.1)); border: 2px solid rgba(0,255,136,0.3); box-shadow: 0 0 30px rgba(0,255,136,0.2);">
+          <span class="text-4xl">🏆</span>
         </div>
-        <h2 class="font-heading text-heading-md text-primary mb-2">Lição Concluída!</h2>
-        <div class="py-6">
-          <span class="font-heading text-[56px] text-accent" x-text="'+' + xpGained + ' XP'"></span>
+        <h2 class="font-heading text-xl md:text-2xl text-white mb-2">Lição Concluída!</h2>
+        <div class="py-4">
+          <span class="font-heading text-4xl md:text-5xl" style="background: linear-gradient(135deg, #00ff88, #00d4ff); -webkit-background-clip: text; -webkit-text-fill-color: transparent;" x-text="'+' + xpGained + ' XP'"></span>
         </div>
-        <p class="font-body text-text/60 mb-8">Continue sua jornada no mapa de trilhas</p>
+        <p class="text-sm text-text-muted mb-8">Continue sua jornada no mapa de trilhas</p>
         <div class="flex gap-3 justify-center">
-          <a href="{% url 'lista_trilhas' %}" class="btn-primary">Voltar ao mapa</a>
-          <a href="{% url 'serie_ouro' %}" class="btn-accent">Ver recompensas</a>
+          <a href="{% url 'lista_trilhas' %}" class="btn-primary text-sm">Voltar ao Mapa</a>
+          <a href="{% url 'serie_ouro' %}" class="btn-accent text-sm">Série Ouro</a>
         </div>
       </div>
     </div>
   </template>
 
-  <header class="fixed top-0 left-0 right-0 z-40 bg-surface/80 backdrop-blur-md border-b border-muted/30 px-8 py-4">
+  {# Header #}
+  <header class="fixed top-0 left-0 right-0 z-40 game-hud px-4 md:px-8 py-3 safe-top">
     <div class="max-w-[680px] mx-auto flex items-center justify-between">
-      <div class="flex items-center gap-4">
-        <a href="{% url 'lista_trilhas' %}" class="text-text/60 hover:text-primary transition-colors">
+      <div class="flex items-center gap-3">
+        <a href="{% url 'lista_trilhas' %}" class="text-text-muted hover:text-neon-blue transition-colors">
           <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M15 19l-7-7 7-7"/>
           </svg>
         </a>
-        <span class="font-body text-sm text-text/60" x-text="'Questão ' + (currentQuestion + 1) + ' de ' + questions.length"></span>
+        <span class="text-sm text-text-muted" x-text="'Questão ' + (currentQuestion + 1) + ' de ' + questions.length"></span>
       </div>
-      <span class="font-body text-sm font-medium text-accent" x-text="'+' + xpGained + ' XP'"></span>
+      <span class="text-sm font-semibold text-neon-gold" x-text="'+' + xpGained + ' XP'"></span>
     </div>
-    <div class="max-w-[680px] mx-auto mt-3">
-      <div class="w-full bg-muted rounded-full h-2">
-        <div class="bg-primary h-2 rounded-full transition-all duration-500" :style="'width: ' + progress + '%'"></div>
+    <div class="max-w-[680px] mx-auto mt-2">
+      <div class="xp-bar">
+        <div class="xp-bar-fill" :style="'width: ' + progress + '%'"></div>
       </div>
     </div>
   </header>
 
-  <main class="pt-28 pb-16 px-4">
+  <main class="pt-24 md:pt-20 pb-24 md:pb-16 px-4">
     <div class="max-w-[680px] mx-auto">
-      <div class="stat-card p-8 relative">
-        <div class="mb-8">
-          <p class="font-heading text-heading-sm text-primary mb-1" x-text="'Questão ' + (currentQuestion + 1)"></p>
-          <h2 class="font-heading text-[24px] text-primary" x-text="currentQ?.pergunta || 'Carregando...'"></h2>
+      <div class="card-neon p-5 md:p-8 relative">
+
+        {# Pergunta #}
+        <div class="mb-6 md:mb-8">
+          <p class="text-xs text-neon-blue uppercase tracking-wider mb-2" x-text="'Questão ' + (currentQuestion + 1)"></p>
+          <h2 class="font-heading text-lg md:text-xl text-white leading-relaxed" x-text="currentQ?.pergunta || 'Carregando...'"></h2>
         </div>
 
-        <div class="space-y-3 mb-8">
+        <div class="space-y-3 mb-6 md:mb-8">
 
-          <!-- MULTIPLA_ESCOLHA / VF -->
+          {# MÚLTIPLA ESCOLHA / VF #}
           <template x-if="currentQ?.tipo === 'MULTIPLA_ESCOLHA' || currentQ?.tipo === 'VF'">
             <div>
-              <p x-show="currentQ?.tipo === 'VF'" class="font-body text-text/80 mb-4 italic" x-text="'“' + (currentQ?.dados?.afirmativa || '') + '”'"></p>
+              <p x-show="currentQ?.tipo === 'VF'" class="font-body text-text mb-4 italic text-sm" x-text="'\"' + (currentQ?.dados?.afirmativa || '') + '\"'"></p>
               <template x-for="(opcao, idx) in currentQ?.opcoes || []" :key="idx">
-                <button class="w-full text-left px-5 py-4 rounded-md border transition-all duration-300 font-body text-text"
+                <button class="w-full text-left px-4 md:px-5 py-3 md:py-4 rounded-md border transition-all duration-300 font-body text-sm md:text-base"
                   :class="{
-                    'border-primary shadow-soft': selectedOption === idx && !answered,
-                    'border-muted hover:border-primary hover:shadow-soft': selectedOption !== idx && !answered,
-                    'border-green-500 bg-green-50': answered && idx === currentQ.correta,
-                    'border-red-400 bg-red-50 shake': answered && idx === selectedOption && idx !== currentQ.correta,
-                    'border-muted opacity-60': answered && idx !== selectedOption && idx !== currentQ.correta
+                    'border-neon-blue bg-neon-blue/10 shadow-neon-blue text-white': selectedOption === idx && !answered,
+                    'border-dark-border bg-dark-elevated hover:border-neon-blue/50 hover:bg-neon-blue/5 text-text': selectedOption !== idx && !answered,
+                    'answer-correct text-neon-green': answered && idx === currentQ.correta,
+                    'answer-wrong shake text-neon-pink': answered && idx === selectedOption && idx !== currentQ.correta,
+                    'border-dark-border text-text-muted opacity-50': answered && idx !== selectedOption && idx !== currentQ.correta
                   }"
-                  @click="if(!answered) selectedOption = idx">
+                  @click="if(!answered) selectedOption = idx"
+                  :disabled="answered">
                   <span x-text="opcao"></span>
                 </button>
               </template>
             </div>
           </template>
 
-          <!-- ASSOCIACAO -->
+          {# ASSOCIAÇÃO #}
           <template x-if="currentQ?.tipo === 'ASSOCIACAO'">
-            <div class="space-y-4">
+            <div class="space-y-3">
               <template x-for="(par, pIdx) in currentQ?.pares || []" :key="pIdx">
-                <div class="flex items-center gap-3">
-                  <span class="w-2/5 font-body text-text font-medium" x-text="par.esquerda"></span>
-                  <span class="text-text/40">⟶</span>
-                  <select class="w-3/5 px-3 py-2 rounded-md border border-muted bg-surface text-text font-body"
-                    :class="{ 'border-green-500': answered && selectedPairs[pIdx] === currentQ.pares[pIdx].correto_idx, 'border-red-400': answered && selectedPairs[pIdx] !== currentQ.pares[pIdx].correto_idx }"
+                <div class="flex items-center gap-2 md:gap-3">
+                  <span class="w-2/5 font-body text-text font-medium text-sm" x-text="par.esquerda"></span>
+                  <span class="text-text-muted">→</span>
+                  <select class="w-3/5 px-3 py-2.5 rounded-md border bg-dark-elevated text-text font-body text-sm transition-all duration-300"
+                    :class="{
+                      'border-neon-green bg-neon-green/5': answered && selectedPairs[pIdx] === currentQ.pares[pIdx].correto_idx,
+                      'border-neon-pink bg-neon-pink/5': answered && selectedPairs[pIdx] !== currentQ.pares[pIdx].correto_idx,
+                      'border-dark-border focus:border-neon-blue/50': !answered
+                    }"
                     x-model="selectedPairs[pIdx]"
                     :disabled="answered">
                     <option value="-1" disabled>Selecione...</option>
@@ -95,19 +103,19 @@
             </div>
           </template>
 
-          <!-- ORDENACAO -->
+          {# ORDENAÇÃO #}
           <template x-if="currentQ?.tipo === 'ORDENACAO'">
             <div class="space-y-2">
               <template x-for="(itemIdx, pos) in currentQ?.currentOrder || []" :key="itemIdx">
-                <div class="flex items-center gap-3 px-4 py-3 rounded-md border border-muted bg-surface">
-                  <span class="flex items-center justify-center w-7 h-7 rounded-full bg-primary/10 text-primary font-heading text-sm font-bold" x-text="pos + 1"></span>
-                  <span class="flex-1 font-body text-text" x-text="currentQ?.itens[itemIdx]"></span>
+                <div class="flex items-center gap-3 px-4 py-3 rounded-md border border-dark-border bg-dark-elevated">
+                  <span class="flex items-center justify-center w-8 h-8 rounded-full bg-neon-blue/10 text-neon-blue font-heading text-sm font-bold" x-text="pos + 1"></span>
+                  <span class="flex-1 font-body text-sm text-text" x-text="currentQ?.itens[itemIdx]"></span>
                   <div class="flex flex-col gap-1" x-show="!answered">
-                    <button @click="moveUp(pos)" class="w-6 h-6 flex items-center justify-center rounded hover:bg-muted text-text/60 hover:text-primary transition-colors"
+                    <button @click="moveUp(pos)" class="w-8 h-8 flex items-center justify-center rounded hover:bg-neon-blue/10 text-text-muted hover:text-neon-blue transition-colors"
                       :disabled="pos === 0">
                       <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 15l7-7 7 7"/></svg>
                     </button>
-                    <button @click="moveDown(pos)" class="w-6 h-6 flex items-center justify-center rounded hover:bg-muted text-text/60 hover:text-primary transition-colors"
+                    <button @click="moveDown(pos)" class="w-8 h-8 flex items-center justify-center rounded hover:bg-neon-blue/10 text-text-muted hover:text-neon-blue transition-colors"
                       :disabled="pos === currentQ?.currentOrder?.length - 1">
                       <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"/></svg>
                     </button>
@@ -116,40 +124,42 @@
               </template>
             </div>
           </template>
-
         </div>
 
-        <div class="flex items-center justify-between">
+        {# Bottom actions #}
+        <div class="flex items-center justify-between gap-3">
           <div class="relative">
-            <button class="flex items-center gap-2 px-4 py-2 rounded-full border border-accent bg-surface text-accent font-body text-sm font-medium hover:shadow-gold transition-all duration-300"
+            <button class="flex items-center gap-2 px-3 md:px-4 py-2 rounded-full border border-neon-purple/30 bg-neon-purple/5 text-neon-purple font-body text-xs md:text-sm font-medium hover:bg-neon-purple/10 transition-all duration-300"
               @click="showDica = !showDica">
               <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M9.663 17h4.673M12 3v1m6.364 1.636l-.707.707M21 12h-1M4 12H3m3.343-5.657l-.707-.707m2.828 9.9a5 5 0 117.072 0l-.548.547A3.374 3.374 0 0014 18.469V19a2 2 0 11-4 0v-.531c0-.895-.356-1.754-.988-2.386l-.548-.547z"/>
               </svg>
-              Pedir Dica
+              Dica
             </button>
-            <div x-show="showDica" x-transition:enter="transition ease-out duration-200"
-              x-transition:enter-start="opacity-0 translate-y-2" x-transition:enter-end="opacity-100 translate-y-0"
+            <div x-show="showDica" x-transition
               @click.outside="showDica = false"
-              class="absolute bottom-full left-0 mb-2 w-72 bg-surface border border-muted rounded-md p-4 shadow-soft">
+              class="absolute bottom-full left-0 mb-2 w-64 md:w-72 bg-dark-elevated border border-neon-purple/20 rounded-md p-4 shadow-soft z-20">
               <p class="font-body text-sm text-text">
-                <span class="font-medium text-accent">Dica:</span>
+                <span class="font-medium text-neon-purple">Dica:</span>
                 <span x-text="currentQ?.dica || 'Leia o texto base com atenção.'"></span>
               </p>
             </div>
           </div>
 
           <template x-if="!answered">
-            <button class="btn-primary"
-              :class="{ 'opacity-50 cursor-not-allowed': !canVerify }"
+            <button class="btn-primary text-sm"
+              :class="{ 'opacity-40 cursor-not-allowed': !canVerify }"
               :disabled="!canVerify" @click="checkAnswer()">
-              Verificar
+              <span x-show="!checking">Verificar</span>
+              <span x-show="checking">Verificando...</span>
             </button>
           </template>
           <template x-if="answered">
             <div class="flex items-center gap-3">
-              <span class="font-body text-sm font-medium" x-text="correct ? '✅ Boa! Você acertou.' : '❌ Resposta incorreta.'"></span>
-              <button class="btn-primary" @click="nextQuestion()">Continuar</button>
+              <span class="text-sm font-medium"
+                :class="correct ? 'text-neon-green' : 'text-neon-pink'"
+                x-text="correct ? '✅ Acertou!' : '❌ Errou!'"></span>
+              <button class="btn-primary text-sm" @click="nextQuestion()">Continuar</button>
             </div>
           </template>
         </div>
@@ -175,6 +185,7 @@
       licaoId: null,
       checking: false,
       finalizing: false,
+      combo: 0,
       init(questions, licaoId) {
         this.licaoId = licaoId
         this.questions = questions.map(q => {
@@ -233,14 +244,6 @@
       },
       checkAnswer() {
         if (this.checking) return
-        const tipo = this.currentQ.tipo
-        if (tipo === 'ASSOCIACAO') {
-          if (this.selectedPairs.some(v => v === -1)) return
-        } else if (tipo === 'ORDENACAO') {
-          // always ready
-        } else {
-          if (this.selectedOption === null) return
-        }
         this.checking = true
         fetch('/cursos/licao/' + this.licaoId + '/verificar/', {
           method: 'POST',
@@ -257,7 +260,13 @@
         .then(data => {
           this.answered = true
           this.correct = data.correta
-          if (data.correta) this.xpGained += data.xp_ganho
+          if (data.correta) {
+            this.combo++
+            const multiplier = 1 + (this.combo * 0.1)
+            this.xpGained += Math.round(data.xp_ganho * multiplier)
+          } else {
+            this.combo = 0
+          }
           this.checking = false
         })
         .catch(() => { this.checking = false })

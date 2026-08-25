@@ -2,54 +2,63 @@
 {% load static %}
 {% block title %}Recompensas - Plataforma Bíblica{% endblock %}
 {% block content %}
-<div class="flex min-h-screen bg-background" x-data="recompensas()" x-init='init({{ recompensas|safe }})'>
-  {% include 'includes/sidebar.html' %}
+<div class="min-h-screen bg-dark" x-data="recompensas()" x-init='init({{ recompensas|safe }})'>
 
-  <main class="flex-1 p-8 overflow-y-auto">
-    <div class="mb-8">
-      <h1 class="font-heading text-heading-md text-primary">Recompensas</h1>
-      <p class="font-body text-text/60 mt-1">Seus baús e medalhas desbloqueados</p>
+  <header class="fixed top-0 left-0 right-0 z-40 game-hud px-4 md:px-8 py-3 md:py-4 flex items-center justify-between safe-top">
+    <div class="flex items-center gap-3">
+      <a href="{% url 'dashboard' %}" class="text-text-muted hover:text-neon-blue transition-colors">
+        <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M15 19l-7-7 7-7"/>
+        </svg>
+      </a>
+      <h1 class="font-heading text-base md:text-lg text-white">Recompensas</h1>
     </div>
+  </header>
 
-    <template x-if="recompensasList.length === 0">
-      <div class="stat-card text-center py-12">
-        <div class="w-16 h-16 bg-muted rounded-full flex items-center justify-center mx-auto mb-4">
-          <svg class="w-8 h-8 text-text/30" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M20 7l-8-4-8 4m16 0l-8 4m8-4v10l-8 4m0-10L4 7m8 4v10M4 7v10l8 4"/>
-          </svg>
-        </div>
-        <h3 class="font-heading text-heading-sm text-text/50 mb-2">Nenhuma recompensa ainda</h3>
-        <p class="font-body text-sm text-text/40">Complete lições e mantenha seu streak para desbloquear recompensas.</p>
-      </div>
-    </template>
+  <main class="pt-16 md:pt-20 pb-24 md:pb-16 px-4 md:px-8">
+    <div class="max-w-4xl mx-auto">
+      <p class="text-sm text-text-muted mb-6 md:mb-8">Seus baús e medalhas desbloqueados</p>
 
-    <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-      <template x-for="(r, idx) in recompensasList" :key="idx">
-        <div class="stat-card relative overflow-hidden group">
-          <div class="flex items-center gap-4 mb-4">
-            <div class="w-14 h-14 bg-accent/10 rounded-full flex items-center justify-center text-2xl" x-text="r.icone"></div>
-            <div>
-              <h3 class="font-heading text-heading-sm text-primary" x-text="r.titulo"></h3>
-              <span class="font-body text-label text-accent" x-text="r.tipo"></span>
-            </div>
+      <template x-if="recompensasList.length === 0">
+        <div class="card-neon text-center py-12 px-4">
+          <div class="w-16 h-16 rounded-full flex items-center justify-center mx-auto mb-4 bg-dark-elevated border border-dark-border">
+            <span class="text-3xl opacity-40">🎁</span>
           </div>
-          <p class="font-body text-sm text-text/70 mb-4" x-text="r.descricao"></p>
-
-          <template x-if="!r.aberto">
-            <button @click="abrirBau(r.id, idx)" class="btn-accent w-full text-center text-sm" :disabled="r.abrindo">
-              <span x-text="r.abrindo ? 'Abrindo...' : 'Abrir Baú'"></span>
-            </button>
-          </template>
-          <template x-if="r.aberto">
-            <div class="flex items-center justify-between">
-              <span class="font-body text-sm text-green-600 font-medium">Aberto</span>
-              <span class="font-body text-sm text-accent font-medium" x-text="'+' + r.xp + ' XP'"></span>
-            </div>
-          </template>
+          <h3 class="font-heading text-base text-text-muted mb-2">Nenhuma recompensa ainda</h3>
+          <p class="text-xs text-text-muted">Complete lições e mantenha seu streak para desbloquear.</p>
         </div>
       </template>
+
+      <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 md:gap-6">
+        <template x-for="(r, idx) in recompensasList" :key="idx">
+          <div class="card-neon relative overflow-hidden group" :class="r.aberto ? 'border-neon-gold/20' : ''">
+            <div class="flex items-center gap-3 md:gap-4 mb-4">
+              <div class="w-12 h-12 md:w-14 md:h-14 rounded-full flex items-center justify-center text-2xl" :class="r.aberto ? 'bg-neon-gold/10 border border-neon-gold/20' : 'bg-dark-elevated border border-dark-border'" x-text="r.icone"></div>
+              <div>
+                <h3 class="font-heading text-sm md:text-base text-white" x-text="r.titulo"></h3>
+                <span class="text-[11px] text-neon-purple" x-text="r.tipo"></span>
+              </div>
+            </div>
+            <p class="text-xs text-text-muted mb-4 line-clamp-2" x-text="r.descricao"></p>
+
+            <template x-if="!r.aberto">
+              <button @click="abrirBau(r.id, idx)" class="btn-accent w-full text-center text-sm" :disabled="r.abrindo">
+                <span x-text="r.abrindo ? 'Abrindo...' : '🎁 Abrir Baú'"></span>
+              </button>
+            </template>
+            <template x-if="r.aberto">
+              <div class="flex items-center justify-between p-3 rounded-md bg-neon-green/5 border border-neon-green/20">
+                <span class="text-sm text-neon-green font-medium">✅ Aberto</span>
+                <span class="text-sm text-neon-gold font-medium" x-text="'+' + r.xp + ' XP'"></span>
+              </div>
+            </template>
+          </div>
+        </template>
+      </div>
     </div>
   </main>
+
+  {% include 'includes/bottom_tab_bar.html' %}
 </div>
 {% endblock %}
 
