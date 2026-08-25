@@ -260,10 +260,9 @@ function chatDevocional() {
         });
 
         const data = await resp.json();
-        if (data.resposta) {
-          this.mensagens.push({ remetente: 'ia', texto: data.resposta });
-          this.sessaoId = data.sessao_id;
-        }
+        const respostaTexto = data.resposta || data.erro || 'Desculpe, houve um erro. Por favor, tente novamente.';
+        this.mensagens.push({ remetente: 'ia', texto: respostaTexto });
+        if (data.sessao_id) this.sessaoId = data.sessao_id;
       } catch(e) {
         this.mensagens.push({ remetente: 'ia', texto: 'Desculpe, houve um erro. Por favor, tente novamente.' });
       }

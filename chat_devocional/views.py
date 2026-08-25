@@ -80,45 +80,54 @@ def enviar_mensagem(request):
     if not texto:
         return JsonResponse({'erro': 'Mensagem vazia'}, status=400)
 
-    # Buscar ou criar sessao
-    if sessao_id:
-        sessao = get_object_or_404(SessaoDevocional, id=sessao_id, usuario=request.user)
-    else:
-        sessao = SessaoDevocional.objects.create(
-            usuario=request.user,
-            tema=tema,
+    try:
+        # Buscar ou criar sessao
+        if sessao_id:
+            sessao = get_object_or_404(SessaoDevocional, id=sessao_id, usuario=request.user)
+        else:
+            sessao = SessaoDevocional.objects.create(
+                usuario=request.user,
+                tema=tema,
+            )
+
+        # Salvar mensagem do usuario
+        MensagemDevocional.objects.create(
+            sessao=sessao,
+            remetente='usuario',
+            texto=texto,
         )
 
-    # Salvar mensagem do usuario
-    MensagemDevocional.objects.create(
-        sessao=sessao,
-        remetente='usuario',
-        texto=texto,
-    )
+        # Construir historico
+        historico = list(sessao.mensagens.values('remetente', 'texto'))
+        historico_convertido = [{'tipo': m['remetente'], 'texto': m['texto']} for m in historico[-6:]]
 
-    # Construir historico
-    historico = list(sessao.mensagens.values('remetente', 'texto'))
-    historico_convertido = [{'tipo': m['remetente'], 'texto': m['texto']} for m in historico[-6:]]
+        # Gerar resposta do bot
+        resposta = gerar_resposta_chat(
+            mensagem=texto,
+            historico=historico_convertido,
+            tema=tema,
+            categoria=categoria,
+        )
 
-    # Gerar resposta do bot
-    resposta = gerar_resposta_chat(
-        mensagem=texto,
-        historico=historico_convertido,
-        tema=tema,
-        categoria=categoria,
-    )
+        # Salvar resposta do bot
+        MensagemDevocional.objects.create(
+            sessao=sessao,
+            remetente='ia',
+            texto=resposta,
+        )
 
-    # Salvar resposta do bot
-    MensagemDevocional.objects.create(
-        sessao=sessao,
-        remetente='ia',
-        texto=resposta,
-    )
-
-    return JsonResponse({
-        'resposta': resposta,
-        'sessao_id': sessao.id,
-    })
+        return JsonResponse({
+            'resposta': resposta,
+            'sessao_id': sessao.id,
+        })
+    except Exception as e:
+        import logging
+        logger = logging.getLogger(__name__)
+        logger.error(f'Erro ao enviar mensagem: {e}')
+        return JsonResponse({
+            'erro': str(e),
+            'resposta': 'Desculpe, houve um erro ao processar sua mensagem. Por favor, tente novamente.',
+        }, status=200)
 
 
 @csrf_exempt

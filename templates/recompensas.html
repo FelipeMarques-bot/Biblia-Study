@@ -33,7 +33,7 @@
         <template x-for="(r, idx) in recompensasList" :key="idx">
           <div class="card-neon relative overflow-hidden group" :class="r.aberto ? 'border-neon-gold/20' : ''">
             <div class="flex items-center gap-3 md:gap-4 mb-4">
-              <div class="w-12 h-12 md:w-14 md:h-14 rounded-full flex items-center justify-center text-2xl" :class="r.aberto ? 'bg-neon-gold/10 border border-neon-gold/20' : 'bg-dark-elevated border border-dark-border'" x-text="r.icone"></div>
+              <div class="w-12 h-12 md:w-14 md:h-14 rounded-full flex items-center justify-center text-2xl" :class="r.aberto ? 'bg-neon-gold/10 border border-neon-gold/20' : 'bg-dark-elevated border border-dark-border'" x-text="getIcon(r.icone)"></div>
               <div>
                 <h3 class="font-heading text-sm md:text-base text-white" x-text="r.titulo"></h3>
                 <span class="text-[11px] text-neon-purple" x-text="r.tipo"></span>
@@ -67,6 +67,20 @@
   document.addEventListener('alpine:init', () => {
     Alpine.data('recompensas', () => ({
       recompensasList: [],
+      iconMap: {
+        'Globe': '🌍', 'Book': '📖', 'Cross': '✝️', 'Star': '⭐',
+        'Crown': '👑', 'Shield': '🛡️', 'Sword': '⚔️', 'Heart': '❤️',
+        'Flame': '🔥', 'Dove': '🕊️', 'Pray': '🙏', 'Church': '⛪',
+        'Bible': '📖', 'Olive': '🌿', 'Fish': '🐟', 'Lamb': '🐑',
+        'DollarSign': '💰', 'Award': '🏆', 'Medal': '🏅', 'Trophy': '🏆',
+        'Sparkles': '✨', 'Gem': '💎', 'Key': '🔑', 'Scroll': '📜',
+        'music_note': '🎵', 'local_fire_department': '🔥', 'school': '🎓',
+        'workspace_premium': '🏆', 'emoji_events': '🏆', 'military_tech': '🎖️',
+        'star': '⭐', 'auto_awesome': '✨', 'diamond': '💎', 'favorite': '❤️',
+      },
+      getIcon(name) {
+        return this.iconMap[name] || '🏅';
+      },
       init(data) { this.recompensasList = data || [] },
       abrirBau(id, idx) {
         this.recompensasList[idx].abrindo = true

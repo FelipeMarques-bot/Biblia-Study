@@ -74,13 +74,15 @@
         <h3 class="font-heading text-xl md:text-2xl text-neon-gold mb-6">Desafios de Elite</h3>
         <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 md:gap-6">
           <template x-for="desafio in desafios" :key="desafio.id">
-            <div class="card-neon p-5 md:p-6 group hover:border-neon-gold/40 transition-all duration-300 cursor-pointer">
+            <div class="card-neon p-5 md:p-6 group hover:border-neon-gold/40 transition-all duration-300 cursor-pointer" @click="iniciarDesafio(desafio)">
               <div class="w-12 h-12 rounded-full flex items-center justify-center mb-4 bg-neon-gold/10 border border-neon-gold/20">
                 <span class="text-xl">⭐</span>
               </div>
               <h4 class="font-heading text-sm md:text-base text-white mb-1" x-text="desafio.titulo"></h4>
               <p class="text-xs text-neon-gold mb-3" x-text="desafio.questoes + ' questões'"></p>
-              <span class="inline-block text-[11px] text-neon-gold border border-neon-gold/30 px-3 py-1 rounded-full bg-neon-gold/5">Avançado</span>
+              <span class="inline-block text-[11px] text-neon-gold border border-neon-gold/30 px-3 py-1 rounded-full bg-neon-gold/5">
+                <span x-text="desafio.concluido ? '✅ Concluído' : '⚡ Iniciar'"></span>
+              </span>
             </div>
           </template>
         </div>
@@ -117,6 +119,13 @@
       },
       resetChest() {
         this.bauAberto = false; this.recompensa = null; this.aberto = false; this.chestShaking = false
+      },
+      iniciarDesafio(desafio) {
+        if (desafio.concluido) {
+          alert('✅ Você já concluiu este desafio!');
+          return;
+        }
+        alert('🏆 Desafio: ' + desafio.titulo + '\n\n⚡ ' + desafio.questoes + ' questões\n\nEm breve esta funcionalidade estará disponível!');
       }
     }))
   })

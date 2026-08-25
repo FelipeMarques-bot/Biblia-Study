@@ -39,7 +39,7 @@
               <div class="flex items-start justify-between mb-3">
                 <div class="w-12 h-12 rounded-xl flex items-center justify-center text-2xl"
                      :class="t.progresso > 0 ? 'bg-neon-green/10 border border-neon-green/20' : 'bg-dark-elevated border border-dark-border'">
-                  <span x-text="t.icone"></span>
+                  <span x-text="getIcon(t.icone)"></span>
                 </div>
                 <span class="text-[10px] px-2 py-0.5 rounded-full border"
                       :class="nivelBadgeClass(t.nivel)"
@@ -100,7 +100,7 @@
                         'path-node-locked': licao.status === 'locked',
                       }"
                       @click="openLesson(licao)">
-                      <span class="text-lg md:text-xl" :class="{ 'opacity-40': licao.status === 'locked' }" x-text="licao.icone"></span>
+                      <span class="text-lg md:text-xl" :class="{ 'opacity-40': licao.status === 'locked' }" x-text="getIcon(licao.icone)"></span>
                     </div>
                     <template x-if="licao.status === 'completed'">
                       <div class="absolute -top-1 -right-1 w-5 h-5 bg-neon-green rounded-full flex items-center justify-center shadow-neon-green">
@@ -145,6 +145,19 @@
       licoesList: [],
       view: 'list',
       currentTrilhaNome: 'Trilhas',
+      iconMap: {
+        'open_in_new': '🚀', 'exit_to_app': '🚪', 'music_note': '🎵', 'book': '📖',
+        'star': '⭐', 'church': '⛪', 'local_fire_department': '🔥', 'menu_book': '📚',
+        'history_edu': '📜', 'school': '🎓', 'auto_stories': '📖', 'psychology': '🧠',
+        'visibility': '👁️', 'volunteer_activism': '❤️', 'emoji_objects': '💡',
+        'diversity_3': '🤝', 'gavel': '⚖️', 'workspace_premium': '🏆', 'groups': '👥',
+        'psychology_alt': '🧠', 'sports_esports': '🎮', 'brush': '🎨', 'biotech': '🧬',
+        'forest': '🌲', 'park': '🌿', 'water_drop': '💧', 'public': '🌍',
+        'explore': '🧭', 'map': '🗺️', 'route': '🛤️', 'flag': '🚩', 'menu': '☰',
+      },
+      getIcon(name) {
+        return this.iconMap[name] || '📖';
+      },
       init(trilhasData, licoesData, showMap) {
         this.trilhasList = trilhasData || []
         if (showMap && licoesData) {
