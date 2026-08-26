@@ -202,33 +202,30 @@ class Command(BaseCommand):
 
         # ── Recompensas ──
         Recompensa.objects.get_or_create(
-            titulo=' Estrela da Fé',
+            titulo='Estrela da Fé',
             defaults=dict(
                 descricao='Complete a trilha de Fé',
-                tipo='CONQUISTA',
+                tipo='medalha',
                 xp_recompensa=100,
                 icone='Globe',
-                cor='#00d4ff',
             ),
         )
         Recompensa.objects.get_or_create(
-            titulo=' Espada da Palavra',
+            titulo='Espada da Palavra',
             defaults=dict(
                 descricao='Complete 10 lições',
-                tipo='CONQUISTA',
+                tipo='medalha',
                 xp_recompensa=200,
                 icone='Book',
-                cor='#00ff88',
             ),
         )
         Recompensa.objects.get_or_create(
-            titulo=' Coroa da Vida',
+            titulo='Coroa da Vida',
             defaults=dict(
                 descricao='Complete todas as trilhas',
-                tipo='CONQUISTA',
+                tipo='medalha',
                 xp_recompensa=500,
                 icone='Cross',
-                cor='#ffd700',
             ),
         )
 
