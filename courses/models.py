@@ -32,7 +32,7 @@ class Trilha(models.Model):
     ], default='iniciante')
     ordem = models.IntegerField(default=0)
     ativo = models.BooleanField(default=True)
-    icone = models.CharField(max_length=10, default='📖')
+    icone = models.CharField(max_length=30, default='📖')
     created_at = models.DateTimeField(auto_now_add=True)
 
     class Meta:
