@@ -1,4 +1,4 @@
-const CACHE_NAME = 'biblia-v2';
+const CACHE_NAME = 'biblia-v3';
 const STATIC_ASSETS = [
   '/static/css/output.css',
   '/static/js/app.js',
@@ -28,28 +28,30 @@ self.addEventListener('fetch', (event) => {
 
   const url = new URL(event.request.url);
 
-  // Never cache API calls, navigation, or cross-origin
-  if (url.pathname.startsWith('/chat/') ||
+  // Never cache navigation or API calls — always network
+  if (event.request.mode === 'navigate' ||
+      event.request.destination === 'document' ||
+      url.pathname.startsWith('/chat/') ||
       url.pathname.startsWith('/cursos/') ||
       url.pathname.startsWith('/gamificacao/') ||
       url.pathname.startsWith('/admin/') ||
       url.pathname.startsWith('/api/') ||
-      event.request.mode === 'navigate' ||
-      event.request.destination === 'document') {
-    event.respondWith(fetch(event.request).catch(() => caches.match(event.request)));
+      url.pathname.startsWith('/ia/')) {
+    event.respondWith(fetch(event.request));
     return;
   }
 
-  // Cache-first for static assets only
+  // Cache-first ONLY from current cache — never fall back to old caches
   event.respondWith(
-    caches.match(event.request).then((cached) => {
-      if (cached) return cached;
-      return fetch(event.request).then((response) => {
-        if (response && response.status === 200 && response.type === 'basic') {
-          const clone = response.clone();
-          caches.open(CACHE_NAME).then((cache) => cache.put(event.request, clone));
-        }
-        return response;
+    caches.open(CACHE_NAME).then((cache) => {
+      return cache.match(event.request).then((cached) => {
+        if (cached) return cached;
+        return fetch(event.request).then((response) => {
+          if (response && response.status === 200 && response.type === 'basic') {
+            cache.put(event.request, response.clone());
+          }
+          return response;
+        });
       });
     })
   );
