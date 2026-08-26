@@ -37,7 +37,7 @@
     <div class="bg-dark-elevated border border-dark-border rounded-md p-4 text-center">
       <p class="font-heading text-sm text-neon-orange"
          style="filter: drop-shadow(0 0 4px rgba(255,107,53,0.4));">
-        🔥 <span class="font-bold">{{ streak }}</span> dias
+        🔥 <span class="font-bold">{{ streak|default:"0" }}</span> dias
       </p>
       <p class="text-[11px] text-text-muted mt-1 uppercase tracking-wider">Sequência</p>
     </div>
