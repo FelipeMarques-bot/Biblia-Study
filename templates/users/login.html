@@ -2,20 +2,38 @@
 {% load static %}
 {% block title %}Entrar - Plataforma Bíblica{% endblock %}
 {% block content %}
-<div class="min-h-screen bg-dark flex items-center justify-center px-4 py-8">
-  <div class="max-w-md w-full animate-slide-up">
+<div class="min-h-screen bg-dark flex items-center justify-center px-4 py-8 relative overflow-hidden">
+
+  <!-- Particulas de fundo -->
+  <div class="absolute inset-0 pointer-events-none">
+    <div class="particle" style="top:10%;left:15%;animation-delay:0s;width:3px;height:3px;background:rgba(0,212,255,0.4)"></div>
+    <div class="particle" style="top:25%;left:80%;animation-delay:1s;width:2px;height:2px;background:rgba(168,85,247,0.4)"></div>
+    <div class="particle" style="top:60%;left:30%;animation-delay:2s;width:4px;height:4px;background:rgba(0,255,136,0.3)"></div>
+    <div class="particle" style="top:75%;left:70%;animation-delay:0.5s;width:2px;height:2px;background:rgba(255,0,128,0.3)"></div>
+    <div class="particle" style="top:40%;left:50%;animation-delay:1.5s;width:3px;height:3px;background:rgba(255,215,0,0.3)"></div>
+    <div class="particle" style="top:85%;left:20%;animation-delay:2.5s;width:2px;height:2px;background:rgba(0,212,255,0.3)"></div>
+    <div class="particle" style="top:15%;left:60%;animation-delay:0.8s;width:3px;height:3px;background:rgba(168,85,247,0.3)"></div>
+    <div class="particle" style="top:50%;left:90%;animation-delay:1.8s;width:2px;height:2px;background:rgba(0,255,136,0.4)"></div>
+  </div>
+
+  <!-- Glow orb superior -->
+  <div class="absolute top-0 left-1/2 -translate-x-1/2 w-96 h-96 rounded-full opacity-10 pointer-events-none" style="background: radial-gradient(circle, rgba(0,212,255,0.4) 0%, transparent 70%); filter: blur(60px);"></div>
+  <!-- Glow orb inferior -->
+  <div class="absolute bottom-0 right-0 w-80 h-80 rounded-full opacity-10 pointer-events-none" style="background: radial-gradient(circle, rgba(168,85,247,0.4) 0%, transparent 70%); filter: blur(60px);"></div>
+
+  <div class="max-w-md w-full animate-slide-up relative z-10">
 
     {# Logo / Brand #}
     <div class="text-center mb-8">
-      <div class="w-20 h-20 mx-auto mb-4 rounded-2xl flex items-center justify-center" style="background: linear-gradient(135deg, rgba(0,212,255,0.15), rgba(168,85,247,0.15)); border: 2px solid rgba(0,212,255,0.2); box-shadow: 0 0 40px rgba(0,212,255,0.1);">
-        <span class="text-4xl">📖</span>
+      <div class="w-24 h-24 mx-auto mb-5 rounded-2xl flex items-center justify-center pulse-glow" style="background: linear-gradient(135deg, rgba(0,212,255,0.2), rgba(168,85,247,0.2)); border: 2px solid rgba(0,212,255,0.3); box-shadow: 0 0 60px rgba(0,212,255,0.2), 0 0 120px rgba(0,212,255,0.05);">
+        <span class="text-5xl">📖</span>
       </div>
-      <h1 class="font-heading text-2xl md:text-3xl text-white mb-1">Plataforma Bíblica</h1>
-      <p class="text-sm text-text-muted">Entre para continuar sua jornada</p>
+      <h1 class="font-heading text-3xl md:text-4xl mb-2" style="background: linear-gradient(135deg, #00d4ff, #a855f7, #ff0080); -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text;">Plataforma Bíblica</h1>
+      <p class="text-sm text-text-muted">Estude a Bíblia com jogos, desafios e IA</p>
     </div>
 
     {# Card #}
-    <div class="card-neon p-6 md:p-8">
+    <div class="card-glow p-8 md:p-10">
 
       {% if messages %}
         {% for message in messages %}
@@ -25,19 +43,19 @@
         {% endfor %}
       {% endif %}
 
-      <form method="post" class="space-y-4">
+      <form method="post" class="space-y-5">
         {% csrf_token %}
         <div>
-          <label class="text-xs text-text-muted uppercase tracking-wider block mb-1.5">Usuário</label>
+          <label class="text-xs text-text-muted uppercase tracking-wider block mb-2 font-medium">Usuário</label>
           <input type="text" name="username" required
             class="chat-input w-full text-sm" placeholder="Digite seu usuário">
         </div>
         <div>
-          <label class="text-xs text-text-muted uppercase tracking-wider block mb-1.5">Senha</label>
+          <label class="text-xs text-text-muted uppercase tracking-wider block mb-2 font-medium">Senha</label>
           <input type="password" name="password" required
             class="chat-input w-full text-sm" placeholder="Digite sua senha">
         </div>
-        <button type="submit" class="btn-primary w-full text-center text-sm mt-2">
+        <button type="submit" class="btn-primary w-full text-center text-sm mt-3 py-3.5">
           ⚡ Entrar
         </button>
       </form>
@@ -47,6 +65,22 @@
       Não tem conta?
       <a href="{% url 'registro' %}" class="text-neon-blue font-medium hover:text-neon-purple transition-colors">Criar conta</a>
     </p>
+
+    {# Features preview #}
+    <div class="mt-10 grid grid-cols-3 gap-3">
+      <div class="card-neon p-3 text-center">
+        <span class="text-2xl block mb-1">🎮</span>
+        <p class="text-[10px] text-text-muted">Jogos Bíblicos</p>
+      </div>
+      <div class="card-neon p-3 text-center">
+        <span class="text-2xl block mb-1">🤖</span>
+        <p class="text-[10px] text-text-muted">Chat com IA</p>
+      </div>
+      <div class="card-neon p-3 text-center">
+        <span class="text-2xl block mb-1">🏆</span>
+        <p class="text-[10px] text-text-muted">Recompensas</p>
+      </div>
+    </div>
   </div>
 </div>
 {% endblock %}
