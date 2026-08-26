@@ -2,7 +2,7 @@ services:
   - type: web
     name: biblia-study
     runtime: python
-    buildCommand: pip install -r requirements.txt && python manage.py collectstatic --noinput && python manage.py migrate --noinput && python manage.py ensure_admin
+    buildCommand: pip install -r requirements.txt && python manage.py collectstatic --noinput && python manage.py migrate --noinput && python manage.py createsuperuser --noinput
     startCommand: gunicorn core.wsgi:application --bind 0.0.0.0:$PORT
     envVars:
       - key: DEBUG
@@ -15,11 +15,11 @@ services:
         sync: false
       - key: LLM_MODEL
         value: "gemini-2.5-flash"
-      - key: ADMIN_USERNAME
+      - key: DJANGO_SUPERUSER_USERNAME
         value: "admin"
-      - key: ADMIN_EMAIL
+      - key: DJANGO_SUPERUSER_EMAIL
         value: "admin@admin.com"
-      - key: ADMIN_PASSWORD
+      - key: DJANGO_SUPERUSER_PASSWORD
         value: "admin123"
       - key: DATABASE_URL
         fromDatabase:
