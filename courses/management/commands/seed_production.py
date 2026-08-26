@@ -1,7 +1,6 @@
 """Seed production database (idempotent - skips if data exists)."""
 import os
-import subprocess
-import sys
+import runpy
 
 from django.core.management.base import BaseCommand
 from courses.models import Trilha, LicaoBiblica, Exercicio
@@ -17,7 +16,7 @@ class Command(BaseCommand):
             self.stdout.write(self.style.SUCCESS(f'Database already seeded ({count} trilhas). Skipping.'))
             return
 
-        self.stdout.write('Database is empty. Running seed_v2.py via subprocess...')
+        self.stdout.write('Database is empty. Running seed_v2.py in-process...')
 
         project_root = os.path.normpath(os.path.join(
             os.path.dirname(os.path.abspath(__file__)), '..', '..', '..'
@@ -28,31 +27,10 @@ class Command(BaseCommand):
             self.stdout.write(self.style.ERROR(f'seed_v2.py not found at {seed_path}'))
             return
 
-        env = os.environ.copy()
-        env['DJANGO_SETTINGS_MODULE'] = 'core.settings'
-        env['PYTHONPATH'] = project_root
-
-        result = subprocess.run(
-            [sys.executable, seed_path],
-            cwd=project_root,
-            env=env,
-            capture_output=True,
-            text=True,
-            timeout=120,
-        )
-
-        if result.stdout:
-            for line in result.stdout.strip().split('\n'):
-                self.stdout.write(f'  {line}')
-        if result.stderr:
-            for line in result.stderr.strip().split('\n'):
-                if 'WARNING' not in line and 'WARN' not in line:
-                    self.stderr.write(f'  ERR: {line}')
-
-        if result.returncode != 0:
-            self.stderr.write(self.style.ERROR(
-                f'seed_v2.py failed with exit code {result.returncode}'
-            ))
+        try:
+            runpy.run_path(seed_path, run_name='__main__')
+        except Exception as e:
+            self.stderr.write(self.style.ERROR(f'seed_v2.py failed: {e}'))
             return
 
         final_count = Trilha.objects.count()

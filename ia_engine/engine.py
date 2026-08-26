@@ -223,34 +223,43 @@ def _detectar_topicos_da_mensagem(mensagem):
 
 def gerar_resposta_chat(mensagem, historico=None, tema='fe', categoria='devocional', faixa_etaria='adulto', nivel='iniciante'):
     """Gera resposta do chat devocional — respostas locais por tópico."""
-    topicos = _detectar_topicos_da_mensagem(mensagem)
-    return _gerar_resposta_fallback(mensagem, topicos)
+    try:
+        topicos = _detectar_topicos_da_mensagem(mensagem)
+        return _gerar_resposta_fallback(mensagem, topicos)
+    except Exception as e:
+        logger.error(f'Erro no chat fallback: {e}')
+        return (
+            "Que pergunta interessante! A Bíblia é rica em ensinamentos sobre muitos assuntos. "
+            "Gostaria de compartilhar mais sobre o que está em seu coração? Estou aqui para estudar a Palavra com você.\n\n"
+            "📖 *Referências sugeridas*: Mt 6:33, Tg 1:5, Sl 119:105"
+        )
 
 
 def _gerar_resposta_fallback(mensagem, topicos):
     """Gera resposta rica usando a base de dados por topico."""
-    from .theologians import formatar_resposta_teologos
     import hashlib
 
-    # Gerar seed pseudo-aleatoria baseada na mensagem
     msg_hash = int(hashlib.md5(mensagem.encode()).hexdigest()[:8], 16)
 
     resposta = ""
     for i, topico in enumerate(topicos[:2]):
         dados_topico = RESPOSTAS_POR_TOPICO.get(topico, None)
-        if dados_topico:
-            resp_list = dados_topico['respostas']
-            idx = (msg_hash + i) % len(resp_list)
-            resposta += resp_list[idx] + "\n\n---\n\n"
+        if dados_topico and isinstance(dados_topico, dict):
+            resp_list = dados_topico.get('respostas', [])
+            if resp_list:
+                idx = (msg_hash + i) % len(resp_list)
+                resposta += resp_list[idx] + "\n\n---\n\n"
 
     if not resposta:
-        idx = msg_hash % len(RESPOSTA_GENERICA) if isinstance(RESPOSTA_GENERICA, list) else 0
-        resposta = RESPOSTA_GENERICA
+        resposta = RESPOSTA_GENERICA if isinstance(RESPOSTA_GENERICA, str) else str(RESPOSTA_GENERICA)
 
-    # Adicionar citacoes dos teologos
-    citacoes = formatar_resposta_teologos(topicos)
-    if citacoes:
-        resposta += "\n\n" + citacoes
+    try:
+        from .theologians import formatar_resposta_teologos
+        citacoes = formatar_resposta_teologos(topicos)
+        if citacoes:
+            resposta += "\n\n" + citacoes
+    except Exception:
+        pass
 
     return resposta.strip()
 
