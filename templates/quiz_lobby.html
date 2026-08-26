@@ -1,0 +1,142 @@
+{% extends 'base.html' %}
+{% load static %}
+{% block title %}Sala {{ pin }} - Quiz Bíblico{% endblock %}
+
+{% block content %}
+<div class="min-h-screen bg-dark" x-data="quizLobby()" x-init="init()">
+  <div class="max-w-4xl mx-auto px-4 py-8">
+
+    {# Header #}
+    <div class="text-center mb-8">
+      <p class="text-xs text-text-muted uppercase tracking-wider mb-2">Sala de Espera</p>
+      <div class="inline-flex items-center gap-3 mb-4">
+        <span class="text-4xl md:text-5xl font-heading font-bold tracking-[0.3em] text-neon-blue"
+              style="text-shadow: 0 0 20px rgba(0,212,255,0.4);"
+              id="pin-display">{{ pin }}</span>
+        <button onclick="navigator.clipboard.writeText('{{ pin }}').then(() => this.innerHTML = '✅')" 
+                class="text-text-muted hover:text-neon-blue transition-colors" title="Copiar PIN">
+          <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M8 5H6a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2v-1M8 5a2 2 0 002 2h2a2 2 0 002-2M8 5a2 2 0 012-2h2a2 2 0 012 2m0 0h2a2 2 0 012 2v3m2 4H10m0 0l3-3m-3 3l3 3"/>
+          </svg>
+        </button>
+      </div>
+      <p class="text-sm text-text-muted">Compartilhe este PIN com os jogadores</p>
+    </div>
+
+    {# Players Grid #}
+    <div class="mb-8">
+      <div class="flex items-center justify-between mb-4">
+        <h2 class="font-heading text-lg text-white">
+          Jogadores
+          <span class="text-neon-blue" x-text="'(' + players.length + ')'"></span>
+        </h2>
+        <div class="flex items-center gap-2">
+          <span class="w-2 h-2 bg-neon-green rounded-full animate-pulse"></span>
+          <span class="text-xs text-neon-green">Ao vivo</span>
+        </div>
+      </div>
+
+      <div class="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 gap-3">
+        <template x-for="(player, idx) in players" :key="player.nome">
+          <div class="card-neon p-4 text-center animate-slide-up"
+               :style="'animation-delay: ' + (idx * 50) + 'ms'">
+            <div class="w-12 h-12 mx-auto mb-2 rounded-full flex items-center justify-center text-xl"
+                 :class="player.is_host ? 'bg-neon-purple/20 border border-neon-purple/30' : 'bg-neon-blue/10 border border-neon-blue/20'">
+              <span x-text="player.is_host ? '👑' : '👤'"></span>
+            </div>
+            <p class="font-heading text-sm text-white truncate" x-text="player.nome"></p>
+            <p class="text-[10px] text-text-muted mt-1" x-text="player.is_host ? 'Host' : 'Jogador'"></p>
+          </div>
+        </template>
+
+        {# Placeholder para jogadores ainda não entrados #}
+        <template x-for="i in Math.max(0, 4 - players.length)" :key="'empty-' + i">
+          <div class="border border-dashed border-dark-border rounded-lg p-4 text-center opacity-30">
+            <div class="w-12 h-12 mx-auto mb-2 rounded-full bg-dark-elevated flex items-center justify-center">
+              <svg class="w-5 h-5 text-text-muted" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M12 6v6m0 0v6m0-6h6m-6 0H6"/>
+              </svg>
+            </div>
+            <p class="text-xs text-text-muted">Aguardando...</p>
+          </div>
+        </template>
+      </div>
+    </div>
+
+    {# Status / Botão Iniciar #}
+    <div class="text-center">
+      {% if is_host %}
+      <button @click="startGame()"
+              class="btn-primary text-lg px-8 py-4"
+              :class="{ 'opacity-40 cursor-not-allowed': players.filter(p => !p.is_host).length === 0 }"
+              :disabled="players.filter(p => !p.is_host).length === 0"
+              x-show="!starting">
+        <span class="flex items-center gap-2">
+          <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M14.752 11.168l-3.197-2.132A1 1 0 0010 9.87v4.263a1 1 0 001.555.832l3.197-2.132a1 1 0 000-1.664z"/>
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 12a9 9 0 11-18 0 9 9 0 0118 0z"/>
+          </svg>
+          Iniciar Jogo
+        </span>
+      </button>
+      <p x-show="starting" class="text-neon-blue font-heading animate-pulse">Iniciando jogo...</p>
+      {% else %}
+      <div class="flex items-center justify-center gap-2 text-text-muted">
+        <svg class="w-5 h-5 animate-spin" fill="none" viewBox="0 0 24 24">
+          <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle>
+          <path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
+        </svg>
+        <span class="font-heading">Aguardando o host iniciar o jogo...</span>
+      </div>
+      {% endif %}
+
+      {% if is_host %}
+      <p class="text-xs text-text-muted mt-3" x-show="players.filter(p => !p.is_host).length === 0">
+        Aguarde pelo menos 1 jogador entrar
+      </p>
+      {% endif %}
+    </div>
+  </div>
+</div>
+
+<script>
+function quizLobby() {
+  return {
+    players: [],
+    starting: false,
+    ws: null,
+
+    init() {
+      const params = new URLSearchParams({nome: '{{ nome }}', host: '{% if is_host %}true{% else %}false{% endif %}'});
+      const protocol = location.protocol === 'https:' ? 'wss:' : 'ws:';
+      this.ws = new WebSocket(`${protocol}//${location.host}/ws/quiz/{{ pin }}/?${params}`);
+
+      this.ws.onmessage = (e) => {
+        const data = JSON.parse(e.data);
+        if (data.type === 'player_joined' || data.type === 'player_left' || data.type === 'player_answered') {
+          this.players = data.players || [];
+        }
+        if (data.type === 'game_started') {
+          window.location.href = '/quiz/{{ pin }}/' + (window.quizIsHost ? 'host/' : '');
+        }
+        if (data.type === 'sync_state') {
+          this.players = data.players || [];
+        }
+      };
+
+      this.ws.onopen = () => {
+        this.ws.send(JSON.stringify({type: 'request_sync'}));
+      };
+
+      window.quizIsHost = {% if is_host %}true{% else %}false{% endif %};
+    },
+
+    startGame() {
+      if (this.starting) return;
+      this.starting = true;
+      this.ws.send(JSON.stringify({type: 'start_game'}));
+    },
+  }
+}
+</script>
+{% endblock %}

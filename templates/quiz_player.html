@@ -1,0 +1,357 @@
+{% extends 'base.html' %}
+{% load static %}
+{% block title %}Quiz {{ pin }} - Bíblia Study{% endblock %}
+
+{% block content %}
+<div class="min-h-screen bg-dark" x-data="quizPlayer()" x-init="init()">
+  <div class="max-w-2xl mx-auto px-4 py-6">
+
+    {# Header #}
+    <div class="flex items-center justify-between mb-6">
+      <div class="flex items-center gap-2">
+        <span class="w-2 h-2 bg-neon-green rounded-full animate-pulse"></span>
+        <span class="text-xs text-text-muted" x-text="nome"></span>
+      </div>
+      <div class="flex items-center gap-2">
+        <span class="text-xs text-text-muted">Pontos:</span>
+        <span class="font-heading text-sm font-bold text-neon-gold" x-text="totalPoints"></span>
+        <template x-if="streak > 1">
+          <span class="text-xs text-neon-orange" x-text="'🔥 ' + streak"></span>
+        </template>
+      </div>
+    </div>
+
+    {# Aguardando #}
+    <template x-if="status === 'lobby'">
+      <div class="card-neon p-8 text-center">
+        <div class="w-20 h-20 mx-auto mb-4 rounded-full flex items-center justify-center"
+             style="background: linear-gradient(135deg, rgba(0,212,255,0.1), rgba(168,85,247,0.1)); border: 2px solid rgba(0,212,255,0.2);">
+          <span class="text-4xl animate-pulse">⏳</span>
+        </div>
+        <h2 class="font-heading text-xl text-white mb-2">Aguardando início</h2>
+        <p class="text-sm text-text-muted">O host irá iniciar o jogo em breve</p>
+      </div>
+    </template>
+
+    {# Pergunta ativa #}
+    <template x-if="status === 'question' && currentQuestion">
+      <div>
+        {# Timer #}
+        <div class="flex items-center justify-center mb-6">
+          <div class="relative w-32 h-32">
+            <svg class="w-32 h-32 transform -rotate-90">
+              <circle cx="64" cy="64" r="58" fill="none" stroke="rgba(30,41,59,0.5)" stroke-width="5"/>
+              <circle cx="64" cy="64" r="58" fill="none" 
+                      :stroke="timer <= 5 ? '#ff0080' : timer <= 10 ? '#ffd700' : '#00d4ff'"
+                      stroke-width="5" stroke-linecap="round"
+                      :stroke-dasharray="364.42"
+                      :stroke-dashoffset="364.42 * (1 - timer / timerMax)"
+                      class="transition-all duration-1000 ease-linear"/>
+            </svg>
+            <div class="absolute inset-0 flex items-center justify-center">
+              <span class="font-heading text-4xl font-bold"
+                    :class="timer <= 5 ? 'text-neon-pink animate-pulse' : timer <= 10 ? 'text-neon-gold' : 'text-neon-blue'"
+                    x-text="timer"></span>
+            </div>
+          </div>
+        </div>
+
+        {# Pergunta #}
+        <div class="card-neon p-6 md:p-8 mb-6">
+          <p class="text-xs text-neon-purple uppercase tracking-wider mb-3 text-center">
+            <span x-text="currentQuestion.tipo === 'VF' ? 'Verdadeiro ou Falso' : 'Múltipla Escolha'"></span>
+          </p>
+          <p class="font-heading text-lg md:text-xl text-white text-center leading-relaxed"
+             x-text="currentQuestion.pergunta"></p>
+          <template x-if="currentQuestion.afirmativa">
+            <p class="text-sm text-text-muted mt-3 text-center italic"
+               x-text="'\"' + currentQuestion.afirmativa + '\"'"></p>
+          </template>
+        </div>
+
+        {# Opções de resposta (sem resposta selecionada ainda) #}
+        <template x-if="!answered">
+          <div class="grid grid-cols-2 gap-3">
+            <template x-for="(opcao, idx) in currentQuestion.opcoes" :key="idx">
+              <button class="p-4 md:p-5 rounded-xl border-2 transition-all duration-200 font-heading text-sm md:text-base min-h-[60px] flex items-center justify-center gap-2"
+                      :class="selectedIdx === idx ? getSelectedClass(idx) : getDefaultClass(idx)"
+                      @click="selectAnswer(idx)"
+                      :disabled="answered">
+                <span class="text-lg" x-text="getOptionEmoji(idx)"></span>
+                <span x-text="opcao"></span>
+              </button>
+            </template>
+          </div>
+        </template>
+
+        {# Resultado da resposta #}
+        <template x-if="answered">
+          <div>
+            <div class="card-neon p-6 text-center mb-4"
+                 :class="lastCorrect ? 'border-neon-green/30' : 'border-neon-pink/30'">
+              <div class="text-5xl mb-3" x-text="lastCorrect ? '✅' : '❌'"></div>
+              <h3 class="font-heading text-xl mb-2"
+                  :class="lastCorrect ? 'text-neon-green' : 'text-neon-pink'"
+                  x-text="lastCorrect ? 'Acertou!' : 'Errou!'"></h3>
+              <template x-if="lastCorrect">
+                <div class="space-y-1">
+                  <p class="text-sm text-text-muted">
+                    Base: <span class="text-white" x-text="'+' + lastBase"></span>
+                    | Velocidade: <span class="text-white" x-text="'+' + lastTimeBonus"></span>
+                    | Streak: <span class="text-neon-orange" x-text="lastStreakMult + 'x'"></span>
+                  </p>
+                  <p class="font-heading text-lg text-neon-gold" x-text="'+' + lastPoints + ' pts'"></p>
+                </div>
+              </template>
+              <template x-if="!lastCorrect">
+                <p class="text-sm text-text-muted">Não desanime, tente na próxima!</p>
+              </template>
+            </div>
+
+            {# Mini leaderboard #}
+            <div class="card-neon p-4">
+              <h4 class="text-xs text-text-muted uppercase tracking-wider mb-2">Placar parcial</h4>
+              <div class="space-y-1.5">
+                <template x-for="(player, idx) in players.slice(0, 5)" :key="player.nome">
+                  <div class="flex items-center gap-2 text-sm"
+                       :class="player.nome === nome ? 'text-neon-blue font-bold' : 'text-text'">
+                    <span class="w-5 text-center text-xs"
+                          :class="idx === 0 ? 'text-neon-gold' : idx === 1 ? 'text-gray-400' : idx === 2 ? 'text-orange-500' : 'text-text-muted'"
+                          x-text="idx + 1"></span>
+                    <span class="flex-1 truncate" x-text="player.nome"></span>
+                    <span x-text="player.pontuacao"></span>
+                  </div>
+                </template>
+              </div>
+            </div>
+          </div>
+        </template>
+      </div>
+    </template>
+
+    {# Resultado da rodada (todos os jogadores) #}
+    <template x-if="status === 'results'">
+      <div class="card-neon p-6 md:p-8 text-center">
+        <h2 class="font-heading text-xl text-white mb-4">Resultado da Rodada</h2>
+        <template x-if="currentQuestion">
+          <div class="mb-6">
+            <p class="text-sm text-text-muted mb-2">Pergunta:</p>
+            <p class="font-heading text-base text-white mb-4" x-text="currentQuestion.pergunta"></p>
+            <p class="text-sm">
+              Resposta correta: 
+              <span class="text-neon-green font-bold" x-text="currentQuestion.opcoes[currentQuestion.correta_idx]"></span>
+            </p>
+          </div>
+        </template>
+        <div class="space-y-2">
+          <template x-for="(player, idx) in players.filter(p => !p.is_host)" :key="player.nome">
+            <div class="flex items-center gap-3 p-2 rounded-lg"
+                 :class="player.nome === nome ? 'bg-neon-blue/10 border border-neon-blue/20' : 'bg-dark-elevated'">
+              <span class="w-6 text-center font-bold text-sm"
+                    :class="idx === 0 ? 'text-neon-gold' : 'text-text-muted'"
+                    x-text="idx + 1"></span>
+              <span class="flex-1 text-sm truncate" :class="player.nome === nome ? 'text-neon-blue' : 'text-white'" x-text="player.nome"></span>
+              <span class="font-heading text-sm font-bold text-neon-gold" x-text="player.pontuacao"></span>
+            </div>
+          </template>
+        </div>
+        <p class="text-xs text-text-muted mt-4">Aguardando o host avançar...</p>
+      </div>
+    </template>
+
+    {# Fim de jogo #}
+    <template x-if="status === 'finished'">
+      <div class="card-neon p-8 text-center">
+        <div class="text-6xl mb-4">🏆</div>
+        <h2 class="font-heading text-2xl text-white mb-2">Jogo Encerrado!</h2>
+        <p class="text-sm text-text-muted mb-6">Verifique o pódium para os resultados</p>
+        <p class="font-heading text-xl text-neon-gold" x-text="'Sua pontuação: ' + totalPoints + ' pts'"></p>
+      </div>
+    </template>
+  </div>
+</div>
+
+<script>
+const KAHOOT_COLORS = [
+  { border: 'border-neon-blue', bg: 'bg-neon-blue/10', text: 'text-neon-blue' },
+  { border: 'border-neon-pink', bg: 'bg-neon-pink/10', text: 'text-neon-pink' },
+  { border: 'border-neon-gold', bg: 'bg-neon-gold/10', text: 'text-neon-gold' },
+  { border: 'border-neon-green', bg: 'bg-neon-green/10', text: 'text-neon-green' },
+];
+const KAHOOT_EMOJI = ['🔷', '🔴', '🟡', '🟢'];
+
+function quizPlayer() {
+  return {
+    ws: null,
+    status: 'lobby',
+    nome: '{{ nome }}',
+    players: [],
+    currentQuestion: null,
+    questionIndex: 0,
+    totalQuestions: 0,
+    timer: 0,
+    timerMax: 20,
+    timerInterval: null,
+    selectedIdx: null,
+    answered: false,
+    lastCorrect: false,
+    lastPoints: 0,
+    lastBase: 0,
+    lastTimeBonus: 0,
+    lastStreakMult: '1.0',
+    totalPoints: 0,
+    streak: 0,
+
+    init() {
+      const params = new URLSearchParams({nome: this.nome, host: 'false'});
+      const protocol = location.protocol === 'https:' ? 'wss:' : 'ws:';
+      this.ws = new WebSocket(`${protocol}//${location.host}/ws/quiz/{{ pin }}/?${params}`);
+
+      this.ws.onmessage = (e) => {
+        const data = JSON.parse(e.data);
+        this.handleMessage(data);
+      };
+
+      this.ws.onopen = () => {
+        this.ws.send(JSON.stringify({type: 'request_sync'}));
+      };
+    },
+
+    handleMessage(data) {
+      switch(data.type) {
+        case 'sync_state':
+          this.status = data.status;
+          this.currentQuestion = data.question;
+          this.questionIndex = data.question_index;
+          this.totalQuestions = data.total;
+          this.players = data.players || [];
+          this.timerMax = data.timer || 20;
+          this.updateTotalPoints();
+          if (this.status === 'question') this.startTimer();
+          break;
+
+        case 'game_started':
+          this.status = 'question';
+          this.currentQuestion = data.question;
+          this.totalQuestions = data.total;
+          this.players = data.players || [];
+          this.questionIndex = 0;
+          this.resetForQuestion();
+          this.startTimer();
+          break;
+
+        case 'new_question':
+          this.status = 'question';
+          this.currentQuestion = data.question;
+          this.questionIndex = data.question_index;
+          this.totalQuestions = data.total;
+          this.players = data.players || [];
+          this.resetForQuestion();
+          this.startTimer();
+          break;
+
+        case 'answer_result':
+          this.answered = true;
+          this.lastCorrect = data.correct;
+          this.lastPoints = data.points;
+          this.lastBase = data.base;
+          this.lastTimeBonus = data.time_bonus;
+          this.lastStreakMult = data.streak_mult;
+          this.streak = data.streak;
+          this.totalPoints = data.total_pontuacao;
+          break;
+
+        case 'player_answered':
+          this.players = data.players || [];
+          break;
+
+        case 'show_results':
+          this.status = 'results';
+          this.players = data.players || [];
+          this.stopTimer();
+          break;
+
+        case 'game_finished':
+          this.status = 'finished';
+          this.players = data.players || [];
+          this.stopTimer();
+          break;
+
+        case 'game_restarted':
+          this.status = 'lobby';
+          this.players = data.players || [];
+          this.currentQuestion = null;
+          this.totalPoints = 0;
+          this.streak = 0;
+          this.stopTimer();
+          break;
+      }
+    },
+
+    resetForQuestion() {
+      this.selectedIdx = null;
+      this.answered = false;
+      this.lastCorrect = false;
+      this.lastPoints = 0;
+      this.lastBase = 0;
+      this.lastTimeBonus = 0;
+      this.lastStreakMult = '1.0';
+    },
+
+    startTimer() {
+      this.stopTimer();
+      this.timer = this.timerMax;
+      this.timerInterval = setInterval(() => {
+        this.timer = Math.max(0, this.timer - 1);
+        if (this.timer === 0) {
+          this.stopTimer();
+          if (!this.answered) {
+            this.answered = true;
+            this.lastCorrect = false;
+          }
+        }
+      }, 1000);
+    },
+
+    stopTimer() {
+      if (this.timerInterval) {
+        clearInterval(this.timerInterval);
+        this.timerInterval = null;
+      }
+    },
+
+    selectAnswer(idx) {
+      if (this.answered) return;
+      this.selectedIdx = idx;
+      this.answered = true;
+
+      const timeRemaining = this.timer;
+      this.ws.send(JSON.stringify({
+        type: 'submit_answer',
+        answer_idx: idx,
+        time_remaining: timeRemaining,
+      }));
+    },
+
+    updateTotalPoints() {
+      const me = this.players.find(p => p.nome === this.nome);
+      if (me) this.totalPoints = me.pontuacao;
+    },
+
+    getDefaultClass(idx) {
+      const c = KAHOOT_COLORS[idx] || KAHOOT_COLORS[0];
+      return `border-dark-border bg-dark-elevated hover:${c.border}/50 hover:${c.bg} text-white cursor-pointer`;
+    },
+
+    getSelectedClass(idx) {
+      const c = KAHOOT_COLORS[idx] || KAHOOT_COLORS[0];
+      return `${c.border} ${c.bg} ${c.text} shadow-lg`;
+    },
+
+    getOptionEmoji(idx) {
+      return KAHOOT_EMOJI[idx] || '';
+    },
+  }
+}
+</script>
+{% endblock %}

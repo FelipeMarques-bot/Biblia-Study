@@ -11,7 +11,7 @@ services:
 
   web:
     build: .
-    command: gunicorn core.wsgi:application --bind 0.0.0.0:8000 --workers 4
+    command: daphne core.asgi:application --bind 0.0.0.0 --port 8000 -v 0
     volumes:
       - .:/app
       - static_volume:/app/staticfiles
@@ -20,6 +20,7 @@ services:
       - "8000:8000"
     depends_on:
       - db
+      - redis
     env_file: .env
     environment:
       DB_ENGINE: django.db.backends.postgresql
@@ -28,9 +29,12 @@ services:
       DB_PASSWORD: ${DB_PASSWORD:-biblia_pass}
       DB_HOST: db
       DB_PORT: 5432
+      REDIS_URL: redis://redis:6379/0
 
   redis:
     image: redis:7-alpine
+    ports:
+      - "6379:6379"
 
   celery:
     build: .

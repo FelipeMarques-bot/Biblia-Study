@@ -10,6 +10,7 @@ urlpatterns = [
     path('gamificacao/', include('gamification.urls')),
     path('ia/', include('ia_engine.urls')),
     path('chat/', include('chat_devocional.urls')),
+    path('quiz/', include('quiz_kahoot.urls')),
 ]
 
 if settings.DEBUG:
