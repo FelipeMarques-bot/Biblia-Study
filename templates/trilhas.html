@@ -16,7 +16,7 @@
     <p class="text-sm text-white font-medium" x-text="toastMessage"></p>
   </div>
 
-  <header class="fixed top-0 left-0 right-0 z-40 game-hud px-4 md:px-8 py-3 md:py-4 flex items-center justify-between safe-top md:hidden">
+  <header class="fixed top-10 left-0 right-0 z-40 game-hud px-4 md:px-8 py-3 md:py-4 flex items-center justify-between md:hidden">
     <div class="flex items-center gap-3 md:gap-4">
       <a x-show="view === 'map'" @click.prevent="view = 'list'" href="#" class="text-text-muted hover:text-neon-blue transition-colors">
         <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -38,7 +38,7 @@
     </div>
   </header>
 
-  <main class="pt-16 md:pt-20 pb-24 md:pb-16 px-4 md:px-8">
+  <main class="pt-20 md:pt-20 pb-24 md:pb-16 px-4 md:px-8">
 
     {# GRID DE TRILHAS #}
     <div x-show="view === 'list'">

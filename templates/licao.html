@@ -30,7 +30,7 @@
   </template>
 
   {# Header #}
-  <header class="fixed top-0 left-0 right-0 z-40 game-hud px-4 md:px-8 py-3 safe-top md:hidden">
+  <header class="fixed top-10 left-0 right-0 z-40 game-hud px-4 md:px-8 py-3 md:hidden">
     <div class="max-w-[680px] mx-auto flex items-center justify-between">
       <div class="flex items-center gap-3">
         <a href="{% url 'lista_trilhas' %}" class="text-text-muted hover:text-neon-blue transition-colors" onclick="if(typeof SoundEngine!=='undefined') SoundEngine.back()">
@@ -49,7 +49,7 @@
     </div>
   </header>
 
-  <main class="pt-24 md:pt-20 pb-24 md:pb-16 px-4">
+  <main class="pt-28 md:pt-20 pb-24 md:pb-16 px-4">
     <div class="max-w-[680px] mx-auto">
       <div class="card-neon p-5 md:p-8 relative">
 

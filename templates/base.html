@@ -47,6 +47,35 @@
     </p>
   </div>
 
+  {# Mobile Top Bar — fixo no topo, logout + som #}
+  <div class="fixed top-0 left-0 right-0 z-40 hide-desktop safe-top bg-dark-surface/90 backdrop-blur-xl border-b border-dark-border">
+    <div class="flex items-center justify-between px-3 py-2">
+      <h1 class="font-heading text-sm text-white flex items-center gap-1.5">
+        <span class="w-1.5 h-1.5 bg-neon-blue rounded-full inline-block"
+              style="box-shadow: 0 0 6px rgba(0,212,255,0.5);"></span>
+        Bíblia Study
+      </h1>
+      <div class="flex items-center gap-2">
+        {# Botão Som (mobile fixo) #}
+        <button id="mobile-sound-toggle" onclick="cycleSoundStateMobile()"
+                class="w-8 h-8 rounded-full flex items-center justify-center bg-dark-elevated border border-dark-border transition-all"
+                title="Som: ligado">
+          <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M15.536 8.464a5 5 0 010 7.072m2.828-9.9a9 9 0 010 12.728M9 10a1 1 0 011-1h1a1 1 0 011 1v4a1 1 0 01-1 1h-1a1 1 0 01-1-1v-4z"/>
+          </svg>
+        </button>
+        {# Botão Sair #}
+        <a href="{% url 'logout' %}"
+           class="w-8 h-8 rounded-full flex items-center justify-center bg-dark-elevated border border-dark-border text-text-muted hover:text-neon-pink hover:border-neon-pink/30 transition-all"
+           title="Sair">
+          <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M17 16l4-4m0 0l-4-4m4 4H7m6 4v1a3 3 0 01-3 3H6a3 3 0 01-3-3V7a3 3 0 013-3h4a3 3 0 013 3v1"/>
+          </svg>
+        </a>
+      </div>
+    </div>
+  </div>
+
   {% block content %}{% endblock %}
   {% block extra_scripts %}{% endblock %}
   <script>
@@ -103,36 +132,44 @@
     document.addEventListener('DOMContentLoaded', () => {
       if (typeof SoundEngine === 'undefined') return;
       const s = SoundEngine.getState();
-      const btn = document.getElementById('music-toggle');
-      if (!btn) return;
-      if (s === 'on') {
-        btn.innerHTML = '<svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M15.536 8.464a5 5 0 010 7.072m2.828-9.9a9 9 0 010 12.728M9 10a1 1 0 011-1h1a1 1 0 011 1v4a1 1 0 01-1 1h-1a1 1 0 01-1-1v-4z"/></svg>';
-        btn.title = 'Som: ligado';
-      } else {
-        btn.innerHTML = '<svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M5.586 15H4a1 1 0 01-1-1v-4a1 1 0 011-1h1.586l4.707-4.707C10.923 3.663 12 4.109 12 5v14c0 .891-1.077 1.337-1.707.707L5.586 15z"/><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M17 14l2-2m0 0l2-2m-2 2l2-2m-2 2l-2-2"/></svg>';
-        btn.title = 'Som: desligado';
-      }
+      updateSoundIcons(s);
     });
+
+    function updateSoundIcons(state) {
+      const onSvg = '<svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M15.536 8.464a5 5 0 010 7.072m2.828-9.9a9 9 0 010 12.728M9 10a1 1 0 011-1h1a1 1 0 011 1v4a1 1 0 01-1 1h-1a1 1 0 01-1-1v-4z"/></svg>';
+      const offSvg = '<svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M5.586 15H4a1 1 0 01-1-1v-4a1 1 0 011-1h1.586l4.707-4.707C10.923 3.663 12 4.109 12 5v14c0 .891-1.077 1.337-1.707.707L5.586 15z"/><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M17 14l2-2m0 0l2-2m-2 2l2-2m-2 2l-2-2"/></svg>';
+      const onSvgSmall = '<svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M15.536 8.464a5 5 0 010 7.072m2.828-9.9a9 9 0 010 12.728M9 10a1 1 0 011-1h1a1 1 0 011 1v4a1 1 0 01-1 1h-1a1 1 0 01-1-1v-4z"/></svg>';
+      const offSvgSmall = '<svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M5.586 15H4a1 1 0 01-1-1v-4a1 1 0 011-1h1.586l4.707-4.707C10.923 3.663 12 4.109 12 5v14c0 .891-1.077 1.337-1.707.707L5.586 15z"/><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M17 14l2-2m0 0l2-2m-2 2l2-2m-2 2l-2-2"/></svg>';
+      const isOn = state === 'on';
+      // Desktop button
+      const btn = document.getElementById('music-toggle');
+      if (btn) {
+        btn.innerHTML = isOn ? onSvg : offSvg;
+        btn.title = isOn ? 'Som: ligado' : 'Som: desligado';
+      }
+      // Mobile button
+      const mbtn = document.getElementById('mobile-sound-toggle');
+      if (mbtn) {
+        mbtn.innerHTML = isOn ? onSvgSmall : offSvgSmall;
+        mbtn.title = isOn ? 'Som: ligado' : 'Som: desligado';
+        mbtn.className = 'w-8 h-8 rounded-full flex items-center justify-center bg-dark-elevated border transition-all ' + (isOn ? 'border-neon-blue/30 text-neon-blue' : 'border-dark-border text-text-muted');
+      }
+    }
   </script>
 
-  {# Sound Toggle Button (2-state: on ↔ off) #}
-  <button id="music-toggle" class="sound-toggle" title="Som: ligado" onclick="cycleSoundState()">
+  {# Sound Toggle Button — desktop only #}
+  <button id="music-toggle" class="sound-toggle hide-mobile" title="Som: ligado" onclick="cycleSoundState()">
     <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M15.536 8.464a5 5 0 010 7.072m2.828-9.9a9 9 0 010 12.728M9 10a1 1 0 011-1h1a1 1 0 011 1v4a1 1 0 01-1 1h-1a1 1 0 01-1-1v-4z"/></svg>
   </button>
   <script>
     function cycleSoundState() {
       if (typeof SoundEngine === 'undefined') return;
       const newState = SoundEngine.cycleState();
-      const btn = document.getElementById('music-toggle');
-      if (!btn) return;
-      if (newState === 'on') {
-        btn.innerHTML = '<svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M15.536 8.464a5 5 0 010 7.072m2.828-9.9a9 9 0 010 12.728M9 10a1 1 0 011-1h1a1 1 0 011 1v4a1 1 0 01-1 1h-1a1 1 0 01-1-1v-4z"/></svg>';
-        btn.title = 'Som: ligado';
-        SoundEngine.fadeInMusic();
-      } else {
-        btn.innerHTML = '<svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M5.586 15H4a1 1 0 01-1-1v-4a1 1 0 011-1h1.586l4.707-4.707C10.923 3.663 12 4.109 12 5v14c0 .891-1.077 1.337-1.707.707L5.586 15z"/><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M17 14l2-2m0 0l2-2m-2 2l2-2m-2 2l-2-2"/></svg>';
-        btn.title = 'Som: desligado';
-      }
+      updateSoundIcons(newState);
+      if (newState === 'on') SoundEngine.fadeInMusic();
+    }
+    function cycleSoundStateMobile() {
+      cycleSoundState();
     }
   </script>
 
