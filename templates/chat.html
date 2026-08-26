@@ -25,7 +25,7 @@
   <div x-show="showSidebar" x-transition class="fixed inset-0 z-40 bg-black/50 lg:hidden" @click="showSidebar=false"></div>
 
   <!-- SIDEBAR DESKTOP/MOBILE -->
-  <aside :class="showSidebar ? 'translate-x-0' : '-translate-x-full lg:translate-x-0'" class="fixed left-0 top-0 h-full w-72 -translate-x-full bg-[#0d1225] border-r border-[#00d4ff]/20 z-50 transform transition-transform overflow-y-auto">
+  <aside :class="showSidebar ? 'translate-x-0' : '-translate-x-full lg:translate-x-0'" class="fixed left-0 top-10 md:top-0 bottom-0 w-72 -translate-x-full bg-[#0d1225] border-r border-[#00d4ff]/20 z-50 transform transition-transform overflow-y-auto">
 
     <!-- Header da Sidebar -->
     <div class="p-4 border-b border-[#00d4ff]/10">
@@ -108,7 +108,7 @@
   </aside>
 
   <!-- CONTEUDO PRINCIPAL -->
-  <div class="lg:ml-72 min-h-screen flex flex-col pt-10 md:pt-0" style="height: 100dvh;">
+  <div class="lg:ml-72 min-h-screen flex flex-col pt-16 md:pt-0" style="height: 100dvh;">
 
     <!-- Header Mobile -->
     <header class="bg-[#0d1225] border-b border-[#00d4ff]/20 px-4 py-3 flex items-center gap-3">
