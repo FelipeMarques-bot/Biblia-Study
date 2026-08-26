@@ -6,7 +6,7 @@
 
   <header class="fixed top-0 left-0 right-0 z-40 game-hud px-4 md:px-8 py-3 md:py-4 flex items-center justify-between safe-top">
     <div class="flex items-center gap-3">
-      <a href="{% url 'dashboard' %}" class="text-text-muted hover:text-neon-blue transition-colors">
+      <a href="{% url 'dashboard' %}" class="text-text-muted hover:text-neon-blue transition-colors" onclick="if(typeof SoundEngine!=='undefined') SoundEngine.back()">
         <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
           <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M15 19l-7-7 7-7"/>
         </svg>
@@ -15,7 +15,7 @@
     </div>
   </header>
 
-  <main class="pt-16 md:pt-20 pb-24 md:pb-16 px-4 md:px-8">
+  <main class="pt-16 md:pt-20 pb-24 md:pb-16 px-4 md:px-8 animate-page-enter">
     <div class="max-w-4xl mx-auto">
       <p class="text-sm text-text-muted mb-6 md:mb-8">Seus baús e medalhas desbloqueados</p>
 
@@ -94,6 +94,12 @@
             this.recompensasList[idx].aberto = true
             this.recompensasList[idx].abrindo = false
             this.recompensasList[idx].xp = data.xp
+            if (typeof SoundEngine !== 'undefined') SoundEngine.reward()
+            if (typeof triggerConfetti !== 'undefined') {
+              triggerConfetti(window.innerWidth/2, window.innerHeight/2, 30)
+            }
+          } else {
+            this.recompensasList[idx].abrindo = false
           }
         })
         .catch(() => { this.recompensasList[idx].abrindo = false })

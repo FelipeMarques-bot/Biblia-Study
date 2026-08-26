@@ -62,7 +62,7 @@
             <div>
               <p x-show="currentQ?.tipo === 'VF'" class="font-body text-text mb-4 italic text-sm" x-text="'\"' + (currentQ?.dados?.afirmativa || '') + '\"'"></p>
               <template x-for="(opcao, idx) in currentQ?.opcoes || []" :key="idx">
-                <button class="w-full text-left px-4 md:px-5 py-3 md:py-4 rounded-md border transition-all duration-300 font-body text-sm md:text-base"
+                <button class="w-full text-left px-4 md:px-5 py-3.5 md:py-4 rounded-md border transition-all duration-300 font-body text-sm md:text-base min-h-[48px]"
                   :class="{
                     'border-neon-blue bg-neon-blue/10 shadow-neon-blue text-white': selectedOption === idx && !answered,
                     'border-dark-border bg-dark-elevated hover:border-neon-blue/50 hover:bg-neon-blue/5 text-text': selectedOption !== idx && !answered,
@@ -111,11 +111,11 @@
                   <span class="flex items-center justify-center w-8 h-8 rounded-full bg-neon-blue/10 text-neon-blue font-heading text-sm font-bold" x-text="pos + 1"></span>
                   <span class="flex-1 font-body text-sm text-text" x-text="currentQ?.itens[itemIdx]"></span>
                   <div class="flex flex-col gap-1" x-show="!answered">
-                    <button @click="moveUp(pos)" class="w-8 h-8 flex items-center justify-center rounded hover:bg-neon-blue/10 text-text-muted hover:text-neon-blue transition-colors"
+                    <button @click="moveUp(pos)" class="w-12 h-12 flex items-center justify-center rounded-lg hover:bg-neon-blue/10 text-text-muted hover:text-neon-blue transition-colors"
                       :disabled="pos === 0">
                       <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 15l7-7 7 7"/></svg>
                     </button>
-                    <button @click="moveDown(pos)" class="w-8 h-8 flex items-center justify-center rounded hover:bg-neon-blue/10 text-text-muted hover:text-neon-blue transition-colors"
+                    <button @click="moveDown(pos)" class="w-12 h-12 flex items-center justify-center rounded-lg hover:bg-neon-blue/10 text-text-muted hover:text-neon-blue transition-colors"
                       :disabled="pos === currentQ?.currentOrder?.length - 1">
                       <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"/></svg>
                     </button>
@@ -192,6 +192,7 @@
           const pares = q.dados?.pares || []
           const shuffledRight = pares.length ? [...pares.map(p => p.direita_correta)].sort(() => Math.random() - 0.5) : []
           const itens = q.dados?.itens || []
+          const shuffledOrder = itens.map((_, i) => i).sort(() => Math.random() - 0.5)
           return {
             pergunta: q.pergunta || q.enunciado,
             opcoes: q.dados?.alternativas || [],
@@ -203,7 +204,7 @@
             pares,
             shuffledRight,
             itens,
-            currentOrder: itens.map((_, i) => i),
+            currentOrder: [...shuffledOrder],
           }
         })
         this.resetQuestionState()

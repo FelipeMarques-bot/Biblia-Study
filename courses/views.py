@@ -65,9 +65,29 @@ def mapa_trilha(request, trilha_id):
             'ordem': l.ordem,
         })
 
+    all_trilhas = Trilha.objects.filter(ativo=True).order_by('ordem')
+    trilhas_data = []
+    for t in all_trilhas:
+        licoes_count = t.licoes.count()
+        concluidas = ProgressoUsuario.objects.filter(
+            usuario=request.user, licao__trilha=t, concluida=True
+        ).count()
+        trilhas_data.append({
+            'id': t.id,
+            'nome': t.nome,
+            'descricao': t.descricao,
+            'icone': t.icone,
+            'faixa_etaria': t.get_faixa_etaria_display(),
+            'nivel': t.get_nivel_display(),
+            'licoes_count': licoes_count,
+            'concluidas': concluidas,
+            'progresso': int((concluidas / licoes_count) * 100) if licoes_count > 0 else 0,
+        })
+
     return render(request, 'trilhas.html', {
         'trilha': trilha,
-        'trilhas': Trilha.objects.filter(ativo=True),
+        'trilhas': all_trilhas,
+        'trilhas_data': json.dumps(trilhas_data),
         'licoes_data': json.dumps(licoes_data),
         'show_map': True,
     })

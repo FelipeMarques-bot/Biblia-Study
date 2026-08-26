@@ -16,10 +16,15 @@ def chat_view(request):
     sessao = SessaoDevocional.objects.filter(usuario=request.user).order_by('-data_inicio').first()
 
     mensagens = []
+    mensagens_json = '[]'
     devocional_hoje = get_devocional_do_dia()
 
     if sessao:
         mensagens = list(sessao.mensagens.values('remetente', 'texto', 'data_hora'))
+        mensagens_json = json.dumps([
+            {'remetente': m['remetente'], 'texto': m['texto']}
+            for m in mensagens
+        ])
 
     # Gerar devocional do dia para sidebar
     devocional_texto = gerar_devocional(devocional_hoje.get('titulo', 'fe'))
@@ -51,6 +56,7 @@ def chat_view(request):
     context = {
         'sessao': sessao,
         'mensagens': mensagens,
+        'mensagens_json': mensagens_json,
         'devocional_hoje': devocional_hoje,
         'devocional_texto': devocional_texto,
         'categorias': json.dumps(categorias),

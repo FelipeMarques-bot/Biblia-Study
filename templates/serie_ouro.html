@@ -19,7 +19,7 @@
     </div>
   </header>
 
-  <main class="pt-16 md:pt-20 pb-24 md:pb-16 px-4 md:px-8">
+  <main class="pt-16 md:pt-20 pb-24 md:pb-16 px-4 md:px-8 animate-page-enter">
     <div class="max-w-4xl mx-auto">
 
       {# Baú Divino #}
@@ -45,7 +45,7 @@
                   <div class="w-64 h-64 bg-neon-gold/10 rounded-full light-burst"></div>
                 </div>
                 <template x-if="bauAberto && recompensa">
-                  <div class="absolute -bottom-28 md:-bottom-24 left-1/2 -translate-x-1/2 w-56 md:w-64">
+                  <div class="absolute -bottom-24 md:-bottom-24 left-1/2 -translate-x-1/2 w-52 md:w-64 z-10">
                     <div class="card-glow p-4 md:p-5 text-center animate-boss-intro">
                       <span class="text-3xl block mb-2">🏅</span>
                       <p class="font-heading text-sm md:text-base text-white" x-text="recompensa.tipo"></p>
@@ -109,18 +109,36 @@
         this.userXp = xp || 0
       },
       openChest() {
+        if (this.chestShaking || this.aberto) return
         this.chestShaking = true
         if (typeof SoundEngine !== 'undefined') SoundEngine.chestShake()
-        setTimeout(() => {
+        fetch('/gamificacao/serie-ouro/abrir-bau/', {
+          method: 'POST',
+          headers: {
+            'X-CSRFToken': '{{ csrf_token }}',
+            'Content-Type': 'application/json',
+          },
+        })
+        .then(r => r.json())
+        .then(data => {
           this.chestShaking = false
+          if (data.error) {
+            alert('⚠️ ' + data.error)
+            return
+          }
           this.aberto = true
-          this.recompensa = { tipo: 'Medalha de Ouro', texto: 'Fé Inabalável', xp: 500 }
+          this.recompensa = data.recompensa
+          this.userXp = data.xp_restante
           if (typeof SoundEngine !== 'undefined') SoundEngine.chestOpen()
           if (typeof triggerConfetti !== 'undefined') {
             triggerConfetti(window.innerWidth/2, window.innerHeight/2 - 100, 50)
           }
           setTimeout(() => { this.bauAberto = true }, 600)
-        }, 600)
+        })
+        .catch(() => {
+          this.chestShaking = false
+          if (typeof SoundEngine !== 'undefined') SoundEngine.error()
+        })
       },
       resetChest() {
         this.bauAberto = false; this.recompensa = null; this.aberto = false; this.chestShaking = false

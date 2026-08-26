@@ -62,12 +62,13 @@
               <div class="flex items-end gap-1.5 h-16 md:h-20">
                 <template x-for="(d, i) in xpData" :key="i">
                   <div class="flex-1 flex flex-col items-center gap-1 group relative">
+                    <span class="text-[9px] text-neon-blue font-medium md:hidden" x-text="d.xp"></span>
                     <div class="w-full rounded-sm transition-all duration-500 cursor-pointer"
                       :class="i === xpData.length - 1 ? 'bg-neon-blue shadow-neon-blue' : 'bg-dark-elevated'"
                       :style="'height: ' + Math.max(4, d.xp / maxXp * 100) + '%'">
                     </div>
                     <span class="text-[10px] text-text-muted" x-text="d.day"></span>
-                    <div class="absolute -top-8 left-1/2 -translate-x-1/2 bg-dark-elevated border border-neon-blue/30 text-neon-blue text-xs px-2 py-1 rounded opacity-0 group-hover:opacity-100 transition-opacity whitespace-nowrap z-10"
+                    <div class="absolute -top-8 left-1/2 -translate-x-1/2 bg-dark-elevated border border-neon-blue/30 text-neon-blue text-xs px-2 py-1 rounded opacity-0 group-hover:opacity-100 transition-opacity whitespace-nowrap z-10 hidden md:block"
                          x-text="d.xp + ' XP'"></div>
                   </div>
                 </template>
@@ -153,7 +154,7 @@
               <span class="text-lg">💡</span>
               <p class="text-[11px] text-text-muted uppercase tracking-wider">Pontos de Ajuda</p>
             </div>
-            <p class="font-heading text-xl text-neon-purple" x-text="{{ pontos_ajuda }}"></p>
+            <p class="font-heading text-xl text-neon-purple">{{ pontos_ajuda }}</p>
             <p class="text-xs text-text-muted mt-1">Use para dicas da IA</p>
           </div>
         </div>

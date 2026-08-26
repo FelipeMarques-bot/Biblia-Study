@@ -108,7 +108,7 @@
   </aside>
 
   <!-- CONTEUDO PRINCIPAL -->
-  <div class="lg:ml-80 min-h-screen flex flex-col">
+  <div class="lg:ml-80 min-h-screen flex flex-col" style="height: 100dvh;">
 
     <!-- Header Mobile -->
     <header class="bg-[#0d1225] border-b border-[#00d4ff]/20 px-4 py-3 flex items-center gap-3">
@@ -126,7 +126,7 @@
     </header>
 
     <!-- Area de Mensagens -->
-    <div class="flex-1 overflow-y-auto p-4 space-y-4" id="chat-messages">
+    <div class="flex-1 overflow-y-auto p-4 space-y-4 pb-20" id="chat-messages">
 
       <!-- Mensagem de Boas-Vindas -->
       <template x-if="mensagens.length === 0 && !carregando">
@@ -170,7 +170,7 @@
     </div>
 
     <!-- BARRA DE ENTRADA -->
-    <div class="border-t border-[#00d4ff]/20 bg-[#0d1225] p-4">
+    <div class="border-t border-[#00d4ff]/20 bg-[#0d1225] p-4 safe-bottom" style="padding-bottom: max(1rem, env(safe-area-inset-bottom));">
       <div class="max-w-3xl mx-auto flex gap-3">
         <div class="flex-1 relative">
           <input type="text"
@@ -190,6 +190,8 @@
       </p>
     </div>
   </div>
+
+  {% include 'includes/bottom_tab_bar.html' %}
 </div>
 
 <script>
@@ -227,11 +229,7 @@ function chatDevocional() {
         this.sessaoId = {{ sessao.id }};
         // Carregar mensagens existentes
         {% if mensagens %}
-          this.mensagens = [
-            {% for msg in mensagens %}
-              { remetente: '{{ msg.remetente }}', texto: `{{ msg.texto|escapejs }}` },
-            {% endfor %}
-          ];
+          this.mensagens = {{ mensagens_json|safe }};
         {% endif %}
       {% else %}
         await this.novaSessao();

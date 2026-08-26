@@ -13,17 +13,22 @@ def dashboard_view(request):
     # Streak
     streak = profile.streak_atual
 
-    # XP da semana
+    # XP da semana (dados reais)
     xp_semanal = []
     dias_semana = ['Seg', 'Ter', 'Qua', 'Qui', 'Sex', 'Sáb', 'Dom']
     for i in range(7):
         dia = hoje - timedelta(days=6 - i)
+        xp_dia = ProgressoUsuario.objects.filter(
+            usuario=request.user,
+            concluida=True,
+            data_conclusao__date=dia,
+        ).values_list('xp_ganho_sessao', flat=True)
         xp_semanal.append({
             'day': dias_semana[i],
-            'xp': 0,
+            'xp': sum(xp_dia),
         })
     xp_total = profile.xp_total
-    xp_max = max(130, xp_total // 5)
+    xp_max = max(130, max((d['xp'] for d in xp_semanal), default=130))
 
     # Próxima lição
     licoes_concluidas = ProgressoUsuario.objects.filter(
