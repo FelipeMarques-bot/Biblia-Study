@@ -1,11 +1,10 @@
-const CACHE_NAME = 'biblia-gamer-v1';
+const CACHE_NAME = 'biblia-v2';
 const STATIC_ASSETS = [
-  '/',
-  '/dashboard/',
   '/static/css/output.css',
   '/static/js/app.js',
+  '/static/js/sounds.js',
+  '/static/js/premium-effects.js',
   '/static/manifest.json',
-  'https://fonts.googleapis.com/css2?family=Outfit:wght@500;600&family=Plus+Jakarta+Sans:wght@400;500&display=swap',
 ];
 
 self.addEventListener('install', (event) => {
@@ -26,21 +25,32 @@ self.addEventListener('activate', (event) => {
 
 self.addEventListener('fetch', (event) => {
   if (event.request.method !== 'GET') return;
+
+  const url = new URL(event.request.url);
+
+  // Never cache API calls, navigation, or cross-origin
+  if (url.pathname.startsWith('/chat/') ||
+      url.pathname.startsWith('/cursos/') ||
+      url.pathname.startsWith('/gamificacao/') ||
+      url.pathname.startsWith('/admin/') ||
+      url.pathname.startsWith('/api/') ||
+      event.request.mode === 'navigate' ||
+      event.request.destination === 'document') {
+    event.respondWith(fetch(event.request).catch(() => caches.match(event.request)));
+    return;
+  }
+
+  // Cache-first for static assets only
   event.respondWith(
     caches.match(event.request).then((cached) => {
-      const fetched = fetch(event.request).then((response) => {
-        if (response && response.status === 200) {
+      if (cached) return cached;
+      return fetch(event.request).then((response) => {
+        if (response && response.status === 200 && response.type === 'basic') {
           const clone = response.clone();
           caches.open(CACHE_NAME).then((cache) => cache.put(event.request, clone));
         }
         return response;
-      }).catch(() => {
-        if (event.request.destination === 'document') {
-          return caches.match('/offline/');
-        }
-        return cached;
       });
-      return cached || fetched;
     })
   );
 });

@@ -5,14 +5,24 @@ from django.views.decorators.csrf import csrf_exempt
 import json
 
 from .models import SessaoDevocional, MensagemDevocional
-from ia_engine.engine import gerar_resposta_chat, gerar_devocional
+from ia_engine.engine import gerar_resposta_chat
 from ia_engine.devocionais import get_devocional_do_dia, get_historico_devocional
+
+
+def _build_devocional_texto(dev):
+    """Monta texto do devocional sem chamar LLM."""
+    texto = f"**📖 {dev['titulo']}**\n\n"
+    texto += f"*{dev['passagem']}*\n\n"
+    if dev.get('texto'):
+        texto += f"*\"{dev['texto']}\"*\n\n"
+    texto += f"{dev['reflexao']}\n\n"
+    texto += f"🙏 **Oração:** {dev['oracao']}"
+    return texto
 
 
 @login_required
 def chat_view(request):
     """Pagina principal do chat devocional."""
-    # Buscar sessao ativa
     sessao = SessaoDevocional.objects.filter(usuario=request.user).order_by('-data_inicio').first()
 
     mensagens = []
@@ -26,8 +36,7 @@ def chat_view(request):
             for m in mensagens
         ])
 
-    # Gerar devocional do dia para sidebar
-    devocional_texto = gerar_devocional(devocional_hoje.get('titulo', 'fe'))
+    devocional_texto = _build_devocional_texto(devocional_hoje)
 
     # Topicos do chat
     categorias = [

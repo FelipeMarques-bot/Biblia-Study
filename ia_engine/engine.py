@@ -153,6 +153,7 @@ def _call_llm(prompt, temperature=0.3):
         google_api_key=LLM_API_KEY,
         model=LLM_MODEL,
         temperature=temperature,
+        request_timeout=15,
     )
     return llm.invoke(prompt).content.strip()
 

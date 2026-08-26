@@ -1,4 +1,5 @@
 import json
+import random
 from django.shortcuts import render, get_object_or_404
 from django.contrib.auth.decorators import login_required
 from django.http import JsonResponse
@@ -6,12 +7,37 @@ from django.utils import timezone
 from .models import DesafioDiario, DesafioDiarioConcluido, Recompensa, RecompensaUsuario, SerieOuroDesafio, SerieOuroProgresso
 from .utils import log_activity
 
+VERSICULOS_DIARIOS = [
+    {'versiculo': 'Filipenses 4:13', 'pergunta': 'Como a força de Cristo se manifesta na sua vida diária?'},
+    {'versiculo': 'Jeremias 29:11', 'pergunta': 'Que planos você acredita que Deus tem para você?'},
+    {'versiculo': 'Romanos 8:28', 'pergunta': 'Como você enxerga o propósito de Deus nas dificuldades?'},
+    {'versiculo': 'Salmos 23:1', 'pergunta': 'O que significa para você o Senhor ser seu pastor?'},
+    {'versiculo': 'Provérbios 3:5-6', 'pergunta': 'Em que áreas da sua vida é difícil confiar totalmente em Deus?'},
+    {'versiculo': 'Isaías 41:10', 'pergunta': 'Quando você mais sente a presença de Deus em meio ao medo?'},
+    {'versiculo': 'Mateus 11:28', 'pergunta': 'O que significa descansar em Cristo nos dias cansativos?'},
+    {'versiculo': '2 Timóteo 1:7', 'pergunta': 'Como o Espírito de Deus ajuda você a enfrentar desafios?'},
+    {'versiculo': 'Hebreus 11:1', 'pergunta': 'Como você descreve a sua fé hoje?'},
+    {'versiculo': 'Efésios 2:8-9', 'pergunta': 'Como a graça de Deus transforma a forma como você vive?'},
+    {'versiculo': '1 Coríntios 10:13', 'pergunta': 'De que forma Deus provê saída nas suas tentações?'},
+    {'versiculo': 'João 3:16', 'pergunta': 'O que o amor de Deus significa para o seu dia a dia?'},
+    {'versiculo': 'Mateus 6:33', 'pergunta': 'Como você busca primeiro o reino de Deus na prática?'},
+    {'versiculo': 'Salmo 119:105', 'pergunta': 'De que forma a Palavra de Deus guia suas decisões?'},
+]
+
+
 @login_required
 def desafio_diario_view(request):
     hoje = timezone.now().date()
+    v = random.choice(VERSICULOS_DIARIOS)
     desafio, created = DesafioDiario.objects.get_or_create(
         data=hoje,
-        defaults={'titulo': 'Desafio do Dia', 'descricao': 'Leia o versículo e reflita.', 'xp_recompensa': 30}
+        defaults={
+            'titulo': 'Desafio do Dia',
+            'descricao': 'Leia o versículo abaixo e reflita sobre como ele se aplica à sua vida.',
+            'versiculo': v['versiculo'],
+            'pergunta': v['pergunta'],
+            'xp_recompensa': 30,
+        }
     )
     concluido = DesafioDiarioConcluido.objects.filter(usuario=request.user, desafio=desafio).first()
     return render(request, 'desafio_diario.html', {
