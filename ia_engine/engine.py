@@ -222,54 +222,8 @@ def _detectar_topicos_da_mensagem(mensagem):
 
 
 def gerar_resposta_chat(mensagem, historico=None, tema='fe', categoria='devocional', faixa_etaria='adulto', nivel='iniciante'):
-    """Gera resposta do chat devocional com base na teologia reformada."""
-    from .theologians import formatar_resposta_teologos, CATEGORIAS_CONVERSA
-
+    """Gera resposta do chat devocional — respostas locais por tópico."""
     topicos = _detectar_topicos_da_mensagem(mensagem)
-
-    # Se IA disponivel, usar LLM
-    if LLM_API_KEY:
-        try:
-            cat_info = CATEGORIAS_CONVERSA.get(categoria, CATEGORIAS_CONVERSA['devocional'])
-            contexto_teologos = formatar_resposta_teologos(topicos)
-
-            historico_texto = ""
-            if historico:
-                for msg in historico[-6:]:
-                    papel = "Aluno" if msg['tipo'] == 'usuario' else "Pastor"
-                    historico_texto += f"{papel}: {msg['texto']}\n"
-
-            prompt = f"""{cat_info['prompt_sistema']}
-
-CONTEXTO: Faixa etaria: {faixa_etaria}, Nivel: {nivel}, Tema: {tema}
-TOPICOS: {', '.join(topicos)}
-
-REFERENCIAS TEOLOGICAS:
-{contexto_teologos}
-
-HISTORICO:
-{historico_texto}
-
-INSTRUCOES:
-1. Responda de forma pastoral, amorosa e centrada em Cristo
-2. Use referencias biblicas (livro, capitulo e versiculo)
-3. Cite um teologo reformado quando apropriado
-4. Maximo 4-5 paragrafos curtos
-5. Termine com uma aplicacao pratica ou pergunta reflexiva
-6. Responda em portugues brasileiro
-
-Mensagem: {mensagem}
-Resposta pastoral:"""
-
-            resposta = _call_llm(prompt, temperature=0.5)
-            citacoes = formatar_resposta_teologos(topicos)
-            if citacoes and '📚' not in resposta:
-                resposta += "\n\n" + citacoes
-            return resposta
-        except Exception as e:
-            logger.warning(f'Erro LLM: {e}')
-
-    # FALLBACK: usar base de respostas por topico
     return _gerar_resposta_fallback(mensagem, topicos)
 
 
