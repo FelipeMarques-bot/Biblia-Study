@@ -47,14 +47,24 @@
     </p>
   </div>
 
-  {# Mobile Top Bar — fixo no topo, logout + som #}
+  {# Mobile Top Bar — fixo no topo, voltar + logout + som #}
   <div class="fixed top-0 left-0 right-0 z-40 hide-desktop safe-top bg-dark-surface/90 backdrop-blur-xl border-b border-dark-border">
     <div class="flex items-center justify-between px-3 py-2">
-      <h1 class="font-heading text-sm text-white flex items-center gap-1.5">
-        <span class="w-1.5 h-1.5 bg-neon-blue rounded-full inline-block"
-              style="box-shadow: 0 0 6px rgba(0,212,255,0.5);"></span>
-        Bíblia Study
-      </h1>
+      <div class="flex items-center gap-2">
+        {# Botão Voltar #}
+        <button onclick="history.length > 1 ? history.back() : window.location.href='{% url 'dashboard' %}'"
+                class="w-8 h-8 rounded-full flex items-center justify-center bg-dark-elevated border border-dark-border text-text-muted hover:text-neon-blue hover:border-neon-blue/30 transition-all"
+                title="Voltar">
+          <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M15 19l-7-7 7-7"/>
+          </svg>
+        </button>
+        <h1 class="font-heading text-sm text-white flex items-center gap-1.5">
+          <span class="w-1.5 h-1.5 bg-neon-blue rounded-full inline-block"
+                style="box-shadow: 0 0 6px rgba(0,212,255,0.5);"></span>
+          Bíblia Study
+        </h1>
+      </div>
       <div class="flex items-center gap-2">
         {# Botão Som (mobile fixo) #}
         <button id="mobile-sound-toggle" onclick="cycleSoundStateMobile()"
