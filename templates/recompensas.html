@@ -2,7 +2,8 @@
 {% load static %}
 {% block title %}Recompensas - Plataforma Bíblica{% endblock %}
 {% block content %}
-<div class="min-h-screen bg-dark" x-data="recompensas()" x-init='init({{ recompensas|safe }})'>
+{{ recompensas|json_script:"recompensas-data" }}
+<div class="min-h-screen bg-dark" x-data="recompensas()" x-init='init(JSON.parse(document.getElementById("recompensas-data").textContent))'>
 
   <header class="fixed top-0 left-0 right-0 z-40 game-hud px-4 md:px-8 py-3 md:py-4 flex items-center justify-between safe-top">
     <div class="flex items-center gap-3">

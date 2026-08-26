@@ -2,7 +2,8 @@
 {% load static %}
 {% block title %}Dashboard - Plataforma Bíblica{% endblock %}
 {% block content %}
-<div class="flex min-h-screen" x-data="dashboard()" x-init='initData({{ xp_semanal|safe }}, {{ streak }}, {{ xp_total }}, {{ nivel }}, {{ nivel_progresso }})'>
+{{ xp_semanal|json_script:"xp-semanal-data" }}
+<div class="flex min-h-screen" x-data="dashboard()" x-init='initData(JSON.parse(document.getElementById("xp-semanal-data").textContent), {{ streak }}, {{ xp_total }}, {{ nivel }}, {{ nivel_progresso }})'>
 
   {% include 'includes/sidebar.html' %}
 

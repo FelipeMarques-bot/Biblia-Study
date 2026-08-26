@@ -2,7 +2,8 @@
 {% load static %}
 {% block title %}{{ licao.titulo }} - Plataforma Bíblica{% endblock %}
 {% block content %}
-<div class="min-h-screen bg-dark" x-data="licao()" x-init='init({{ exercicios_data|safe }}, {{ licao.id }})'>
+{{ exercicios_data|json_script:"exercicios-data" }}
+<div class="min-h-screen bg-dark" x-data="licao()" x-init='init(JSON.parse(document.getElementById("exercicios-data").textContent), {{ licao.id }})'>
 
   {# Tela de Resultado #}
   <template x-if="showResult">
