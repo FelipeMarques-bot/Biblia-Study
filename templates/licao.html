@@ -29,7 +29,7 @@
   <header class="fixed top-0 left-0 right-0 z-40 game-hud px-4 md:px-8 py-3 safe-top">
     <div class="max-w-[680px] mx-auto flex items-center justify-between">
       <div class="flex items-center gap-3">
-        <a href="{% url 'lista_trilhas' %}" class="text-text-muted hover:text-neon-blue transition-colors">
+        <a href="{% url 'lista_trilhas' %}" class="text-text-muted hover:text-neon-blue transition-colors" onclick="if(typeof SoundEngine!=='undefined') SoundEngine.back()">
           <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M15 19l-7-7 7-7"/>
           </svg>
@@ -70,7 +70,7 @@
                     'answer-wrong shake text-neon-pink': answered && idx === selectedOption && idx !== currentQ.correta,
                     'border-dark-border text-text-muted opacity-50': answered && idx !== selectedOption && idx !== currentQ.correta
                   }"
-                  @click="if(!answered) selectedOption = idx"
+                  @click="if(!answered){ selectedOption = idx; if(typeof SoundEngine!=='undefined') SoundEngine.select() }"
                   :disabled="answered">
                   <span x-text="opcao"></span>
                 </button>
@@ -264,8 +264,20 @@
             this.combo++
             const multiplier = 1 + (this.combo * 0.1)
             this.xpGained += Math.round(data.xp_ganho * multiplier)
+            if (typeof SoundEngine !== 'undefined') {
+              SoundEngine.correct()
+              if (this.combo >= 2) SoundEngine.combo(this.combo)
+            }
+            const el = document.querySelector('.card-neon')
+            if (el) {
+              const rect = el.getBoundingClientRect()
+              if (typeof triggerConfetti !== 'undefined') {
+                triggerConfetti(rect.left + rect.width/2, rect.top + rect.height/2, this.combo >= 3 ? 50 : 25)
+              }
+            }
           } else {
             this.combo = 0
+            if (typeof SoundEngine !== 'undefined') SoundEngine.wrong()
           }
           this.checking = false
         })
@@ -290,6 +302,15 @@
             this.xpGained = data.xp_sessao
             this.showResult = true
             this.finalizing = false
+            if (typeof SoundEngine !== 'undefined') SoundEngine.levelUp()
+            if (typeof triggerConfetti !== 'undefined') {
+              setTimeout(() => {
+                const w = window.innerWidth, h = window.innerHeight
+                triggerConfetti(w/2, h/2, 60)
+                setTimeout(() => triggerConfetti(w * 0.3, h * 0.4, 30), 200)
+                setTimeout(() => triggerConfetti(w * 0.7, h * 0.4, 30), 400)
+              }, 300)
+            }
           })
           .catch(() => { this.showResult = true; this.finalizing = false })
         }

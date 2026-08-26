@@ -31,7 +31,7 @@
 
       <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 md:gap-6">
         <template x-for="(r, idx) in recompensasList" :key="idx">
-          <div class="card-neon relative overflow-hidden group" :class="r.aberto ? 'border-neon-gold/20' : ''">
+          <div class="card-neon relative overflow-hidden group hover-lift" :class="r.aberto ? 'border-neon-gold/20' : ''">
             <div class="flex items-center gap-3 md:gap-4 mb-4">
               <div class="w-12 h-12 md:w-14 md:h-14 rounded-full flex items-center justify-center text-2xl" :class="r.aberto ? 'bg-neon-gold/10 border border-neon-gold/20' : 'bg-dark-elevated border border-dark-border'" x-text="getIcon(r.icone)"></div>
               <div>

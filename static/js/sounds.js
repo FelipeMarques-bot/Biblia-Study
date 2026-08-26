@@ -1,0 +1,253 @@
+/* ============================================
+   BÍBLIA STUDY — SOUND ENGINE (Web Audio API)
+   Todos os sons são gerados proceduralmente.
+   Sem arquivos externos.
+   ============================================ */
+
+const SoundEngine = (() => {
+  let ctx = null
+  let musicGain = null
+  let musicOscillators = []
+  let musicPlaying = false
+  let masterVolume = 0.3
+  let musicVolume = 0.08
+  let enabled = true
+
+  function getCtx() {
+    if (!ctx) {
+      ctx = new (window.AudioContext || window.webkitAudioContext)()
+      musicGain = ctx.createGain()
+      musicGain.gain.value = musicVolume
+      musicGain.connect(ctx.destination)
+    }
+    if (ctx.state === 'suspended') ctx.resume()
+    return ctx
+  }
+
+  function playTone(freq, duration, type = 'sine', vol = 0.15, detune = 0) {
+    if (!enabled) return
+    const c = getCtx()
+    const osc = c.createOscillator()
+    const gain = c.createGain()
+    osc.type = type
+    osc.frequency.value = freq
+    osc.detune.value = detune
+    gain.gain.setValueAtTime(vol * masterVolume, c.currentTime)
+    gain.gain.exponentialRampToValueAtTime(0.001, c.currentTime + duration)
+    osc.connect(gain)
+    gain.connect(c.destination)
+    osc.start(c.currentTime)
+    osc.stop(c.currentTime + duration)
+  }
+
+  function playChord(freqs, duration, type = 'sine', vol = 0.1) {
+    freqs.forEach((f, i) => {
+      setTimeout(() => playTone(f, duration, type, vol), i * 40)
+    })
+  }
+
+  return {
+    init() {
+      document.addEventListener('click', () => getCtx(), { once: true })
+      document.addEventListener('touchstart', () => getCtx(), { once: true })
+    },
+
+    toggle() { enabled = !enabled; return enabled },
+    isEnabled() { return enabled },
+    setMasterVolume(v) { masterVolume = v },
+    setMusicVolume(v) { musicVolume = v; if (musicGain) musicGain.gain.value = v },
+
+    /* === UI SOUNDS === */
+
+    click() {
+      playTone(800, 0.08, 'sine', 0.12)
+      playTone(1200, 0.05, 'sine', 0.06)
+    },
+
+    hover() {
+      playTone(600, 0.04, 'sine', 0.04)
+    },
+
+    menuOpen() {
+      playTone(400, 0.12, 'sine', 0.1)
+      setTimeout(() => playTone(600, 0.1, 'sine', 0.08), 60)
+    },
+
+    menuClose() {
+      playTone(600, 0.1, 'sine', 0.1)
+      setTimeout(() => playTone(400, 0.08, 'sine', 0.06), 50)
+    },
+
+    back() {
+      playTone(500, 0.08, 'triangle', 0.1)
+      playTone(350, 0.1, 'triangle', 0.07)
+    },
+
+    /* === GAME SOUNDS === */
+
+    correct() {
+      playTone(523, 0.12, 'sine', 0.18)
+      setTimeout(() => playTone(659, 0.12, 'sine', 0.15), 80)
+      setTimeout(() => playTone(784, 0.2, 'sine', 0.12), 160)
+    },
+
+    wrong() {
+      playTone(300, 0.15, 'sawtooth', 0.08)
+      setTimeout(() => playTone(220, 0.25, 'sawtooth', 0.06), 100)
+    },
+
+    combo(count) {
+      const baseFreq = 523 + (count * 50)
+      playTone(baseFreq, 0.08, 'sine', 0.15)
+      setTimeout(() => playTone(baseFreq * 1.25, 0.08, 'sine', 0.12), 50)
+      setTimeout(() => playTone(baseFreq * 1.5, 0.15, 'sine', 0.1), 100)
+      if (count >= 3) {
+        setTimeout(() => playTone(baseFreq * 2, 0.2, 'sine', 0.08), 150)
+      }
+    },
+
+    levelUp() {
+      const notes = [523, 659, 784, 1047]
+      notes.forEach((f, i) => {
+        setTimeout(() => playTone(f, 0.2, 'sine', 0.12), i * 100)
+      })
+      setTimeout(() => playChord([523, 659, 784], 0.5, 'sine', 0.06), 400)
+    },
+
+    xpGain() {
+      playTone(880, 0.08, 'sine', 0.1)
+      setTimeout(() => playTone(1100, 0.12, 'sine', 0.08), 60)
+    },
+
+    chestShake() {
+      for (let i = 0; i < 4; i++) {
+        setTimeout(() => {
+          playTone(200 + Math.random() * 100, 0.06, 'triangle', 0.08)
+        }, i * 80)
+      }
+    },
+
+    chestOpen() {
+      playChord([261, 329, 392, 523], 0.6, 'sine', 0.1)
+      setTimeout(() => {
+        playChord([523, 659, 784, 1047], 0.8, 'sine', 0.08)
+      }, 300)
+      setTimeout(() => playTone(1047, 0.4, 'sine', 0.06), 500)
+    },
+
+    reward() {
+      const melody = [784, 880, 988, 1047, 1175, 1318]
+      melody.forEach((f, i) => {
+        setTimeout(() => playTone(f, 0.15, 'sine', 0.1), i * 80)
+      })
+    },
+
+    achievement() {
+      playChord([523, 659], 0.3, 'sine', 0.1)
+      setTimeout(() => playChord([659, 784], 0.3, 'sine', 0.1), 200)
+      setTimeout(() => playChord([784, 1047], 0.5, 'sine', 0.1), 400)
+    },
+
+    select() {
+      playTone(700, 0.06, 'sine', 0.08)
+    },
+
+    deselect() {
+      playTone(400, 0.06, 'sine', 0.06)
+    },
+
+    submit() {
+      playTone(600, 0.08, 'sine', 0.1)
+      setTimeout(() => playTone(900, 0.12, 'sine', 0.08), 80)
+    },
+
+    error() {
+      playTone(200, 0.2, 'square', 0.06)
+      playTone(150, 0.3, 'square', 0.04)
+    },
+
+    /* === BACKGROUND MUSIC (adventure ambient) === */
+
+    startMusic() {
+      if (musicPlaying || !enabled) return
+      const c = getCtx()
+      musicPlaying = true
+
+      function createDrone(freq, vol = 0.04) {
+        const osc = c.createOscillator()
+        const gain = c.createGain()
+        const lfo = c.createOscillator()
+        const lfoGain = c.createGain()
+
+        osc.type = 'sine'
+        osc.frequency.value = freq
+        lfo.type = 'sine'
+        lfo.frequency.value = 0.1 + Math.random() * 0.15
+        lfoGain.gain.value = 2
+        lfo.connect(lfoGain)
+        lfoGain.connect(osc.frequency)
+        gain.gain.value = vol
+        osc.connect(gain)
+        gain.connect(musicGain)
+        osc.start()
+        lfo.start()
+        musicOscillators.push(osc, lfo)
+        return { osc, gain }
+      }
+
+      createDrone(130.81, 0.05)
+      createDrone(196.00, 0.03)
+      createDrone(261.63, 0.02)
+      createDrone(98.00, 0.04)
+
+      function playMelodyNote() {
+        if (!musicPlaying || !enabled) return
+        const scale = [261.63, 293.66, 329.63, 392.00, 440.00, 523.25, 587.33, 659.25]
+        const note = scale[Math.floor(Math.random() * scale.length)]
+        const dur = 1.5 + Math.random() * 2
+
+        const osc = c.createOscillator()
+        const gain = c.createGain()
+        osc.type = 'sine'
+        osc.frequency.value = note
+        gain.gain.setValueAtTime(0, c.currentTime)
+        gain.gain.linearRampToValueAtTime(0.03 * masterVolume, c.currentTime + 0.3)
+        gain.gain.linearRampToValueAtTime(0, c.currentTime + dur)
+        osc.connect(gain)
+        gain.connect(c.destination)
+        osc.start(c.currentTime)
+        osc.stop(c.currentTime + dur)
+
+        const nextNote = 2000 + Math.random() * 4000
+        setTimeout(playMelodyNote, nextNote)
+      }
+
+      setTimeout(playMelodyNote, 1000)
+    },
+
+    stopMusic() {
+      musicPlaying = false
+      musicOscillators.forEach(o => {
+        try { o.stop() } catch (e) {}
+      })
+      musicOscillators = []
+    },
+
+    isMusicPlaying() { return musicPlaying },
+
+    fadeInMusic() {
+      if (!musicGain) getCtx()
+      musicGain.gain.setValueAtTime(0, ctx.currentTime)
+      musicGain.gain.linearRampToValueAtTime(musicVolume, ctx.currentTime + 2)
+      this.startMusic()
+    },
+
+    fadeOutMusic() {
+      if (!musicGain) return
+      musicGain.gain.linearRampToValueAtTime(0, ctx.currentTime + 1.5)
+      setTimeout(() => this.stopMusic(), 1600)
+    }
+  }
+})()
+
+SoundEngine.init()

@@ -6,7 +6,7 @@
 
   <header class="fixed top-0 left-0 right-0 z-40 game-hud px-4 md:px-8 py-3 md:py-4 flex items-center justify-between safe-top">
     <div class="flex items-center gap-3 md:gap-4">
-      <a href="{% url 'dashboard' %}" class="text-neon-gold/60 hover:text-neon-gold transition-colors">
+      <a href="{% url 'dashboard' %}" class="text-neon-gold/60 hover:text-neon-gold transition-colors" onclick="if(typeof SoundEngine!=='undefined') SoundEngine.back()">
         <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
           <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M15 19l-7-7 7-7"/>
         </svg>
@@ -74,7 +74,7 @@
         <h3 class="font-heading text-xl md:text-2xl text-neon-gold mb-6">Desafios de Elite</h3>
         <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 md:gap-6">
           <template x-for="desafio in desafios" :key="desafio.id">
-            <div class="card-neon p-5 md:p-6 group hover:border-neon-gold/40 transition-all duration-300 cursor-pointer" @click="iniciarDesafio(desafio)">
+            <div class="card-neon p-5 md:p-6 group hover:border-neon-gold/40 transition-all duration-300 cursor-pointer hover-lift" @click="iniciarDesafio(desafio)">
               <div class="w-12 h-12 rounded-full flex items-center justify-center mb-4 bg-neon-gold/10 border border-neon-gold/20">
                 <span class="text-xl">⭐</span>
               </div>
@@ -110,10 +110,15 @@
       },
       openChest() {
         this.chestShaking = true
+        if (typeof SoundEngine !== 'undefined') SoundEngine.chestShake()
         setTimeout(() => {
           this.chestShaking = false
           this.aberto = true
           this.recompensa = { tipo: 'Medalha de Ouro', texto: 'Fé Inabalável', xp: 500 }
+          if (typeof SoundEngine !== 'undefined') SoundEngine.chestOpen()
+          if (typeof triggerConfetti !== 'undefined') {
+            triggerConfetti(window.innerWidth/2, window.innerHeight/2 - 100, 50)
+          }
           setTimeout(() => { this.bauAberto = true }, 600)
         }, 600)
       },
@@ -121,10 +126,13 @@
         this.bauAberto = false; this.recompensa = null; this.aberto = false; this.chestShaking = false
       },
       iniciarDesafio(desafio) {
+        if (typeof SoundEngine !== 'undefined') SoundEngine.select()
         if (desafio.concluido) {
+          if (typeof SoundEngine !== 'undefined') SoundEngine.error()
           alert('✅ Você já concluiu este desafio!');
           return;
         }
+        if (typeof SoundEngine !== 'undefined') SoundEngine.submit()
         alert('🏆 Desafio: ' + desafio.titulo + '\n\n⚡ ' + desafio.questoes + ' questões\n\nEm breve esta funcionalidade estará disponível!');
       }
     }))

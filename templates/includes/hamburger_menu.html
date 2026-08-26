@@ -5,7 +5,7 @@
      x-effect="document.body.style.overflow = open ? 'hidden' : ''">
 
   {# Trigger Button — visível no header em mobile, ou sempre no sidebar #}
-  <button @click="open = true" class="p-2 rounded-md text-text-muted hover:text-neon-blue transition-colors hide-desktop">
+  <button @click="open = true; if(typeof SoundEngine!=='undefined') SoundEngine.menuOpen()" class="p-2 rounded-md text-text-muted hover:text-neon-blue transition-colors hide-desktop">
     <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
       <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M4 6h16M4 12h16M4 18h16"/>
     </svg>
@@ -16,7 +16,7 @@
        x-transition:enter-start="opacity-0" x-transition:enter-end="opacity-100"
        x-transition:leave="transition-opacity duration-200"
        x-transition:leave-start="opacity-100" x-transition:leave-end="opacity-0"
-       @click="open = false"
+       @click="open = false; if(typeof SoundEngine!=='undefined') SoundEngine.menuClose()"
        class="fixed inset-0 bg-black/60 backdrop-blur-sm z-50">
   </div>
 
@@ -37,7 +37,7 @@
               style="box-shadow: 0 0 8px rgba(0,212,255,0.5);"></span>
         Bíblia Study
       </h2>
-      <button @click="open = false" class="p-1 rounded-md text-text-muted hover:text-white transition-colors">
+      <button @click="open = false; if(typeof SoundEngine!=='undefined') SoundEngine.menuClose()" class="p-1 rounded-md text-text-muted hover:text-white transition-colors">
         <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
           <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"/>
         </svg>
