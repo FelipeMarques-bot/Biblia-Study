@@ -77,7 +77,7 @@ def chat_view(request):
 
 @csrf_exempt
 @login_required
-def enviar_mensagem(request):
+def enviar_mensagem(request, sessao_id=None):
     """Envia mensagem e retorna resposta do bot."""
     if request.method != 'POST':
         return JsonResponse({'erro': 'Metodo nao permitido'}, status=405)
@@ -88,7 +88,7 @@ def enviar_mensagem(request):
         return JsonResponse({'erro': 'JSON invalido'}, status=400)
 
     texto = data.get('mensagem', '').strip()
-    sessao_id = data.get('sessao_id')
+    sessao_id = sessao_id or data.get('sessao_id')
     categoria = data.get('categoria', 'devocional')
     tema = data.get('tema', 'fe')
 

@@ -43,7 +43,7 @@
         Pix: <code class="text-[#00ff88] font-mono">1b831057-321a-4580-9ebe-bff9b5fb2529</code>
         <button onclick="navigator.clipboard.writeText('1b831057-321a-4580-9ebe-bff9b5fb2529').then(()=>this.textContent='✅ Copiado!')" class="text-[#00d4ff] hover:text-white ml-1 underline">Copiar</button>
       </span>
-      <button onclick="document.getElementById('global-donation-banner').style.display='none'" class="ml-2 text-gray-500 hover:text-white">✕</button>
+      <button onclick="dismissDonation()" class="ml-2 text-gray-500 hover:text-white">✕</button>
     </p>
   </div>
 
@@ -57,8 +57,22 @@
         }).catch(() => {});
       });
     }
+
+    // ── Donation banner persistence ──
+    function dismissDonation() {
+      const b = document.getElementById('global-donation-banner');
+      if (b) b.style.display = 'none';
+      localStorage.setItem('donation_dismissed', '1');
+    }
+    if (localStorage.getItem('donation_dismissed') === '1') {
+      const b = document.getElementById('global-donation-banner');
+      if (b) b.style.display = 'none';
+    }
+
+    // ── PWA install banner ──
     let deferredPrompt;
     window.addEventListener('beforeinstallprompt', (e) => {
+      if (localStorage.getItem('pwa_install_dismissed') === '1') return;
       e.preventDefault();
       deferredPrompt = e;
       const banner = document.getElementById('pwa-install-banner');
@@ -84,12 +98,49 @@
       const banner = document.getElementById('pwa-install-banner');
       if (banner) banner.style.display = 'none';
     });
+
+    // ── Sound state restore on page load ──
+    document.addEventListener('DOMContentLoaded', () => {
+      if (typeof SoundEngine === 'undefined') return;
+      const s = SoundEngine.getState();
+      const btn = document.getElementById('music-toggle');
+      if (!btn) return;
+      if (s === 'all') {
+        btn.innerHTML = '<svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M15.536 8.464a5 5 0 010 7.072m2.828-9.9a9 9 0 010 12.728M9 10a1 1 0 011-1h1a1 1 0 011 1v4a1 1 0 01-1 1h-1a1 1 0 01-1-1v-4z"/></svg>';
+        btn.title = 'Som: ligado';
+      } else if (s === 'effects') {
+        btn.innerHTML = '<svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M15.536 8.464a5 5 0 010 7.072M5.586 15H4a1 1 0 01-1-1v-4a1 1 0 011-1h1.586l4.707-4.707C10.923 3.663 12 4.109 12 5v14c0 .891-1.077 1.337-1.707.707L5.586 15z"/></svg>';
+        btn.title = 'Som: só efeitos';
+      } else {
+        btn.innerHTML = '<svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M5.586 15H4a1 1 0 01-1-1v-4a1 1 0 011-1h1.586l4.707-4.707C10.923 3.663 12 4.109 12 5v14c0 .891-1.077 1.337-1.707.707L5.586 15z"/><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M17 14l2-2m0 0l2-2m-2 2l2-2m-2 2l-2-2"/></svg>';
+        btn.title = 'Som: desligado';
+      }
+    });
   </script>
 
-  {# Music Toggle Button #}
-  <button id="music-toggle" class="sound-toggle" title="Ativar música">
-    <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M5.586 15H4a1 1 0 01-1-1v-4a1 1 0 011-1h1.586l4.707-4.707C10.923 3.663 12 4.109 12 5v14c0 .891-1.077 1.337-1.707.707L5.586 15z"/><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M17 14l2-2m0 0l2-2m-2 2l2-2m-2 2l-2-2"/></svg>
+  {# Sound Toggle Button (3-state: all → effects → none) #}
+  <button id="music-toggle" class="sound-toggle" title="Som: ligado" onclick="cycleSoundState()">
+    <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M15.536 8.464a5 5 0 010 7.072m2.828-9.9a9 9 0 010 12.728M9 10a1 1 0 011-1h1a1 1 0 011 1v4a1 1 0 01-1 1h-1a1 1 0 01-1-1v-4z"/></svg>
   </button>
+  <script>
+    function cycleSoundState() {
+      if (typeof SoundEngine === 'undefined') return;
+      const newState = SoundEngine.cycleState();
+      const btn = document.getElementById('music-toggle');
+      if (!btn) return;
+      if (newState === 'all') {
+        btn.innerHTML = '<svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M15.536 8.464a5 5 0 010 7.072m2.828-9.9a9 9 0 010 12.728M9 10a1 1 0 011-1h1a1 1 0 011 1v4a1 1 0 01-1 1h-1a1 1 0 01-1-1v-4z"/></svg>';
+        btn.title = 'Som: ligado';
+        SoundEngine.fadeInMusic();
+      } else if (newState === 'effects') {
+        btn.innerHTML = '<svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M15.536 8.464a5 5 0 010 7.072M5.586 15H4a1 1 0 01-1-1v-4a1 1 0 011-1h1.586l4.707-4.707C10.923 3.663 12 4.109 12 5v14c0 .891-1.077 1.337-1.707.707L5.586 15z"/></svg>';
+        btn.title = 'Som: só efeitos';
+      } else {
+        btn.innerHTML = '<svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M5.586 15H4a1 1 0 01-1-1v-4a1 1 0 011-1h1.586l4.707-4.707C10.923 3.663 12 4.109 12 5v14c0 .891-1.077 1.337-1.707.707L5.586 15z"/><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M17 14l2-2m0 0l2-2m-2 2l2-2m-2 2l-2-2"/></svg>';
+        btn.title = 'Som: desligado';
+      }
+    }
+  </script>
 
   {# PWA Install Banner #}
   <div id="pwa-install-banner"
