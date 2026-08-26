@@ -37,7 +37,8 @@ def lista_trilhas(request):
 
     return render(request, 'trilhas.html', {
         'trilhas': trilhas,
-        'trilhas_data': json.dumps(trilhas_data),
+        'trilhas_data': trilhas_data,
+        'licoes_data': [],
     })
 
 
@@ -87,8 +88,8 @@ def mapa_trilha(request, trilha_id):
     return render(request, 'trilhas.html', {
         'trilha': trilha,
         'trilhas': all_trilhas,
-        'trilhas_data': json.dumps(trilhas_data),
-        'licoes_data': json.dumps(licoes_data),
+        'trilhas_data': trilhas_data,
+        'licoes_data': licoes_data,
         'show_map': True,
     })
 
@@ -116,7 +117,7 @@ def licao_view(request, licao_id):
 
     return render(request, 'licao.html', {
         'licao': licao,
-        'exercicios_data': json.dumps(exercicios_data),
+        'exercicios_data': exercicios_data,
     })
 
 

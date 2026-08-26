@@ -84,7 +84,7 @@ def recompensas_view(request):
         })
 
     return render(request, 'recompensas.html', {
-        'recompensas': json.dumps(recompensas_data),
+        'recompensas': recompensas_data,
     })
 
 @login_required
@@ -130,7 +130,7 @@ def serie_ouro_view(request):
 
     profile = request.user.profile
     return render(request, 'serie_ouro.html', {
-        'desafios_data': json.dumps(desafios_data),
+        'desafios_data': desafios_data,
         'user_xp': profile.xp_total,
     })
 

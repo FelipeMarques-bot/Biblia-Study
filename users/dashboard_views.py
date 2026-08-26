@@ -55,7 +55,7 @@ def dashboard_view(request):
     return render(request, 'dashboard.html', {
         'user_full_name': request.user.get_full_name() or request.user.username,
         'streak': streak,
-        'xp_semanal': json.dumps(xp_semanal),
+        'xp_semanal': xp_semanal,
         'xp_total': xp_total,
         'xp_max': xp_max,
         'nivel': profile.nivel,
