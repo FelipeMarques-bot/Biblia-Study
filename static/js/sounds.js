@@ -1,6 +1,6 @@
 /* ============================================
    BÍBLIA STUDY — SOUND ENGINE (Web Audio API + MP3)
-   3-state: 'all' (music+effects), 'effects' (no music), 'none' (off)
+   2-state: 'on' (music+effects), 'off' (all disabled)
    State persisted in localStorage('sound_state')
    ============================================ */
 
@@ -68,17 +68,13 @@ const SoundEngine = (() => {
 
   // ── State persistence ──
   function loadState() {
-    const s = localStorage.getItem('sound_state') || 'all'
-    if (s === 'none') { enabled = false; musicEnabled = false }
-    else if (s === 'effects') { enabled = true; musicEnabled = false }
+    const s = localStorage.getItem('sound_state') || 'on'
+    if (s === 'off') { enabled = false; musicEnabled = false }
     else { enabled = true; musicEnabled = true }
   }
 
   function saveState() {
-    let s = 'all'
-    if (!enabled && !musicEnabled) s = 'none'
-    else if (enabled && !musicEnabled) s = 'effects'
-    else if (!enabled && musicEnabled) s = 'all' // shouldn't happen, fallback
+    const s = enabled ? 'on' : 'off'
     localStorage.setItem('sound_state', s)
   }
 
@@ -93,23 +89,20 @@ const SoundEngine = (() => {
       loadState()
     },
 
-    // ── 3-state toggle: all → effects → none → all ──
+    // ── 2-state toggle: on ↔ off ──
     cycleState() {
-      const s = localStorage.getItem('sound_state') || 'all'
-      if (s === 'all') {
-        enabled = true; musicEnabled = false
-        localStorage.setItem('sound_state', 'effects')
-        if (musicPlaying) this.fadeOutMusic()
-      } else if (s === 'effects') {
+      const s = localStorage.getItem('sound_state') || 'on'
+      if (s === 'on') {
         enabled = false; musicEnabled = false
-        localStorage.setItem('sound_state', 'none')
+        localStorage.setItem('sound_state', 'off')
+        if (musicPlaying) this.fadeOutMusic()
       } else {
         enabled = true; musicEnabled = true
-        localStorage.setItem('sound_state', 'all')
+        localStorage.setItem('sound_state', 'on')
       }
       return localStorage.getItem('sound_state')
     },
-    getState() { return localStorage.getItem('sound_state') || 'all' },
+    getState() { return localStorage.getItem('sound_state') || 'on' },
     isEnabled() { return enabled },
     isMusicEnabled() { return musicEnabled },
     setMasterVolume(v) { masterVolume = v },

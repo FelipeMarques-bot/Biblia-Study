@@ -43,6 +43,24 @@
     {# GRID DE TRILHAS #}
     <div x-show="view === 'list'">
       <div class="max-w-4xl mx-auto">
+        {# Progresso Geral #}
+        <div class="card-neon p-4 md:p-5 mb-6" style="border-color: rgba(0,212,255,0.2);">
+          <div class="flex items-center justify-between mb-3">
+            <div class="flex items-center gap-2">
+              <span class="text-lg">📊</span>
+              <p class="text-sm font-heading text-white">Progresso Geral</p>
+            </div>
+            <span class="text-sm font-semibold text-neon-blue" x-text="progressoGeral + '%'"></span>
+          </div>
+          <div class="w-full h-2 bg-dark-elevated rounded-full overflow-hidden">
+            <div class="h-full rounded-full bg-neon-blue transition-all duration-700" :style="'width: ' + progressoGeral + '%'"></div>
+          </div>
+          <div class="flex items-center justify-between mt-2">
+            <span class="text-[10px] text-text-muted" x-text="totalConcluidas + '/' + totalLicoes + ' lições concluídas'"></span>
+            <span class="text-[10px] text-neon-blue" x-text="trilhasList.length + ' trilhas disponíveis'"></span>
+          </div>
+        </div>
+
         <p class="text-sm text-text-muted mb-6">Escolha uma trilha para começar</p>
         <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
           <template x-for="t in trilhasList" :key="t.id">
@@ -182,8 +200,19 @@
           this.view = 'map'
         }
       },
+      get totalLicoes() {
+        return this.trilhasList.reduce((sum, t) => sum + (t.licoes_count || 0), 0)
+      },
+      get totalConcluidas() {
+        return this.trilhasList.reduce((sum, t) => sum + (t.concluidas || 0), 0)
+      },
+      get progressoGeral() {
+        const total = this.totalLicoes
+        return total > 0 ? Math.round((this.totalConcluidas / total) * 100) : 0
+      },
       openTrilha(t) {
-        window.location.href = '/cursos/trilha/' + t.id + '/'
+        if (typeof SoundEngine !== 'undefined') SoundEngine.select()
+        window.location.href = '/cursos/trilha/' + t.id + '/ir/'
       },
       openLesson(licao) {
         if (licao.status === 'active') {

@@ -1,4 +1,5 @@
 import json
+from datetime import timedelta
 from django.shortcuts import render, get_object_or_404, redirect
 from django.contrib.auth.decorators import login_required
 from django.http import JsonResponse
@@ -92,6 +93,22 @@ def mapa_trilha(request, trilha_id):
         'licoes_data': licoes_data,
         'show_map': True,
     })
+
+
+@login_required
+def ir_para_trilha(request, trilha_id):
+    trilha = get_object_or_404(Trilha, id=trilha_id)
+    licoes = trilha.licoes.all().order_by('ordem')
+
+    for licao in licoes:
+        progresso = ProgressoUsuario.objects.filter(
+            usuario=request.user, licao=licao
+        ).first()
+        if progresso and progresso.concluida:
+            continue
+        return redirect('licao', licao_id=licao.id)
+
+    return redirect('mapa_trilha', trilha_id=trilha_id)
 
 
 @login_required
@@ -206,8 +223,18 @@ def finalizar_licao(request, licao_id):
     xp_bonus = licao.xp_recompensa
     profile.xp_total += xp_bonus
     profile.pontos_para_ajuda += xp_bonus // 2
-    profile.streak_atual += 1
-    profile.ultimo_dia_atividade = timezone.now().date()
+
+    hoje = timezone.now().date()
+    if profile.ultimo_dia_atividade is None:
+        profile.streak_atual = 1
+    elif profile.ultimo_dia_atividade == hoje:
+        pass
+    elif profile.ultimo_dia_atividade == hoje - timedelta(days=1):
+        profile.streak_atual += 1
+    else:
+        profile.streak_atual = 1
+
+    profile.ultimo_dia_atividade = hoje
     profile.save()
 
     progresso.concluida = True

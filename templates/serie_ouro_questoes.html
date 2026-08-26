@@ -1,0 +1,341 @@
+{% extends 'base.html' %}
+{% load static %}
+{% block title %}{{ desafio.titulo }} - Série Ouro{% endblock %}
+{% block content %}
+{{ exercicios_data|json_script:"exercicios-data" }}
+<div class="flex min-h-screen bg-dark" x-data="serieOuroQuestoes()" x-init='init(JSON.parse(document.getElementById("exercicios-data").textContent), {{ desafio.id }})'>
+
+  {% include 'includes/sidebar.html' %}
+
+  <div class="flex-1 flex flex-col min-h-screen">
+
+    {% if ja_concluido %}
+    <div class="fixed inset-0 z-50 bg-dark flex items-center justify-center px-4">
+      <div class="card-glow max-w-md w-full text-center animate-boss-intro p-8">
+        <div class="w-20 h-20 rounded-full flex items-center justify-center mx-auto mb-6"
+             style="background: linear-gradient(135deg, rgba(255,215,0,0.1), rgba(255,107,53,0.1)); border: 2px solid rgba(255,215,0,0.3); box-shadow: 0 0 30px rgba(255,215,0,0.2);">
+          <span class="text-4xl">🏆</span>
+        </div>
+        <h2 class="font-heading text-xl md:text-2xl text-white mb-2">Desafio Já Concluído!</h2>
+        <p class="text-sm text-text-muted mb-8">Você já completou este desafio da Série Ouro.</p>
+        <a href="{% url 'serie_ouro' %}" class="btn-gold text-sm">Voltar à Série Ouro</a>
+      </div>
+    </div>
+    {% endif %}
+
+    {# Tela de Resultado #}
+    <template x-if="showResult">
+      <div class="fixed inset-0 z-50 bg-dark flex items-center justify-center px-4">
+        <div class="card-glow max-w-md w-full text-center animate-boss-intro p-8">
+          <div class="w-20 h-20 rounded-full flex items-center justify-center mx-auto mb-6"
+               style="background: linear-gradient(135deg, rgba(255,215,0,0.1), rgba(255,107,53,0.1)); border: 2px solid rgba(255,215,0,0.3); box-shadow: 0 0 30px rgba(255,215,0,0.2);">
+            <span class="text-4xl">🏆</span>
+          </div>
+          <h2 class="font-heading text-xl md:text-2xl text-white mb-2">Desafio Concluído!</h2>
+          <div class="py-4">
+            <span class="font-heading text-4xl md:text-5xl" style="background: linear-gradient(135deg, #ffd700, #ff6b35); -webkit-background-clip: text; -webkit-text-fill-color: transparent;" x-text="'+' + xpGained + ' XP'"></span>
+          </div>
+          <p class="text-sm text-text-muted mb-8">Parabéns! Você completou o desafio de elite.</p>
+          <a href="{% url 'serie_ouro' %}" class="btn-gold text-sm">Voltar à Série Ouro</a>
+        </div>
+      </div>
+    </template>
+
+    {# Header #}
+    <header class="fixed top-0 left-0 right-0 z-40 game-hud px-4 md:px-8 py-3 safe-top md:hidden">
+      <div class="max-w-[680px] mx-auto flex items-center justify-between">
+        <div class="flex items-center gap-3">
+          <a href="{% url 'serie_ouro' %}" class="text-text-muted hover:text-neon-gold transition-colors" onclick="if(typeof SoundEngine!=='undefined') SoundEngine.back()">
+            <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M15 19l-7-7 7-7"/>
+            </svg>
+          </a>
+          <span class="text-sm text-text-muted" x-text="'Questão ' + (currentQuestion + 1) + ' de ' + questions.length"></span>
+        </div>
+        <span class="text-sm font-semibold text-neon-gold" x-text="'+' + xpGained + ' XP'"></span>
+      </div>
+      <div class="max-w-[680px] mx-auto mt-2">
+        <div class="xp-bar">
+          <div class="xp-bar-fill" :style="'width: ' + progress + '%'" style="background: linear-gradient(90deg, #ffd700, #ff6b35);"></div>
+        </div>
+      </div>
+    </header>
+
+    <main class="pt-24 md:pt-20 pb-24 md:pb-16 px-4">
+      <div class="max-w-[680px] mx-auto">
+        <div class="card-neon p-5 md:p-8 relative" style="border-color: rgba(255,215,0,0.2);">
+
+          {# Pergunta #}
+          <div class="mb-6 md:mb-8">
+            <p class="text-xs uppercase tracking-wider mb-2" style="color: #ffd700;" x-text="'Questão ' + (currentQuestion + 1)"></p>
+            <h2 class="font-heading text-lg md:text-xl text-white leading-relaxed" x-text="currentQ?.pergunta || 'Carregando...'"></h2>
+          </div>
+
+          <div class="space-y-3 mb-6 md:mb-8">
+
+            {# MÚLTIPLA ESCOLHA / VF #}
+            <template x-if="currentQ?.tipo === 'MULTIPLA_ESCOLHA' || currentQ?.tipo === 'VF'">
+              <div>
+                <p x-show="currentQ?.tipo === 'VF'" class="font-body text-text mb-4 italic text-sm" x-text="'\"' + (currentQ?.dados?.afirmativa || '') + '\"'"></p>
+                <template x-for="(opcao, idx) in currentQ?.opcoes || []" :key="idx">
+                  <button class="w-full text-left px-4 md:px-5 py-3.5 md:py-4 rounded-md border transition-all duration-300 font-body text-sm md:text-base min-h-[48px]"
+                    :class="{
+                      'border-neon-gold bg-neon-gold/10 shadow-neon-gold text-white': selectedOption === idx && !answered,
+                      'border-dark-border bg-dark-elevated hover:border-neon-gold/50 hover:bg-neon-gold/5 text-text': selectedOption !== idx && !answered,
+                      'answer-correct text-neon-green': answered && idx === currentQ.correta,
+                      'answer-wrong shake text-neon-pink': answered && idx === selectedOption && idx !== currentQ.correta,
+                      'border-dark-border text-text-muted opacity-50': answered && idx !== selectedOption && idx !== currentQ.correta
+                    }"
+                    @click="if(!answered){ selectedOption = idx; if(typeof SoundEngine!=='undefined') SoundEngine.select() }"
+                    :disabled="answered">
+                    <span x-text="opcao"></span>
+                  </button>
+                </template>
+              </div>
+            </template>
+
+            {# ASSOCIAÇÃO #}
+            <template x-if="currentQ?.tipo === 'ASSOCIACAO'">
+              <div class="space-y-3">
+                <template x-for="(par, pIdx) in currentQ?.pares || []" :key="pIdx">
+                  <div class="flex items-center gap-2 md:gap-3">
+                    <span class="w-2/5 font-body text-text font-medium text-sm" x-text="par.esquerda"></span>
+                    <span class="text-text-muted">→</span>
+                    <select class="w-3/5 px-3 py-2.5 rounded-md border bg-dark-elevated text-text font-body text-sm transition-all duration-300"
+                      :class="{
+                        'border-neon-green bg-neon-green/5': answered && selectedPairs[pIdx] == currentQ.pares[pIdx].direita_correta,
+                        'border-neon-pink bg-neon-pink/5': answered && selectedPairs[pIdx] != currentQ.pares[pIdx].direita_correta,
+                        'border-dark-border focus:border-neon-gold/50': !answered
+                      }"
+                      x-model="selectedPairs[pIdx]"
+                      :disabled="answered">
+                      <option value="-1" disabled>Selecione...</option>
+                      <template x-for="(opt, oIdx) in currentQ?.shuffledRight || []" :key="oIdx">
+                        <option :value="opt" x-text="opt"></option>
+                      </template>
+                    </select>
+                  </div>
+                </template>
+              </div>
+            </template>
+
+            {# ORDENAÇÃO #}
+            <template x-if="currentQ?.tipo === 'ORDENACAO'">
+              <div class="space-y-2">
+                <template x-for="(itemIdx, pos) in currentQ?.currentOrder || []" :key="itemIdx">
+                  <div class="flex items-center gap-3 px-4 py-3 rounded-md border border-dark-border bg-dark-elevated">
+                    <span class="flex items-center justify-center w-8 h-8 rounded-full bg-neon-gold/10 text-neon-gold font-heading text-sm font-bold" x-text="pos + 1"></span>
+                    <span class="flex-1 font-body text-sm text-text" x-text="currentQ?.itens[itemIdx]"></span>
+                    <div class="flex flex-col gap-1" x-show="!answered">
+                      <button @click="moveUp(pos)" class="w-12 h-12 flex items-center justify-center rounded-lg hover:bg-neon-gold/10 text-text-muted hover:text-neon-gold transition-colors"
+                        :disabled="pos === 0">
+                        <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 15l7-7 7 7"/></svg>
+                      </button>
+                      <button @click="moveDown(pos)" class="w-12 h-12 flex items-center justify-center rounded-lg hover:bg-neon-gold/10 text-text-muted hover:text-neon-gold transition-colors"
+                        :disabled="pos === currentQ?.currentOrder?.length - 1">
+                        <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"/></svg>
+                      </button>
+                    </div>
+                  </div>
+                </template>
+              </div>
+            </template>
+          </div>
+
+          {# Bottom actions #}
+          <div class="flex items-center justify-between gap-3">
+            <div class="relative">
+              <button class="flex items-center gap-2 px-3 md:px-4 py-2 rounded-full border border-neon-purple/30 bg-neon-purple/5 text-neon-purple font-body text-xs md:text-sm font-medium hover:bg-neon-purple/10 transition-all duration-300"
+                @click="showDica = !showDica">
+                <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M9.663 17h4.673M12 3v1m6.364 1.636l-.707.707M21 12h-1M4 12H3m3.343-5.657l-.707-.707m2.828 9.9a5 5 0 117.072 0l-.548.547A3.374 3.374 0 0014 18.469V19a2 2 0 11-4 0v-.531c0-.895-.356-1.754-.988-2.386l-.548-.547z"/>
+                </svg>
+                Dica
+              </button>
+              <div x-show="showDica" x-transition
+                @click.outside="showDica = false"
+                class="absolute bottom-full left-0 mb-2 w-64 md:w-72 bg-dark-elevated border border-neon-purple/20 rounded-md p-4 shadow-soft z-20">
+                <p class="font-body text-sm text-text">
+                  <span class="font-medium text-neon-purple">Dica:</span>
+                  <span x-text="currentQ?.dica || 'Leia o texto base com atenção.'"></span>
+                </p>
+              </div>
+            </div>
+
+            <template x-if="!answered">
+              <button class="btn-primary text-sm"
+                :class="{ 'opacity-40 cursor-not-allowed': !canVerify }"
+                :disabled="!canVerify" @click="checkAnswer()"
+                style="background: linear-gradient(135deg, #ffd700, #ff6b35);">
+                <span x-show="!checking">Verificar</span>
+                <span x-show="checking">Verificando...</span>
+              </button>
+            </template>
+            <template x-if="answered">
+              <div class="flex items-center gap-3">
+                <span class="text-sm font-medium"
+                  :class="correct ? 'text-neon-green' : 'text-neon-pink'"
+                  x-text="correct ? '✅ Acertou!' : '❌ Errou!'"></span>
+                <button class="btn-primary text-sm" @click="nextQuestion()"
+                  style="background: linear-gradient(135deg, #ffd700, #ff6b35);">Continuar</button>
+              </div>
+            </template>
+          </div>
+        </div>
+      </div>
+    </main>
+  </div>
+</div>
+{% endblock %}
+
+{% block extra_scripts %}
+<script>
+  document.addEventListener('alpine:init', () => {
+    Alpine.data('serieOuroQuestoes', () => ({
+      currentQuestion: 0,
+      selectedOption: null,
+      selectedPairs: [],
+      answered: false,
+      correct: null,
+      showDica: false,
+      showResult: false,
+      xpGained: 0,
+      questions: [],
+      desafioId: null,
+      checking: false,
+      finalizing: false,
+      combo: 0,
+      init(questions, desafioId) {
+        this.desafioId = desafioId
+        this.questions = questions.map(q => {
+          const pares = q.pares || q.dados?.pares || []
+          const shuffledRight = q.shuffled_right || (pares.length ? [...pares.map(p => p.direita_correta)].sort(() => Math.random() - 0.5) : [])
+          const itens = q.itens || q.dados?.itens || []
+          const shuffledOrder = q.shuffled_order || itens.map((_, i) => i).sort(() => Math.random() - 0.5)
+          return {
+            pergunta: q.pergunta || q.enunciado,
+            opcoes: q.dados?.alternativas || [],
+            correta: q.dados?.indice_correto || 0,
+            dica: q.dados?.dica || '',
+            tipo: q.tipo,
+            id: q.id,
+            dados: q.dados || {},
+            pares,
+            shuffledRight,
+            itens,
+            currentOrder: [...shuffledOrder],
+          }
+        })
+        this.resetQuestionState()
+      },
+      resetQuestionState() {
+        this.selectedOption = null
+        this.selectedPairs = this.currentQ?.pares ? this.currentQ.pares.map(() => '-1') : []
+      },
+      get progress() {
+        return this.questions.length ? ((this.currentQuestion) / this.questions.length) * 100 : 0
+      },
+      get currentQ() {
+        return this.questions[this.currentQuestion]
+      },
+      get canVerify() {
+        const tipo = this.currentQ?.tipo
+        if (tipo === 'ASSOCIACAO') return this.selectedPairs.every(v => v !== '-1' && v !== -1)
+        if (tipo === 'ORDENACAO') return true
+        return this.selectedOption !== null
+      },
+      moveUp(pos) {
+        if (pos <= 0) return
+        const order = this.currentQ.currentOrder
+        ;[order[pos - 1], order[pos]] = [order[pos], order[pos - 1]]
+        this.currentQ.currentOrder = [...order]
+      },
+      moveDown(pos) {
+        if (pos >= this.currentQ.currentOrder.length - 1) return
+        const order = this.currentQ.currentOrder
+        ;[order[pos], order[pos + 1]] = [order[pos + 1], order[pos]]
+        this.currentQ.currentOrder = [...order]
+      },
+      getResposta() {
+        const tipo = this.currentQ.tipo
+        if (tipo === 'ASSOCIACAO') return this.selectedPairs
+        if (tipo === 'ORDENACAO') return this.currentQ.currentOrder
+        return this.selectedOption
+      },
+      checkAnswer() {
+        if (this.checking) return
+        this.checking = true
+        fetch('/gamificacao/serie-ouro/' + this.desafioId + '/verificar/', {
+          method: 'POST',
+          headers: {
+            'X-CSRFToken': '{{ csrf_token }}',
+            'Content-Type': 'application/json',
+          },
+          body: JSON.stringify({
+            exercicio_id: this.currentQ.id,
+            resposta: this.getResposta(),
+          }),
+        })
+        .then(r => r.json())
+        .then(data => {
+          this.answered = true
+          this.correct = data.correta
+          if (data.correta) {
+            this.combo++
+            const multiplier = 1 + (this.combo * 0.1)
+            this.xpGained += Math.round(data.xp_ganho * multiplier)
+            if (typeof SoundEngine !== 'undefined') {
+              SoundEngine.correct()
+              if (this.combo >= 2) SoundEngine.combo(this.combo)
+            }
+            const el = document.querySelector('.card-neon')
+            if (el) {
+              const rect = el.getBoundingClientRect()
+              if (typeof triggerConfetti !== 'undefined') {
+                triggerConfetti(rect.left + rect.width/2, rect.top + rect.height/2, this.combo >= 3 ? 50 : 25)
+              }
+            }
+          } else {
+            this.combo = 0
+            if (typeof SoundEngine !== 'undefined') SoundEngine.wrong()
+          }
+          this.checking = false
+        })
+        .catch(() => { this.checking = false })
+      },
+      nextQuestion() {
+        if (this.currentQuestion < this.questions.length - 1) {
+          this.currentQuestion++
+          this.answered = false
+          this.correct = null
+          this.showDica = false
+          this.resetQuestionState()
+        } else {
+          if (this.finalizing) return
+          this.finalizing = true
+          fetch('/gamificacao/serie-ouro/' + this.desafioId + '/finalizar/', {
+            method: 'POST',
+            headers: { 'X-CSRFToken': '{{ csrf_token }}' },
+          })
+          .then(r => r.json())
+          .then(data => {
+            this.xpGained = data.xp_sessao
+            this.showResult = true
+            this.finalizing = false
+            if (typeof SoundEngine !== 'undefined') SoundEngine.levelUp()
+            if (typeof triggerConfetti !== 'undefined') {
+              setTimeout(() => {
+                const w = window.innerWidth, h = window.innerHeight
+                triggerConfetti(w/2, h/2, 60)
+                setTimeout(() => triggerConfetti(w * 0.3, h * 0.4, 30), 200)
+                setTimeout(() => triggerConfetti(w * 0.7, h * 0.4, 30), 400)
+              }, 300)
+            }
+          })
+          .catch(() => { this.showResult = true; this.finalizing = false })
+        }
+      }
+    }))
+  })
+</script>
+{% endblock %}

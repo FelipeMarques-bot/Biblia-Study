@@ -41,7 +41,7 @@ RESPOSTAS_POR_TOPICO = {
     'oracao': {
         'respostas': [
             'A oração é a respiração da alma cristã. "Em tudo pela oração e súplica, com ações de graças, apresentai os vossos pedidos a Deus" (Fp 4:6). Não há situação que não possa ser levada a Deus em oração.\n\nCalvino dizia que a oração é "a conversa íntima e espontânea que temos com Deus sobre tudo o que nos aflige." Não precisa ser elaborada — Deus quer autenticidade.\n\nJesus nos ensinou a orar com o "Pai Nosso" (Mt 6:9-13), que contém tudo o que precisamos: adoração, pedido, perdão e proteção.\n\n📖 *Referências*: Fp 4:6-7, Mt 6:9-13, 1 Ts 5:17',
-            'Ore sem cessar (1 Ts 5:17). Isso não significa repetir palavras o dia todo, mas manter uma atitude constante de dependência de Deus. Cada pensamento pode ser levado a Ele.\n\nSpurgeon dizia: "Oração é a chave do dia e a tranca da noite." Comece o dia em oração, e você verá a diferença em tudo.\n\nQue tal reservar 10 minutos hoje para orar com atenção? Deus ouve e responde按照 Sua vontade.\n\n📖 *Referências*: 1 Ts 5:17, Fp 4:6, Mt 7:7',
+            'Ore sem cessar (1 Ts 5:17). Isso não significa repetir palavras o dia todo, mas manter uma atitude constante de dependência de Deus. Cada pensamento pode ser levado a Ele.\n\nSpurgeon dizia: "Oração é a chave do dia e a tranca da noite." Comece o dia em oração, e você verá a diferença em tudo.\n\nQue tal reservar 10 minutos hoje para orar com atenção? Deus ouve e responde de acordo com Sua vontade.\n\n📖 *Referências*: 1 Ts 5:17, Fp 4:6, Mt 7:7',
         ],
         'passagens': ['Fp 4:6-7', 'Mt 6:9-13', '1 Ts 5:17', 'Mt 7:7', 'Tg 5:16'],
     },
@@ -61,7 +61,7 @@ RESPOSTAS_POR_TOPICO = {
     },
     'espirito': {
         'respostas': [
-            'O Espírito Santo é a pessoa da Trindade que habita no crente. "Não vos esqueçais doEspírito Santo" (Hb 2:4). Ele convence do pecado, regenera, santifica e concede dons.\n\nCalvino ensinava que o Espírito é "o sentido espiritual" que nos permite compreender as Escrituras. Sem Ele, a Bíblia é letra morta.\n\nNão viva sem a direção do Espírito. Peça-Lhe que guie seus passos e renove sua mente cada dia.\n\n📖 *Referências*: Hb 2:4, Jo 16:13, Rm 8:9',
+            'O Espírito Santo é a pessoa da Trindade que habita no crente. "Não vos esqueçais do Espírito Santo" (Hb 2:4). Ele convence do pecado, regenera, santifica e concede dons.\n\nCalvino ensinava que o Espírito é "o sentido espiritual" que nos permite compreender as Escrituras. Sem Ele, a Bíblia é letra morta.\n\nNão viva sem a direção do Espírito. Peça-Lhe que guie seus passos e renove sua mente cada dia.\n\n📖 *Referências*: Hb 2:4, Jo 16:13, Rm 8:9',
             'O Espírito Santo é o consolador prometido por Jesus. "Outro Consolador, para que fique convosco para sempre" (Jo 14:16). Ele não é uma força impessoal, mas uma pessoa que habita em nós.\n\nTozer dizia: "O Espírito Santo não é apenas um invitado, mas o Senhor da casa." Devemos dar-Lhe controle total da nossa vida.\n\nPeça ao Espírito que lhe mostre verdades da Palavra hoje.\n\n📖 *Referências*: Jo 14:16, Jo 16:13, 1 Co 6:19',
         ],
         'passagens': ['Jo 14:16', 'Jo 16:13', 'Rm 8:9', 'Gl 5:22-23', 'Ef 5:18'],
