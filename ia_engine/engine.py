@@ -132,13 +132,13 @@ RESPOSTAS_POR_TOPICO = {
     'sabedoria': {
         'respostas': [
             'O temor do Senhor é o princípio da sabedoria (Pv 1:7). A verdadeira sabedoria não vem da experiência humana, mas do reconhecimento da soberania de Deus.\n\nSalomão pediu sabedoria e Deus lhe deu um coração entendido. Se você pedir, Deus dará generosamente (Tg 1:5).\n\nLeia Proverbios todos os dias. É o manual de sabedoria prática para a vida.\n\n📖 *Referências*: Pv 1:7, Tg 1:5, Pv 4:7',
-            'A sabedoria bíblica é aplicação do temor de Deus à vida cotidiana. Não é intelgência, mas discernimento espiritual.\n\n"A sabedoria lá de cima é, primeiramente pura, depois pacífica, moderada, persuasiva" (Tg 3:17). Note que a sabedoria divina começa com pureza.\n\nBusque sabedoria como quem busca ouro. Ela é mais preciosa que as riquezas deste mundo.\n\n📖 *Referências*: Tg 3:17, Pv 3:13-15, Pv 2:1-6',
+            'A sabedoria bíblica é aplicação do temor de Deus à vida cotidiana. Não é inteligência, mas discernimento espiritual.\n\n"A sabedoria lá de cima é, primeiramente pura, depois pacífica, moderada, persuasiva" (Tg 3:17). Note que a sabedoria divina começa com pureza.\n\nBusque sabedoria como quem busca ouro. Ela é mais preciosa que as riquezas deste mundo.\n\n📖 *Referências*: Tg 3:17, Pv 3:13-15, Pv 2:1-6',
         ],
         'passagens': ['Pv 1:7', 'Tg 1:5', 'Tg 3:17', 'Pv 3:13-15', 'Pv 2:1-6'],
     },
 }
 
-# Resposta genérica quando o topico nao e detectado
+# Resposta genérica quando o tópico não é detectado
 RESPOSTA_GENERICA = (
     "Que pergunta interessante! A Bíblia é rica em ensinamentos sobre muitos assuntos. "
     "Gostaria de compartilhar mais sobre o que está em seu coração? Estou aqui para estudar a Palavra com você.\n\n"
@@ -162,7 +162,7 @@ def gerar_dica_exercicio(exercicio, resposta_usuario=None):
     if not LLM_API_KEY:
         return gerar_dica_fallback(exercicio)
     try:
-        prompt = f"""Voce e um tutor biblico reformado. De uma dica curta e pastoral:
+        prompt = f"""Você é um tutor bíblico reformado. Dê uma dica curta e pastoral:
 Pergunta: {exercicio.enunciado}
 Resposta: {resposta_usuario or 'N/A'}
 Dica (max 2 frases):"""
@@ -176,7 +176,7 @@ def gerar_explicacao_licao(licao):
     if not LLM_API_KEY:
         return f'{licao.titulo}: {licao.resumo or licao.descricao}'
     try:
-        prompt = f"""Explique esta licao biblica de forma simples e pastoral (max 4 frases):
+        prompt = f"""Explique esta lição bíblica de forma simples e pastoral (máx 4 frases):
 Titulo: {licao.titulo}
 Texto Base: {licao.texto_base}
 Objetivo: {licao.objetivo}
@@ -188,7 +188,7 @@ Explicacao centrada em Cristo:"""
 
 
 def _detectar_topicos_da_mensagem(mensagem):
-    """Detecta topicos na mensagem do usuario."""
+    """Detecta tópicos na mensagem do usuário."""
     msg_lower = mensagem.lower()
     topicos = []
     keywords_map = {
@@ -222,10 +222,23 @@ def _detectar_topicos_da_mensagem(mensagem):
 
 
 def gerar_resposta_chat(mensagem, historico=None, tema='fe', categoria='devocional', faixa_etaria='adulto', nivel='iniciante'):
-    """Gera resposta do chat devocional — respostas locais por tópico."""
+    """Gera resposta do chat devocional — respostas locais por tópico, respeitando tema e categoria."""
     try:
         topicos = _detectar_topicos_da_mensagem(mensagem)
-        return _gerar_resposta_fallback(mensagem, topicos)
+
+        # Priorizar o tema selecionado se não detectado nenhum tópico específico
+        if tema and tema not in topicos:
+            topicos.insert(0, tema)
+
+        # Adaptar resposta conforme categoria
+        resposta = _gerar_resposta_fallback(mensagem, topicos)
+
+        # Adicionar contextualização da categoria
+        prefixo_categoria = _prefixo_por_categoria(categoria)
+        if prefixo_categoria:
+            resposta = prefixo_categoria + "\n\n" + resposta
+
+        return resposta
     except Exception as e:
         logger.error(f'Erro no chat fallback: {e}')
         return (
@@ -233,6 +246,18 @@ def gerar_resposta_chat(mensagem, historico=None, tema='fe', categoria='devocion
             "Gostaria de compartilhar mais sobre o que está em seu coração? Estou aqui para estudar a Palavra com você.\n\n"
             "📖 *Referências sugeridas*: Mt 6:33, Tg 1:5, Sl 119:105"
         )
+
+
+def _prefixo_por_categoria(categoria):
+    """Retorna um prefixo contextual conforme a categoria selecionada."""
+    prefixos = {
+        'devocional': None,  # Sem prefixo, resposta direta
+        'estudo': "Vamos aprofundar esse estudo bíblico:",
+        'oracao': "Vamos orientar sua oração sobre esse tema:",
+        'conselho': "Com compaixão e baseado na Palavra:",
+        'teologia': "Do ponto de vista da teologia reformada:",
+    }
+    return prefixos.get(categoria)
 
 
 def _gerar_resposta_fallback(mensagem, topicos):
@@ -272,8 +297,8 @@ def gerar_devocional(tema, faixa_etaria='adulto', nivel='iniciante'):
 
     if LLM_API_KEY:
         try:
-            prompt = f"""Crie um devocional biblico completo (5-7 frases) para {faixa_etaria} sobre "{tema}".
-Inclua: titulo, referencia biblica, reflexao e oracao.
+            prompt = f"""Crie um devocional bíblico completo (5-7 frases) para {faixa_etaria} sobre "{tema}".
+Inclua: título, referência bíblica, reflexão e oração.
 Tom pastoral reformado, centrado em Cristo.
 Devocional:"""
             return _call_llm(prompt, temperature=0.5)

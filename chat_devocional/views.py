@@ -38,28 +38,28 @@ def chat_view(request):
 
     devocional_texto = _build_devocional_texto(devocional_hoje)
 
-    # Topicos do chat
+    # Tópicos do chat
     categorias = [
-        {'id': 'devocional', 'nome': 'Devocional', 'icon': '📖', 'desc': 'Meditacao diaria na Palavra'},
-        {'id': 'estudo', 'nome': 'Estudo Biblico', 'icon': '📚', 'desc': 'Aprofunde seu conhecimento'},
-        {'id': 'oracao', 'nome': 'Oracao', 'icon': '🙏', 'desc': 'Guia de oracao e intercessao'},
-        {'id': 'conselho', 'nome': 'Conselho Pastoral', 'icon': '💛', 'desc': 'Acolhimento e orientacao'},
-        {'id': 'teologia', 'nome': 'Teologia', 'icon': '🎓', 'desc': 'Doutrinas da fe reformada'},
+        {'id': 'devocional', 'nome': 'Devocional', 'icon': '📖', 'desc': 'Meditação diária na Palavra'},
+        {'id': 'estudo', 'nome': 'Estudo Bíblico', 'icon': '📚', 'desc': 'Aprofunde seu conhecimento'},
+        {'id': 'oracao', 'nome': 'Oração', 'icon': '🙏', 'desc': 'Guia de oração e intercessão'},
+        {'id': 'conselho', 'nome': 'Conselho Pastoral', 'icon': '💛', 'desc': 'Acolhimento e orientação'},
+        {'id': 'teologia', 'nome': 'Teologia', 'icon': '🎓', 'desc': 'Doutrinas da fé reformada'},
     ]
 
     # Temas para o devocional
     temas = [
-        {'id': 'fe', 'nome': 'Fe', 'icon': '✝️'},
-        {'id': 'esperanca', 'nome': 'Esperanca', 'icon': '🌟'},
-        {'id': 'gratidao', 'nome': 'Gratidao', 'icon': '🙏'},
-        {'id': 'perdao', 'nome': 'Perdao', 'icon': '💫'},
-        {'id': 'oracao', 'nome': 'Oracao', 'icon': '🕯️'},
+        {'id': 'fe', 'nome': 'Fé', 'icon': '✝️'},
+        {'id': 'esperanca', 'nome': 'Esperança', 'icon': '🌟'},
+        {'id': 'gratidao', 'nome': 'Gratidão', 'icon': '🙏'},
+        {'id': 'perdao', 'nome': 'Perdão', 'icon': '💫'},
+        {'id': 'oracao', 'nome': 'Oração', 'icon': '🕯️'},
         {'id': 'amor', 'nome': 'Amor', 'icon': '❤️'},
         {'id': 'cristo', 'nome': 'Cristo', 'icon': '👑'},
-        {'id': 'familia', 'nome': 'Familia', 'icon': '👨‍👩‍👧‍👦'},
+        {'id': 'familia', 'nome': 'Família', 'icon': '👨‍👩‍👧‍👦'},
     ]
 
-    # Historico de devocionais (ultimos 7 dias)
+    # Histórico de devocionais (últimos 7 dias)
     historico_dev = get_historico_devocional(request.user, dias=7)
 
     context = {
@@ -80,7 +80,7 @@ def chat_view(request):
 def enviar_mensagem(request, sessao_id=None):
     """Envia mensagem e retorna resposta do bot."""
     if request.method != 'POST':
-        return JsonResponse({'erro': 'Metodo nao permitido'}, status=405)
+        return JsonResponse({'erro': 'Método não permitido'}, status=405)
 
     try:
         data = json.loads(request.body)
@@ -150,7 +150,7 @@ def enviar_mensagem(request, sessao_id=None):
 def nova_sessao(request):
     """Cria uma nova sessao devocional."""
     if request.method != 'POST':
-        return JsonResponse({'erro': 'Metodo nao permitido'}, status=405)
+        return JsonResponse({'erro': 'Método não permitido'}, status=405)
 
     try:
         data = json.loads(request.body)
