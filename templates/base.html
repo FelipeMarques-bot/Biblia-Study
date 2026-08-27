@@ -173,6 +173,13 @@
   <script>
     function cycleSoundState() {
       if (typeof SoundEngine === 'undefined') return;
+      // Ligado, mas a música não está tocando (autoplay bloqueado pelo navegador)
+      // → o clique deve INICIAR a música, não desligá-la.
+      if (SoundEngine.getState() === 'on' && !SoundEngine.isMusicPlaying()) {
+        SoundEngine.fadeInMusic();
+        updateSoundIcons(SoundEngine.getState());
+        return;
+      }
       const newState = SoundEngine.cycleState();
       updateSoundIcons(newState);
       if (newState === 'on') SoundEngine.fadeInMusic();

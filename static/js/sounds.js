@@ -87,6 +87,23 @@ const SoundEngine = (() => {
       document.addEventListener('touchstart', () => getCtx(), { once: true })
       initMp3()
       loadState()
+      this.autoStartMusic()
+    },
+
+    // ── Auto-start na troca de página: uma vez ligado, permanece ──
+    // O navegador bloqueia áudio sem gesto do usuário, então tentamos na
+    // carga e, se bloqueado, reaproveitamos o PRIMEIRO clique/toque na página.
+    autoStartMusic() {
+      if (localStorage.getItem('sound_state') === 'off') return
+      const self = this
+      const tryStart = () => {
+        if (!musicPlaying) self.fadeInMusic()
+        document.removeEventListener('click', tryStart)
+        document.removeEventListener('touchstart', tryStart)
+      }
+      this.fadeInMusic()
+      document.addEventListener('click', tryStart, { once: true })
+      document.addEventListener('touchstart', tryStart, { once: true })
     },
 
     // ── 2-state toggle: on ↔ off ──
@@ -257,14 +274,15 @@ const SoundEngine = (() => {
       if (!musicEnabled) return
       if (mp3.background) {
         mp3.background.volume = 0
-        mp3.background.play().catch(() => {})
+        mp3.background.play().then(() => {
+          musicPlaying = true
+        }).catch(() => {})
         let vol = 0
         const fade = setInterval(() => {
           vol = Math.min(vol + 0.02, 0.15)
           mp3.background.volume = vol
           if (vol >= 0.15) clearInterval(fade)
         }, 100)
-        musicPlaying = true
         return
       }
       if (!musicGain) getCtx()
