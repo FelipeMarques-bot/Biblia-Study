@@ -20,7 +20,7 @@
     {% if filtros.tipo %}<a href="{% url 'painel:recompensas' %}" class="p-btn p-btn-ghost">Limpar</a>{% endif %}
   </form>
 
-  <div class="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-4 animate-slide-up" style="animation-delay:0.05s">
+  <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4 animate-slide-up" style="animation-delay:0.05s">
     {% for r in itens %}
     <div class="panel-card p-5 reward-tile relative overflow-hidden">
       {% if r.ativo %}<div class="absolute top-4 right-4"><span class="p-badge p-badge-green">● Ativa</span></div>{% else %}<div class="absolute top-4 right-4"><span class="p-badge p-badge-gray">Inativa</span></div>{% endif %}

@@ -21,7 +21,7 @@
     {% if filtros.ativo %}<a href="{% url 'painel:trilhas' %}" class="p-btn p-btn-ghost">Limpar</a>{% endif %}
   </form>
 
-  <div class="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-4 animate-slide-up" style="animation-delay:0.05s">
+  <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4 animate-slide-up" style="animation-delay:0.05s">
     {% for t in itens %}
     <div class="panel-card p-5 hover:border-neon-blue/40 transition-colors">
       <div class="flex items-start justify-between gap-3 mb-4">
