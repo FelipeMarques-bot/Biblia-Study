@@ -34,6 +34,7 @@
         <p class="text-[11px] text-text-muted mt-3 max-w-[220px]">
           Ao escanear, o PIN <span class="text-neon-blue font-mono">{{ pin }}</span> será preenchido automaticamente — basta digitar seu nome e tocar em <span class="text-neon-blue">Entrar na Sala</span>.
         </p>
+        <a href="{% url 'quiz_join' %}?pin={{ pin }}" class="block text-[11px] text-neon-blue underline mt-1">Sem câmera? Clique aqui e digite o nome</a>
       </div>
     </div>
 
@@ -156,7 +157,7 @@ function quizLobby() {
 {% endblock %}
 
 {% block extra_scripts %}
-<script src="https://cdn.jsdelivr.net/npm/qrcode@1.5.4/build/qrcode.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/qrcode@1.5.1/build/qrcode.min.js"></script>
 <script>
 document.addEventListener('DOMContentLoaded', () => {
   const canvas = document.getElementById('quiz-qr');
