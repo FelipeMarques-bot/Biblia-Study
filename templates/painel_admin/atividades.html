@@ -1,0 +1,91 @@
+{% extends 'painel_admin/base_admin.html' %}
+{% load static %}
+
+{% block title %}Atividades{% endblock %}
+{% block header_title %}Atividades{% endblock %}
+
+{% block content %}
+<div class="space-y-5">
+
+  <form method="get" class="panel-card p-4 animate-slide-up">
+    <div class="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-5 gap-3">
+      <div class="relative xl:col-span-2">
+        <svg class="w-4 h-4 absolute left-3.5 top-1/2 -translate-y-1/2 text-text-muted" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.7" d="M21 21l-5.197-5.197m0 0A7.5 7.5 0 105.196 5.196a7.5 7.5 0 0010.607 10.607z"/></svg>
+        <input type="text" name="q" value="{{ filtros.q }}" placeholder="Usuário ou descrição..." class="filter-input pl-10">
+      </div>
+      <select name="tipo" class="filter-select">
+        <option value="">Todos os tipos</option>
+        {% for v, l in tipos %}
+          <option value="{{ v }}" {% if filtros.tipo == v %}selected{% endif %}>{{ l }}</option>
+        {% endfor %}
+      </select>
+      <div>
+        <input type="date" name="de" value="{{ filtros.de }}" class="filter-input" title="De">
+      </div>
+      <div class="flex gap-2">
+        <input type="date" name="ate" value="{{ filtros.ate }}" class="filter-input flex-1" title="Até">
+        <button type="submit" class="p-btn p-btn-blue shrink-0">
+          <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.7" d="M3 4a1 1 0 011-1h16a1 1 0 01.832 1.555L15 12.793V19a1 1 0 01-.293.707l-4 4A1 1 0 019 23v-10.207L2.168 4.555A1 1 0 013 4z"/></svg>
+        </button>
+        {% if filtros.q or filtros.tipo or filtros.de or filtros.ate %}
+          <a href="{% url 'painel:atividades' %}" class="p-btn p-btn-ghost shrink-0">Limpar</a>
+        {% endif %}
+      </div>
+    </div>
+  </form>
+
+  <div class="animate-slide-up" style="animation-delay:0.05s">
+    <p class="text-[13px] text-text-muted mb-3"><span class="text-white font-semibold">{{ paginator.count }}</span> atividade{{ paginator.count|pluralize }}</p>
+    <div class="admin-table-wrap">
+      <table class="admin-table">
+        <thead>
+          <tr><th>Data / Hora</th><th>Usuário</th><th>Tipo</th><th>Descrição</th><th class="text-right">XP</th></tr>
+        </thead>
+        <tbody>
+          {% for a in atividades %}
+          <tr>
+            <td class="text-text-muted whitespace-nowrap">{{ a.data_hora|date:"d/m/Y H:i" }}</td>
+            <td>
+              <a href="{% url 'painel:usuario_detalhe' a.usuario_id %}" class="link-user inline-flex items-center gap-2">
+                <span class="avatar" style="width:28px;height:28px;font-size:12px">{{ a.usuario.username|slice:":1"|upper }}</span>{{ a.usuario.username }}
+              </a>
+            </td>
+            <td><span class="p-badge p-badge-blue">{{ a.tipo_atividade|atividade_icon }} {{ a.tipo_atividade|atividade_label }}</span></td>
+            <td class="max-w-[300px] truncate">{{ a.descricao_resumida|default:"—" }}</td>
+            <td class="text-right text-neon-green font-semibold">+{{ a.xp_ganho }}</td>
+          </tr>
+          {% empty %}
+          <tr><td colspan="5" class="text-center py-14">
+            <span class="text-4xl block mb-3">🕰️</span>
+            <p class="text-text-muted">Nenhuma atividade encontrada.</p>
+          </td></tr>
+          {% endfor %}
+        </tbody>
+      </table>
+    </div>
+
+    {% if paginas|length > 1 %}
+    <div class="flex flex-wrap items-center justify-between gap-3 mt-4">
+      <p class="text-[12px] text-text-muted">Página {{ atividades.number }} de {{ atividades.paginator.num_pages }}</p>
+      <div class="p-pagination">
+        {% if atividades.has_previous %}
+          <a class="p-page" href="?{% if filtros.q %}q={{ filtros.q }}&{% endif %}{% if filtros.tipo %}tipo={{ filtros.tipo }}&{% endif %}{% if filtros.de %}de={{ filtros.de }}&{% endif %}{% if filtros.ate %}ate={{ filtros.ate }}&{% endif %}pagina={{ atividades.previous_page_number }}">‹</a>
+        {% endif %}
+        {% for p in paginas %}
+          {% if p %}
+            {% if p == atividades.number %}
+              <span class="p-page current">{{ p }}</span>
+            {% else %}
+              <a class="p-page" href="?{% if filtros.q %}q={{ filtros.q }}&{% endif %}{% if filtros.tipo %}tipo={{ filtros.tipo }}&{% endif %}{% if filtros.de %}de={{ filtros.de }}&{% endif %}{% if filtros.ate %}ate={{ filtros.ate }}&{% endif %}pagina={{ p }}">{{ p }}</a>
+            {% endif %}
+          {% else %}<span class="p-page ellipsis">…</span>{% endif %}
+        {% endfor %}
+        {% if atividades.has_next %}
+          <a class="p-page" href="?{% if filtros.q %}q={{ filtros.q }}&{% endif %}{% if filtros.tipo %}tipo={{ filtros.tipo }}&{% endif %}{% if filtros.de %}de={{ filtros.de }}&{% endif %}{% if filtros.ate %}ate={{ filtros.ate }}&{% endif %}pagina={{ atividades.next_page_number }}">›</a>
+        {% endif %}
+      </div>
+    </div>
+    {% endif %}
+  </div>
+</div>
+{% endblock %}

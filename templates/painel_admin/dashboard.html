@@ -1,0 +1,288 @@
+{% extends 'painel_admin/base_admin.html' %}
+{% load static %}
+
+{% block title %}Visão Geral{% endblock %}
+{% block header_title %}Visão Geral{% endblock %}
+
+{% block extra_head %}
+<script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.1/dist/chart.umd.min.js"></script>
+{{ dias_labels|json_script:"dias-labels" }}
+{{ registros_serie|json_script:"registros-serie" }}
+{{ atividades_por_tipo|json_script:"atividades-tipo" }}
+{{ top_nomes|json_script:"top-nomes" }}
+{{ top_xp|json_script:"top-xp" }}
+{{ semana_labels|json_script:"semana-labels" }}
+{{ semana_serie|json_script:"semana-serie" }}
+{% endblock %}
+
+{% block content %}
+<div class="space-y-6">
+
+  <div class="flex flex-wrap items-end justify-between gap-4 animate-slide-up">
+    <div>
+      <h2 class="font-heading text-xl md:text-2xl text-white">Painel administrativo</h2>
+      <p class="text-text-muted text-sm mt-1">Acompanhe o crescimento da plataforma em tempo real</p>
+    </div>
+    <div class="flex items-center gap-2 text-xs text-text-muted">
+      <span class="w-2 h-2 rounded-full bg-neon-green animate-pulse"></span>
+      Dados atualizados ao vivo
+    </div>
+  </div>
+
+  {# ===== KPIs ===== #}
+  <div class="grid grid-cols-2 lg:grid-cols-4 gap-4 animate-slide-up" style="animation-delay:0.05s">
+    <div class="kpi-card kpi-blue">
+      <div class="flex items-center justify-between mb-3">
+        <span class="kpi-icon">👥</span>
+        <span class="text-[11px] text-text-muted">Total</span>
+      </div>
+      <p class="kpi-value">{{ kpi.total_usuarios }}</p>
+      <p class="text-[13px] text-text-muted mt-1">Usuários registrados</p>
+    </div>
+    <div class="kpi-card kpi-green">
+      <div class="flex items-center justify-between mb-3">
+        <span class="kpi-icon">🚀</span>
+        <span class="text-[11px] text-text-muted">Hoje</span>
+      </div>
+      <p class="kpi-value">{{ kpi.novos_hoje }}</p>
+      <p class="text-[13px] text-text-muted mt-1">Novos usuários</p>
+    </div>
+    <div class="kpi-card kpi-purple">
+      <div class="flex items-center justify-between mb-3">
+        <span class="kpi-icon">⚡</span>
+        <span class="text-[11px] text-text-muted">Hoje</span>
+      </div>
+      <p class="kpi-value">{{ kpi.ativos_hoje }}</p>
+      <p class="text-[13px] text-text-muted mt-1">Usuários ativos hoje</p>
+    </div>
+    <div class="kpi-card kpi-gold">
+      <div class="flex items-center justify-between mb-3">
+        <span class="kpi-icon">💎</span>
+        <span class="text-[11px] text-text-muted">Acumulado</span>
+      </div>
+      <p class="kpi-value">{{ kpi.xp_total }}</p>
+      <p class="text-[13px] text-text-muted mt-1">XP total da plataforma</p>
+    </div>
+    <div class="kpi-card kpi-orange">
+      <div class="flex items-center justify-between mb-3">
+        <span class="kpi-icon">📖</span>
+        <span class="text-[11px] text-text-muted">Concluídas</span>
+      </div>
+      <p class="kpi-value">{{ kpi.licoes_concluidas }}</p>
+      <p class="text-[13px] text-text-muted mt-1">Lições concluídas</p>
+    </div>
+    <div class="kpi-card kpi-blue">
+      <div class="flex items-center justify-between mb-3">
+        <span class="kpi-icon">🔥</span>
+        <span class="text-[11px] text-text-muted">Média</span>
+      </div>
+      <p class="kpi-value">{{ kpi.media_streak }}</p>
+      <p class="text-[13px] text-text-muted mt-1">Streak médio (máx {{ kpi.maior_streak }})</p>
+    </div>
+    <div class="kpi-card kpi-pink">
+      <div class="flex items-center justify-between mb-3">
+        <span class="kpi-icon">🏆</span>
+        <span class="text-[11px] text-text-muted">Total</span>
+      </div>
+      <p class="kpi-value">{{ kpi.desafios_concluidos }}</p>
+      <p class="text-[13px] text-text-muted mt-1">Desafios diários concluídos</p>
+    </div>
+    <div class="kpi-card kpi-green">
+      <div class="flex items-center justify-between mb-3">
+        <span class="kpi-icon">🏅</span>
+        <span class="text-[11px] text-text-muted">Total</span>
+      </div>
+      <p class="kpi-value">{{ kpi.recompensas_desbloqueadas }}</p>
+      <p class="text-[13px] text-text-muted mt-1">Recompensas desbloqueadas</p>
+    </div>
+  </div>
+
+  {# ===== Gráficos ===== #}
+  <div class="grid grid-cols-1 xl:grid-cols-3 gap-4 animate-slide-up" style="animation-delay:0.1s">
+    <div class="panel-card p-5 xl:col-span-2">
+      <div class="flex items-center justify-between mb-4">
+        <div>
+          <h3 class="font-heading text-white text-[15px]">Novos usuários</h3>
+          <p class="text-[12px] text-text-muted">Últimos 30 dias</p>
+        </div>
+        <span class="p-badge p-badge-blue">+{{ kpi.novos_hoje }} hoje</span>
+      </div>
+      <div class="h-64">
+        <canvas id="chart-registros"></canvas>
+      </div>
+    </div>
+
+    <div class="panel-card p-5">
+      <h3 class="font-heading text-white text-[15px] mb-1">Atividade por tipo</h3>
+      <p class="text-[12px] text-text-muted mb-4">Últimos 30 dias</p>
+      <div class="h-56 relative">
+        <canvas id="chart-atividades"></canvas>
+      </div>
+    </div>
+  </div>
+
+  <div class="grid grid-cols-1 xl:grid-cols-3 gap-4 animate-slide-up" style="animation-delay:0.15s">
+    <div class="panel-card p-5 xl:col-span-2">
+      <h3 class="font-heading text-white text-[15px] mb-1">Top 10 usuários por XP</h3>
+      <p class="text-[12px] text-text-muted mb-4">Ranking da plataforma</p>
+      <div class="h-72">
+        <canvas id="chart-top"></canvas>
+      </div>
+    </div>
+
+    <div class="panel-card p-5 xl:col-span-1">
+      <h3 class="font-heading text-white text-[15px] mb-1">XP por semana</h3>
+      <p class="text-[12px] text-text-muted mb-4">Últimas 8 semanas</p>
+      <div class="h-72">
+        <canvas id="chart-semana"></canvas>
+      </div>
+    </div>
+  </div>
+
+  {# ===== Atividades recentes ===== #}
+  <div class="animate-slide-up" style="animation-delay:0.2s">
+    <div class="flex items-center justify-between mb-3">
+      <h3 class="font-heading text-white text-[15px]">Atividades recentes</h3>
+      <a href="{% url 'painel:atividades' %}" class="text-[13px] text-neon-blue hover:underline">Ver todas →</a>
+    </div>
+    <div class="admin-table-wrap">
+      <table class="admin-table">
+        <thead>
+          <tr>
+            <th>Usuário</th><th>Tipo</th><th>Descrição</th><th>XP</th><th class="text-right">Data / Hora</th>
+          </tr>
+        </thead>
+        <tbody>
+          {% for a in atividades_recentes %}
+          <tr>
+            <td>
+              <a href="{% url 'painel:usuario_detalhe' a.usuario_id %}" class="link-user">
+                <span class="inline-flex items-center gap-2"><span class="avatar" style="width:28px;height:28px;font-size:12px">{{ a.usuario.username|slice:":1"|upper }}</span>{{ a.usuario.username }}</span>
+              </a>
+            </td>
+            <td><span class="p-badge p-badge-blue">{{ a.tipo_atividade|atividade_icon }} {{ a.tipo_atividade|atividade_label }}</span></td>
+            <td class="max-w-[260px] truncate">{{ a.descricao_resumida|default:"—" }}</td>
+            <td class="text-neon-green font-semibold">+{{ a.xp_ganho }}</td>
+            <td class="text-right text-text-muted whitespace-nowrap">{{ a.data_hora|date:"d/m/Y H:i" }}</td>
+          </tr>
+          {% empty %}
+          <tr><td colspan="5" class="text-center py-10 text-text-muted">Nenhuma atividade registrada ainda.</td></tr>
+          {% endfor %}
+        </tbody>
+      </table>
+    </div>
+  </div>
+</div>
+{% endblock %}
+
+{% block extra_scripts %}
+<script>
+(function () {
+  const cor = { azul: 'rgba(0,212,255,', roxo: 'rgba(168,85,247,', verde: 'rgba(0,255,136,', dourado: 'rgba(255,215,0,' };
+  Chart.defaults.color = '#64748b';
+  Chart.defaults.font.family = "'Plus Jakarta Sans', sans-serif";
+  Chart.defaults.font.size = 11;
+  Chart.defaults.borderColor = 'rgba(30,41,59,0.6)';
+
+  const parse = id => JSON.parse(document.getElementById(id).textContent);
+
+  if (document.getElementById('chart-registros')) {
+    new Chart(document.getElementById('chart-registros'), {
+      type: 'line',
+      data: {
+        labels: parse('dias-labels'),
+        datasets: [{
+          label: 'Novos usuários',
+          data: parse('registros-serie'),
+          borderColor: '#00d4ff',
+          backgroundColor: 'rgba(0,212,255,0.12)',
+          fill: true,
+          tension: 0.35,
+          pointRadius: 2,
+          pointHoverRadius: 5,
+          borderWidth: 2
+        }]
+      },
+      options: {
+        plugins: { legend: { display: false } },
+        scales: {
+          x: { grid: { display: false }, ticks: { maxTicksLimit: 12 } },
+          y: { beginAtZero: true, ticks: { precision: 0 } }
+        }
+      }
+    });
+  }
+
+  if (document.getElementById('chart-atividades')) {
+    const dados = parse('atividades-tipo');
+    new Chart(document.getElementById('chart-atividades'), {
+      type: 'doughnut',
+      data: {
+        labels: Object.keys(dados),
+        datasets: [{
+          data: Object.values(dados),
+          backgroundColor: ['#00d4ff', '#a855f7', '#00ff88', '#ffd700', '#ff6b35', '#ff0080', '#06b6d4', '#8b5cf6'],
+          borderColor: '#111827',
+          borderWidth: 3,
+          hoverOffset: 6
+        }]
+      },
+      options: {
+        cutout: '62%',
+        plugins: {
+          legend: { position: 'right', labels: { boxWidth: 10, usePointStyle: true, pointStyle: 'circle', padding: 8 } }
+        }
+      }
+    });
+  }
+
+  if (document.getElementById('chart-top')) {
+    new Chart(document.getElementById('chart-top'), {
+      type: 'bar',
+      data: {
+        labels: parse('top-nomes'),
+        datasets: [{
+          label: 'XP',
+          data: parse('top-xp'),
+          backgroundColor: ctx => {
+            const grad = ctx.chart.ctx.createLinearGradient(0, 0, 0, 300);
+            grad.addColorStop(0, '#00d4ff');
+            grad.addColorStop(1, 'rgba(168,85,247,0.4)');
+            return grad;
+          },
+          borderRadius: 8,
+          barThickness: 14
+        }]
+      },
+      options: {
+        indexAxis: 'y',
+        plugins: { legend: { display: false } },
+        scales: { x: { beginAtZero: true, ticks: { precision: 0 } } }
+      }
+    });
+  }
+
+  if (document.getElementById('chart-semana')) {
+    new Chart(document.getElementById('chart-semana'), {
+      type: 'bar',
+      data: {
+        labels: parse('semana-labels'),
+        datasets: [{
+          label: 'XP',
+          data: parse('semana-serie'),
+          backgroundColor: 'rgba(255,215,0,0.55)',
+          borderColor: '#ffd700',
+          borderWidth: 1,
+          borderRadius: 8,
+          barThickness: 22
+        }]
+      },
+      options: {
+        plugins: { legend: { display: false } },
+        scales: { y: { beginAtZero: true, ticks: { precision: 0 } } }
+      }
+    });
+  }
+})();
+</script>
+{% endblock %}

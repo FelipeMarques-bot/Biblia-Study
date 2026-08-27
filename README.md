@@ -23,7 +23,7 @@ Interface premium para estudo bíblico gamificado que transforma devocionais di�
 - **Série Ouro** — Desafios avançados com baús e animações premium
 - **Gamificação** — XP, streak, níveis, recompensas e medalhas
 - **Autenticação** — Cadastro por faixa etária e nível de conhecimento
-- **Admin** — Django Admin com registro de atividades de usuários (UserActivityLog)
+- **Painel Admin Premium** — `/painel/` com dashboard de KPIs e gráficos, gestão completa de usuários (busca, filtros, detalhe, exportação CSV), feed de atividades e visão de conteúdo (trilhas, lições, desafios, recompensas). O acesso `admin/` redireciona para o painel.
 
 ## Conteúdo
 
@@ -79,6 +79,7 @@ plataforma-biblica/
 ├── gamification/         # XP, streak, desafios, baús, activity log
 ├── ia_engine/            # LangChain (dicas, explicações, devocionais)
 ├── chat_devocional/      # Chat com IA
+├── painel_admin/         # Painel administrativo premium (em /painel/)
 ├── templates/            # Templates Django
 ├── static/               # CSS e JS compilados
 ├── src/                  # Código fonte do frontend

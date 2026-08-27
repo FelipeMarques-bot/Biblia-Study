@@ -1,0 +1,147 @@
+{% extends 'painel_admin/base_admin.html' %}
+{% load static %}
+
+{% block title %}Usuários{% endblock %}
+{% block header_title %}Usuários{% endblock %}
+
+{% block content %}
+<div class="space-y-5">
+
+  {# ===== Barra de filtros ===== #}
+  <form method="get" class="panel-card p-4 space-y-4 animate-slide-up">
+    <div class="flex flex-col lg:flex-row lg:items-center gap-3">
+      <div class="relative flex-1">
+        <svg class="w-4 h-4 absolute left-3.5 top-1/2 -translate-y-1/2 text-text-muted" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.7" d="M21 21l-5.197-5.197m0 0A7.5 7.5 0 105.196 5.196a7.5 7.5 0 0010.607 10.607z"/></svg>
+        <input type="text" name="q" value="{{ filtros.q }}" placeholder="Buscar por nome, usuário ou e-mail..." class="filter-input pl-10">
+      </div>
+      <div class="grid grid-cols-2 md:grid-cols-4 gap-3">
+        <select name="faixa" class="filter-select">
+          <option value="">Faixa etária</option>
+          {% for f in faixas %}
+            <option value="{{ f.valor }}" {% if filtros.faixa == f.valor %}selected{% endif %}>{{ f.label }}</option>
+          {% endfor %}
+        </select>
+        <select name="nivel" class="filter-select">
+          <option value="">Nível</option>
+          {% for n in niveis %}
+            <option value="{{ n.valor }}" {% if filtros.nivel == n.valor %}selected{% endif %}>{{ n.label }}</option>
+          {% endfor %}
+        </select>
+        <select name="staff" class="filter-select">
+          <option value="">Perfil</option>
+          <option value="true" {% if filtros.staff == 'true' %}selected{% endif %}>Equipe (staff)</option>
+          <option value="false" {% if filtros.staff == 'false' %}selected{% endif %}>Alunos</option>
+        </select>
+        <select name="ativo" class="filter-select">
+          <option value="">Status</option>
+          <option value="true" {% if filtros.ativo == 'true' %}selected{% endif %}>Ativo</option>
+          <option value="false" {% if filtros.ativo == 'false' %}selected{% endif %}>Inativo</option>
+        </select>
+      </div>
+      <div class="flex gap-2">
+        <button type="submit" class="p-btn p-btn-blue">
+          <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.7" d="M3 4a1 1 0 011-1h16a1 1 0 01.832 1.555L15 12.793V19a1 1 0 01-.293.707l-4 4A1 1 0 019 23v-10.207L2.168 4.555A1 1 0 013 4z"/></svg>
+          Filtrar
+        </button>
+        {% if filtros.q or filtros.faixa or filtros.nivel or filtros.staff or filtros.ativo %}
+          <a href="{% url 'painel:usuarios' %}" class="p-btn p-btn-ghost">Limpar</a>
+        {% endif %}
+      </div>
+    </div>
+  </form>
+
+  {# ===== Tabela ===== #}
+  <div class="animate-slide-up" style="animation-delay:0.05s">
+    <div class="flex flex-wrap items-center justify-between gap-3 mb-3">
+      <p class="text-[13px] text-text-muted"><span class="text-white font-semibold">{{ total }}</span> usuário{{ total|pluralize }} encontrado{{ total|pluralize }}</p>
+      <a href="{% url 'painel:exportar_usuarios' %}" class="p-btn p-btn-ghost">
+        <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.7" d="M12 10v6m0 0l-3-3m3 3l3-3M3 17V7a2 2 0 012-2h4l2 2h8a2 2 0 012 2v8a2 2 0 01-2 2H5a2 2 0 01-2-2z"/></svg>
+        Exportar CSV
+      </a>
+    </div>
+
+    <div class="admin-table-wrap">
+      <table class="admin-table">
+        <thead>
+          <tr>
+            <th>Usuário</th>
+            <th>Faixa</th>
+            <th>Nível</th>
+            <th class="text-right">XP</th>
+            <th class="text-right">Streak</th>
+            <th>Último acesso</th>
+            <th>Criado em</th>
+            <th>Status</th>
+            <th></th>
+          </tr>
+        </thead>
+        <tbody>
+          {% for u in usuarios %}
+          <tr>
+            <td>
+              <a href="{% url 'painel:usuario_detalhe' u.id %}" class="link-user inline-flex items-center gap-3">
+                <span class="avatar">{{ u.username|slice:":1"|upper }}</span>
+                <span class="min-w-0">
+                  <span class="block truncate">{{ u.get_full_name|default:u.username }}</span>
+                  <span class="block text-[12px] text-text-muted font-normal">@{{ u.username }}{% if u.is_staff %} · <span class="text-neon-purple">staff</span>{% endif %}</span>
+                </span>
+              </a>
+            </td>
+            <td><span class="p-badge p-badge-gray">{{ u.profile.faixa_etaria|faixa_icone }} {{ u.profile.faixa_etaria|faixa_label }}</span></td>
+            <td><span class="p-badge p-badge-purple">{{ u.profile.nivel_atual|nivel_label }}</span></td>
+            <td class="text-right text-neon-green font-semibold whitespace-nowrap">{{ u.profile.xp_total }} XP</td>
+            <td class="text-right whitespace-nowrap">
+              {% if u.profile.streak_atual > 0 %}
+                <span class="p-badge p-badge-orange">🔥 {{ u.profile.streak_atual }}</span>
+              {% else %}<span class="text-text-muted">—</span>{% endif %}
+            </td>
+            <td class="text-text-muted whitespace-nowrap">{{ u.last_login|default:"—"|date:"d/m/Y H:i" }}</td>
+            <td class="text-text-muted whitespace-nowrap">{{ u.date_joined|date:"d/m/Y" }}</td>
+            <td>
+              {% if u.is_active %}
+                <span class="p-badge p-badge-green">● Ativo</span>
+              {% else %}
+                <span class="p-badge p-badge-gray">● Inativo</span>
+              {% endif %}
+            </td>
+            <td class="text-right">
+              <a href="{% url 'painel:usuario_detalhe' u.id %}" class="p-badge p-badge-blue hover:bg-neon-blue/20 transition-colors">Abrir →</a>
+            </td>
+          </tr>
+          {% empty %}
+          <tr><td colspan="9" class="text-center py-14">
+            <span class="text-4xl block mb-3">🔍</span>
+            <p class="text-text-muted">Nenhum usuário encontrado para estes filtros.</p>
+          </td></tr>
+          {% endfor %}
+        </tbody>
+      </table>
+    </div>
+
+    {% if paginas|length > 1 %}
+    <div class="flex flex-wrap items-center justify-between gap-3 mt-4 pt-1">
+      <p class="text-[12px] text-text-muted">Página {{ usuarios.number }} de {{ usuarios.paginator.num_pages }}</p>
+      <div class="p-pagination">
+        {% if usuarios.has_previous %}
+          <a class="p-page" href="?{% if filtros.q %}q={{ filtros.q }}&{% endif %}{% if filtros.faixa %}faixa={{ filtros.faixa }}&{% endif %}{% if filtros.nivel %}nivel={{ filtros.nivel }}&{% endif %}{% if filtros.staff %}staff={{ filtros.staff }}&{% endif %}{% if filtros.ativo %}ativo={{ filtros.ativo }}&{% endif %}pagina={{ usuarios.previous_page_number }}">‹</a>
+        {% endif %}
+        {% for p in paginas %}
+          {% if p %}
+            {% if p == usuarios.number %}
+              <span class="p-page current">{{ p }}</span>
+            {% else %}
+              <a class="p-page" href="?{% if filtros.q %}q={{ filtros.q }}&{% endif %}{% if filtros.faixa %}faixa={{ filtros.faixa }}&{% endif %}{% if filtros.nivel %}nivel={{ filtros.nivel }}&{% endif %}{% if filtros.staff %}staff={{ filtros.staff }}&{% endif %}{% if filtros.ativo %}ativo={{ filtros.ativo }}&{% endif %}pagina={{ p }}">{{ p }}</a>
+            {% endif %}
+          {% else %}
+            <span class="p-page ellipsis">…</span>
+          {% endif %}
+        {% endfor %}
+        {% if usuarios.has_next %}
+          <a class="p-page" href="?{% if filtros.q %}q={{ filtros.q }}&{% endif %}{% if filtros.faixa %}faixa={{ filtros.faixa }}&{% endif %}{% if filtros.nivel %}nivel={{ filtros.nivel }}&{% endif %}{% if filtros.staff %}staff={{ filtros.staff }}&{% endif %}{% if filtros.ativo %}ativo={{ filtros.ativo }}&{% endif %}pagina={{ usuarios.next_page_number }}">›</a>
+        {% endif %}
+      </div>
+    </div>
+    {% endif %}
+  </div>
+</div>
+{% endblock %}

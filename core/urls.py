@@ -2,9 +2,14 @@ from django.contrib import admin
 from django.urls import path, include
 from django.conf import settings
 from django.conf.urls.static import static
+from django.views.generic import RedirectView
 
 urlpatterns = [
-    path('admin/', admin.site.urls),
+    # O painel administrativo premium substituiu o Django Admin em /admin/
+    path('admin/', RedirectView.as_view(pattern_name='painel:dashboard', permanent=False)),
+    # Django Admin original fica disponível apenas em /django-admin/ (edição avançada)
+    path('django-admin/', admin.site.urls),
+    path('painel/', include('painel_admin.urls')),
     path('', include('users.urls')),
     path('cursos/', include('courses.urls')),
     path('gamificacao/', include('gamification.urls')),

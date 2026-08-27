@@ -1,0 +1,64 @@
+{% extends 'painel_admin/base_admin.html' %}
+{% load static %}
+
+{% block title %}Desafios Diários · Conteúdo{% endblock %}
+{% block header_title %}Desafios Diários{% endblock %}
+
+{% block content %}
+<div class="space-y-5">
+
+  <form method="get" class="panel-card p-4 flex flex-wrap items-center gap-3 animate-slide-up">
+    <div class="flex items-center gap-2 text-sm text-text-muted mr-auto">
+      <span class="kpi-icon" style="width:34px;height:34px;font-size:16px">⚡</span>
+      Desafios publicados
+    </div>
+    <select name="ativo" class="filter-select">
+      <option value="">Status</option>
+      <option value="true" {% if filtros.ativo == 'true' %}selected{% endif %}>Ativo</option>
+      <option value="false" {% if filtros.ativo == 'false' %}selected{% endif %}>Inativo</option>
+    </select>
+    <button type="submit" class="p-btn p-btn-blue">Filtrar</button>
+    {% if filtros.ativo %}<a href="{% url 'painel:desafios' %}" class="p-btn p-btn-ghost">Limpar</a>{% endif %}
+  </form>
+
+  <div class="animate-slide-up" style="animation-delay:0.05s">
+    <div class="admin-table-wrap">
+      <table class="admin-table">
+        <thead>
+          <tr><th>Data</th><th>Título</th><th>Versículo</th><th class="text-right">XP</th><th class="text-right">Concluídos</th><th>Status</th></tr>
+        </thead>
+        <tbody>
+          {% for d in itens %}
+          <tr>
+            <td class="text-text-muted whitespace-nowrap">{{ d.data|date:"d/m/Y" }}</td>
+            <td class="font-medium text-white">{{ d.titulo }}</td>
+            <td class="text-text-muted italic max-w-[240px] truncate">{{ d.versiculo|default:"—" }}</td>
+            <td class="text-right text-neon-gold font-semibold">{{ d.xp_recompensa }} XP</td>
+            <td class="text-right"><span class="p-badge p-badge-green">{{ d.concluidos }} 🏆</span></td>
+            <td>{% if d.ativo %}<span class="p-badge p-badge-green">● Ativo</span>{% else %}<span class="p-badge p-badge-gray">Inativo</span>{% endif %}</td>
+          </tr>
+          {% empty %}
+          <tr><td colspan="6" class="text-center py-14"><span class="text-4xl block mb-3">⚡</span><p class="text-text-muted">Nenhum desafio encontrado.</p></td></tr>
+          {% endfor %}
+        </tbody>
+      </table>
+    </div>
+
+    {% if paginas|length > 1 %}
+    <div class="flex flex-wrap items-center justify-between gap-3 mt-4">
+      <p class="text-[12px] text-text-muted">Página {{ itens.number }} de {{ itens.paginator.num_pages }}</p>
+      <div class="p-pagination">
+        {% if itens.has_previous %}<a class="p-page" href="?{% if filtros.ativo %}ativo={{ filtros.ativo }}&{% endif %}pagina={{ itens.previous_page_number }}">‹</a>{% endif %}
+        {% for p in paginas %}
+          {% if p %}
+            {% if p == itens.number %}<span class="p-page current">{{ p }}</span>
+            {% else %}<a class="p-page" href="?{% if filtros.ativo %}ativo={{ filtros.ativo }}&{% endif %}pagina={{ p }}">{{ p }}</a>{% endif %}
+          {% else %}<span class="p-page ellipsis">…</span>{% endif %}
+        {% endfor %}
+        {% if itens.has_next %}<a class="p-page" href="?{% if filtros.ativo %}ativo={{ filtros.ativo }}&{% endif %}pagina={{ itens.next_page_number }}">›</a>{% endif %}
+      </div>
+    </div>
+    {% endif %}
+  </div>
+</div>
+{% endblock %}

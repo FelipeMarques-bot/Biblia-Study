@@ -1,0 +1,69 @@
+{% extends 'painel_admin/base_admin.html' %}
+{% load static %}
+
+{% block title %}Lições · Conteúdo{% endblock %}
+{% block header_title %}Lições Bíblicas{% endblock %}
+
+{% block content %}
+<div class="space-y-5">
+
+  <form method="get" class="panel-card p-4 flex flex-wrap items-center gap-3 animate-slide-up">
+    <div class="flex items-center gap-2 text-sm text-text-muted mr-auto">
+      <span class="kpi-icon" style="width:34px;height:34px;font-size:16px">📖</span>
+      Catálogo de lições
+    </div>
+    <select name="trilha" class="filter-select">
+      <option value="">Todas as trilhas</option>
+      {% for t in trilhas_catalogo %}<option value="{{ t.id }}" {% if filtros.trilha == t.id|stringformat:'s' %}selected{% endif %}>{{ t.nome }}</option>{% endfor %}
+    </select>
+    <select name="area" class="filter-select">
+      <option value="">Faixa etária</option>
+      {% for v, l in areas %}<option value="{{ v }}" {% if filtros.area == v %}selected{% endif %}>{{ l }}</option>{% endfor %}
+    </select>
+    <button type="submit" class="p-btn p-btn-blue">Filtrar</button>
+    {% if filtros.trilha or filtros.area %}<a href="{% url 'painel:licoes' %}" class="p-btn p-btn-ghost">Limpar</a>{% endif %}
+  </form>
+
+  <div class="animate-slide-up" style="animation-delay:0.05s">
+    <p class="text-[13px] text-text-muted mb-3"><span class="text-white font-semibold">{{ paginator.count }}</span> lição{{ paginator.count|pluralize }}</p>
+    <div class="admin-table-wrap">
+      <table class="admin-table">
+        <thead>
+          <tr><th>Lição</th><th>Trilha</th><th>Referência</th><th class="text-right">Ordem</th><th class="text-right">Exercícios</th><th class="text-right">XP</th><th>Status</th></tr>
+        </thead>
+        <tbody>
+          {% for l in itens %}
+          <tr>
+            <td class="font-medium text-white max-w-[320px]">{{ l.titulo }}</td>
+            <td><span class="p-badge p-badge-gray">{{ l.trilha.icone }} {{ l.trilha.nome }}</span></td>
+            <td class="text-text-muted">{{ l.referencia|default:"—" }}</td>
+            <td class="text-right text-text-muted">{{ l.ordem }}</td>
+            <td class="text-right">{{ l.n_exercicios }}</td>
+            <td class="text-right text-neon-gold font-semibold">{{ l.xp_recompensa }} XP</td>
+            <td><span class="p-badge p-badge-{% if l.trilha.ativo %}green{% else %}gray{% endif %}">{% if l.trilha.ativo %}● {{ l.trilha.faixa_etaria|faixa_label }}{% else %}Trilha inativa{% endif %}</span></td>
+          </tr>
+          {% empty %}
+          <tr><td colspan="7" class="text-center py-14"><span class="text-4xl block mb-3">📚</span><p class="text-text-muted">Nenhuma lição encontrada.</p></td></tr>
+          {% endfor %}
+        </tbody>
+      </table>
+    </div>
+
+    {% if paginas|length > 1 %}
+    <div class="flex flex-wrap items-center justify-between gap-3 mt-4">
+      <p class="text-[12px] text-text-muted">Página {{ itens.number }} de {{ itens.paginator.num_pages }}</p>
+      <div class="p-pagination">
+        {% if itens.has_previous %}<a class="p-page" href="?{% if filtros.trilha %}trilha={{ filtros.trilha }}&{% endif %}{% if filtros.area %}area={{ filtros.area }}&{% endif %}pagina={{ itens.previous_page_number }}">‹</a>{% endif %}
+        {% for p in paginas %}
+          {% if p %}
+            {% if p == itens.number %}<span class="p-page current">{{ p }}</span>
+            {% else %}<a class="p-page" href="?{% if filtros.trilha %}trilha={{ filtros.trilha }}&{% endif %}{% if filtros.area %}area={{ filtros.area }}&{% endif %}pagina={{ p }}">{{ p }}</a>{% endif %}
+          {% else %}<span class="p-page ellipsis">…</span>{% endif %}
+        {% endfor %}
+        {% if itens.has_next %}<a class="p-page" href="?{% if filtros.trilha %}trilha={{ filtros.trilha }}&{% endif %}{% if filtros.area %}area={{ filtros.area }}&{% endif %}pagina={{ itens.next_page_number }}">›</a>{% endif %}
+      </div>
+    </div>
+    {% endif %}
+  </div>
+</div>
+{% endblock %}

@@ -1,0 +1,49 @@
+{% extends 'painel_admin/base_admin.html' %}
+{% load static %}
+
+{% block title %}Recompensas · Conteúdo{% endblock %}
+{% block header_title %}Recompensas{% endblock %}
+
+{% block content %}
+<div class="space-y-5">
+
+  <form method="get" class="panel-card p-4 flex flex-wrap items-center gap-3 animate-slide-up">
+    <div class="flex items-center gap-2 text-sm text-text-muted mr-auto">
+      <span class="kpi-icon" style="width:34px;height:34px;font-size:16px">🏅</span>
+      Medals e recompensas
+    </div>
+    <select name="tipo" class="filter-select">
+      <option value="">Todos os tipos</option>
+      {% for v, l in tipos %}<option value="{{ v }}" {% if filtros.tipo == v %}selected{% endif %}>{{ l }}</option>{% endfor %}
+    </select>
+    <button type="submit" class="p-btn p-btn-blue">Filtrar</button>
+    {% if filtros.tipo %}<a href="{% url 'painel:recompensas' %}" class="p-btn p-btn-ghost">Limpar</a>{% endif %}
+  </form>
+
+  <div class="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-4 animate-slide-up" style="animation-delay:0.05s">
+    {% for r in itens %}
+    <div class="panel-card p-5 reward-tile relative overflow-hidden">
+      {% if r.ativo %}<div class="absolute top-4 right-4"><span class="p-badge p-badge-green">● Ativa</span></div>{% else %}<div class="absolute top-4 right-4"><span class="p-badge p-badge-gray">Inativa</span></div>{% endif %}
+      <div class="w-14 h-14 rounded-2xl bg-gradient-to-br from-neon-gold/20 to-neon-pink/10 border border-neon-gold/25 flex items-center justify-center text-3xl mb-4">{{ r.icone }}</div>
+      <h3 class="font-heading text-white text-[15px]">{{ r.titulo }}</h3>
+      <p class="text-[12.5px] text-text-muted mt-1 line-clamp-2">{{ r.descricao }}</p>
+      <div class="flex flex-wrap gap-2 mt-4">
+        <span class="p-badge p-badge-purple">{{ r.tipo|upper }}</span>
+        <span class="p-badge p-badge-gold">+{{ r.xp_recompensa }} XP</span>
+        <span class="p-badge p-badge-blue">🏆 {{ r.desbloqueadas }} desbloqueadas</span>
+      </div>
+      <div class="mt-4 pt-4 border-t border-dark-border text-[11.5px] text-text-muted space-y-1">
+        {% if r.criterio_licoes %}<p>📖 Mín. {{ r.criterio_licoes }} lições</p>{% endif %}
+        {% if r.criterio_xp %}<p>💎 Mín. {{ r.criterio_xp }} XP</p>{% endif %}
+        {% if r.criterio_streak %}<p>🔥 Mín. {{ r.criterio_streak }} dias de streak</p>{% endif %}
+      </div>
+    </div>
+    {% empty %}
+    <div class="col-span-full text-center py-14">
+      <span class="text-4xl block mb-3">🏅</span>
+      <p class="text-text-muted">Nenhuma recompensa encontrada.</p>
+    </div>
+    {% endfor %}
+  </div>
+</div>
+{% endblock %}

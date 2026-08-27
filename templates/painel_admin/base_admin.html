@@ -1,0 +1,132 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="theme-color" content="#0a0e1a">
+  <title>{% block title %}Painel Admin{% endblock %} · Bíblia Study</title>
+  <link rel="icon" type="image/png" sizes="192x192" href="{% static 'icons/icon-192.png' %}">
+  <link rel="stylesheet" href="{% static 'css/output.css' %}">
+  <link rel="stylesheet" href="{% static 'css/admin.css' %}">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@500;600;700&family=Plus+Jakarta+Sans:wght@400;500;600&display=swap" rel="stylesheet">
+  <script defer src="https://cdn.jsdelivr.net/npm/alpinejs@3.x.x/dist/cdn.min.js"></script>
+  {% block extra_head %}{% endblock %}
+</head>
+<body class="admin-body min-h-screen antialiased" x-data="{ sidebarOpen: false }">
+
+  {# Overlay mobile #}
+  <div x-show="sidebarOpen" x-transition.opacity
+       class="fixed inset-0 z-50 bg-black/60 lg:hidden" @click="sidebarOpen = false"></div>
+
+  {# ===== SIDEBAR ===== #}
+  <aside :class="sidebarOpen ? 'open' : ''"
+         class="admin-sidebar fixed lg:sticky lg:translate-x-0 top-0 bottom-0 z-[60] flex flex-col admin-scroll overflow-y-auto">
+    <div class="flex items-center gap-3 px-5 pt-6 pb-5">
+      <div class="w-11 h-11 rounded-2xl bg-gradient-to-br from-neon-blue to-neon-purple flex items-center justify-center text-xl shadow-neon-blue">
+        📖
+      </div>
+      <div class="leading-tight">
+        <p class="font-heading text-white text-[15px]">Bíblia Study</p>
+        <p class="text-[11px] uppercase tracking-widest text-neon-blue neon-text-blue">Painel Admin</p>
+      </div>
+    </div>
+
+    <div class="flex-1">
+      <p class="group-label">Visão Geral</p>
+      <a href="{% url 'painel:dashboard' %}" class="admin-nav-link {% if secao == 'dashboard' %}active{% endif %}">
+        <svg class="w-[18px] h-[18px]" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.7" d="M4 13h6V4H4v9zm0 7h6v-5H4v5zm10 0h6v-9h-6v9zm0-16v5h6V4h-6z"/></svg>
+        Visão Geral
+      </a>
+
+      <p class="group-label">Gestão</p>
+      <a href="{% url 'painel:usuarios' %}" class="admin-nav-link {% if secao == 'usuarios' %}active{% endif %}">
+        <svg class="w-[18px] h-[18px]" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.7" d="M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0zm6 3a2 2 0 11-4 0 2 2 0 014 0zM7 10a2 2 0 11-4 0 2 2 0 014 0z"/></svg>
+        Usuários
+        {% if painel_total_usuarios %}<span class="nav-count">{{ painel_total_usuarios }}</span>{% endif %}
+      </a>
+      <a href="{% url 'painel:atividades' %}" class="admin-nav-link {% if secao == 'atividades' %}active{% endif %}">
+        <svg class="w-[18px] h-[18px]" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.7" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"/></svg>
+        Atividades
+      </a>
+
+      <p class="group-label">Conteúdo</p>
+      <a href="{% url 'painel:trilhas' %}" class="admin-nav-link sub {% if subsecao == 'trilhas' %}active{% endif %}">
+        <span class="text-[15px]">🗺️</span> Trilhas
+      </a>
+      <a href="{% url 'painel:licoes' %}" class="admin-nav-link sub {% if subsecao == 'licoes' %}active{% endif %}">
+        <span class="text-[15px]">📖</span> Lições
+      </a>
+      <a href="{% url 'painel:desafios' %}" class="admin-nav-link sub {% if subsecao == 'desafios' %}active{% endif %}">
+        <span class="text-[15px]">⚡</span> Desafios Diários
+      </a>
+      <a href="{% url 'painel:recompensas' %}" class="admin-nav-link sub {% if subsecao == 'recompensas' %}active{% endif %}">
+        <span class="text-[15px]">🏅</span> Recompensas
+      </a>
+    </div>
+
+    <div class="p-4 border-t border-dark-border space-y-1">
+      <a href="{% url 'dashboard' %}" target="_blank" class="admin-nav-link">
+        <svg class="w-[18px] h-[18px]" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.7" d="M21 21l-5.197-5.197m0 0A7.5 7.5 0 105.196 5.196a7.5 7.5 0 0010.607 10.607z"/></svg>
+        Ver o site
+      </a>
+      <a href="{% url 'admin:index' %}" target="_blank" class="admin-nav-link">
+        <svg class="w-[18px] h-[18px]" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.7" d="M11 20h-9v-2a4 4 0 018 0v2zm0 0h12m-12 0v-2a4 4 0 018 0v2m-4-8a3 3 0 11-6 0 3 3 0 016 0z"/></svg>
+        Django Admin (avançado)
+      </a>
+      <a href="{% url 'logout' %}" class="admin-nav-link">
+        <svg class="w-[18px] h-[18px]" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.7" d="M17 16l4-4m0 0l-4-4m4 4H7m6 4v1a3 3 0 01-3 3H6a3 3 0 01-3-3V7a3 3 0 013-3h4a3 3 0 013 3v1"/></svg>
+        Sair
+      </a>
+    </div>
+  </aside>
+
+  {# ===== CONTEÚDO ===== #}
+  <div class="lg:pl-[264px]">
+    <div class="admin-topbar sticky top-0 z-40 px-4 md:px-8 py-3 flex items-center justify-between gap-4">
+      <div class="flex items-center gap-3 min-w-0">
+        <button @click="sidebarOpen = true" class="lg:hidden w-9 h-9 rounded-xl bg-dark-elevated border border-dark-border flex items-center justify-center text-text-muted hover:text-neon-blue transition-colors">
+          <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.7" d="M4 6h16M4 12h16M4 18h16"/></svg>
+        </button>
+        <div class="min-w-0">
+          <p class="text-[10px] uppercase tracking-[0.16em] text-text-muted truncate">Bíblia Study · Administração</p>
+          <h1 class="font-heading text-white text-lg md:text-xl truncate">{% block header_title %}Painel{% endblock %}</h1>
+        </div>
+      </div>
+      <div class="flex items-center gap-3">
+        <a href="{% url 'painel:usuarios' %}" class="hidden sm:inline-flex items-center gap-2 px-3.5 py-2 rounded-xl bg-dark-elevated border border-dark-border text-text-muted hover:text-neon-blue hover:border-neon-blue/40 transition-all text-[13px]">
+          <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.7" d="M21 21l-5.197-5.197m0 0A7.5 7.5 0 105.196 5.196a7.5 7.5 0 0010.607 10.607z"/></svg>
+          Buscar usuários
+        </a>
+        <div class="flex items-center gap-2.5 pl-3 border-l border-dark-border">
+          <div class="avatar">{{ request.user.username|slice:":1"|upper }}</div>
+          <div class="hidden md:block leading-tight">
+            <p class="text-[13px] text-white font-medium">{{ request.user.username }}</p>
+            <p class="text-[11px] text-text-muted">Administrador</p>
+          </div>
+        </div>
+        <a href="{% url 'logout' %}" title="Sair" class="w-9 h-9 rounded-xl bg-dark-elevated border border-dark-border flex items-center justify-center text-text-muted hover:text-neon-pink hover:border-neon-pink/40 transition-all">
+          <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.7" d="M17 16l4-4m0 0l-4-4m4 4H7m6 4v1a3 3 0 01-3 3H6a3 3 0 01-3-3V7a3 3 0 013-3h4a3 3 0 013 3v1"/></svg>
+        </a>
+      </div>
+    </div>
+
+    <main class="px-4 md:px-8 py-6 md:py-8">
+      {% if messages %}
+        <div class="space-y-2 mb-6">
+          {% for message in messages %}
+            <div class="rounded-xl px-4 py-3 text-sm border {% if message.tags == 'error' %}bg-neon-pink/10 border-neon-pink/30 text-neon-pink{% elif message.tags == 'success' %}bg-neon-green/10 border-neon-green/30 text-neon-green{% elif message.tags == 'warning' %}bg-neon-gold/10 border-neon-gold/30 text-neon-gold{% else %}bg-neon-blue/10 border-neon-blue/30 text-neon-blue{% endif %}">
+              {{ message }}
+            </div>
+          {% endfor %}
+        </div>
+      {% endif %}
+      {% block content %}{% endblock %}
+    </main>
+  </div>
+
+  {% block extra_scripts %}{% endblock %}
+</body>
+</html>

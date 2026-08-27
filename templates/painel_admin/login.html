@@ -1,0 +1,63 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Login Admin · Bíblia Study</title>
+  <link rel="icon" type="image/png" sizes="192x192" href="{% static 'icons/icon-192.png' %}">
+  <link rel="stylesheet" href="{% static 'css/output.css' %}">
+  <link rel="stylesheet" href="{% static 'css/admin.css' %}">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@500;600;700&family=Plus+Jakarta+Sans:wght@400;500;600&display=swap" rel="stylesheet">
+</head>
+<body class="admin-body min-h-screen flex items-center justify-center px-4 py-10">
+
+  <div class="fixed inset-0 pointer-events-none overflow-hidden">
+    <div class="absolute -top-32 -right-24 w-96 h-96 rounded-full bg-neon-blue/10 blur-3xl"></div>
+    <div class="absolute -bottom-32 -left-24 w-96 h-96 rounded-full bg-neon-purple/10 blur-3xl"></div>
+    <div class="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[700px] h-[700px] rounded-full bg-neon-blue/[0.03] blur-2xl"></div>
+  </div>
+
+  <div class="relative w-full max-w-md">
+    <div class="admin-login-card p-8 md:p-10 animate-slide-up text-center">
+      <div class="w-16 h-16 mx-auto rounded-3xl bg-gradient-to-br from-neon-blue to-neon-purple flex items-center justify-center text-3xl shadow-neon-blue">
+        📖
+      </div>
+      <h1 class="font-heading text-2xl text-white mt-5">Painel Admin</h1>
+      <p class="text-text-muted text-sm mt-1">Acesso restrito à equipe de administração</p>
+
+      <form method="post" class="mt-8 space-y-4 text-left">
+        {% csrf_token %}
+        <div>
+          <label class="text-[12px] font-semibold tracking-wide text-text-muted uppercase mb-1.5 block">Usuário</label>
+          <input type="text" name="username" required autofocus autocomplete="username"
+                 class="filter-input" placeholder="Seu nome de usuário">
+        </div>
+        <div>
+          <label class="text-[12px] font-semibold tracking-wide text-text-muted uppercase mb-1.5 block">Senha</label>
+          <input type="password" name="password" required autocomplete="current-password"
+                 class="filter-input" placeholder="••••••••">
+        </div>
+
+        {% if messages %}
+          {% for message in messages %}
+            <p class="text-sm {% if message.tags == 'error' %}text-neon-pink{% else %}text-neon-gold{% endif %}">{{ message }}</p>
+          {% endfor %}
+        {% endif %}
+
+        <button type="submit" class="p-btn p-btn-blue w-full justify-center text-base">
+          <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.7" d="M11 16l-4-4m0 0l4-4m-4 4h14m-5 7v1a3 3 0 01-3 3H6a3 3 0 01-3-3V7a3 3 0 013-3h7a3 3 0 013 3v1"/></svg>
+          Entrar no painel
+        </button>
+      </form>
+
+      <a href="{% url 'dashboard' %}" class="inline-block mt-6 text-[13px] text-text-muted hover:text-neon-blue transition-colors">
+        ← Voltar ao site
+      </a>
+    </div>
+    <p class="text-center text-[11px] text-text-dim mt-6">© {% now "Y" %} Bíblia Study · Plataforma Bíblica Gamificada</p>
+  </div>
+</body>
+</html>

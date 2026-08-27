@@ -26,6 +26,7 @@ INSTALLED_APPS = [
     'ia_engine',
     'chat_devocional',
     'quiz_kahoot',
+    'painel_admin',
 ]
 
 MIDDLEWARE = [
@@ -51,6 +52,10 @@ TEMPLATES = [
                 'django.template.context_processors.request',
                 'django.contrib.auth.context_processors.auth',
                 'django.contrib.messages.context_processors.messages',
+                'painel_admin.context_processors.painel_globals',
+            ],
+            'builtins': [
+                'painel_admin.templatetags.painel_tags',
             ],
         },
     },
