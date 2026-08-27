@@ -8,6 +8,7 @@ urlpatterns = [
     path('<str:pin>/host/', views.quiz_host, name='quiz_host'),
     path('<str:pin>/podio/', views.quiz_podium, name='quiz_podium'),
     # API
+    path('<str:pin>/api/state/', views.api_game_state, name='quiz_api_state'),
     path('<str:pin>/api/start/', views.api_start_game, name='quiz_api_start'),
     path('<str:pin>/api/next/', views.api_next_question, name='quiz_api_next'),
     path('<str:pin>/api/results/', views.api_show_results, name='quiz_api_results'),

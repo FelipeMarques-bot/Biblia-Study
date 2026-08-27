@@ -2,6 +2,7 @@ import random
 from django.shortcuts import render, redirect, get_object_or_404
 from django.http import JsonResponse
 from django.views.decorators.http import require_POST
+from django.views.decorators.csrf import csrf_exempt
 from django.contrib.auth.decorators import login_required
 from django.db.models import Q
 from django.urls import reverse
@@ -131,6 +132,36 @@ def quiz_podium(request, pin):
     })
 
 
+def api_game_state(request, pin):
+    """API: Estado completo da sala via REST (fallback p/ WebSocket indisponível)."""
+    room = get_object_or_404(QuizRoom, pin=pin)
+    players = list(
+        room.players.order_by('-pontuacao', 'joined_at')
+        .values('nome', 'pontuacao', 'streak', 'is_host')
+    )
+
+    question = None
+    q = room.questions.filter(ordem=room.current_question_index + 1).first()
+    if q:
+        question = {
+            'pergunta': q.pergunta,
+            'opcoes': q.opcoes,
+            'tipo': q.tipo,
+            'afirmativa': q.afirmativa,
+            'ordem': q.ordem,
+            'correta_idx': q.correta_idx,
+        }
+
+    return JsonResponse({
+        'status': room.status,
+        'question': question,
+        'question_index': room.current_question_index,
+        'total': room.total_questions,
+        'players': players,
+        'timer': room.timer_seconds,
+    })
+
+
 def _pick_questions(room, quantity=10):
     """Seleciona exercícios MULTIPLA_ESCOLHA ou VF de lições aleatórias."""
     exercicios = list(
@@ -167,6 +198,7 @@ def _pick_questions(room, quantity=10):
 
 
 @require_POST
+@csrf_exempt
 def api_start_game(request, pin):
     """API: Iniciar o jogo — seleciona perguntas e muda status."""
     room = get_object_or_404(QuizRoom, pin=pin)
@@ -194,6 +226,7 @@ def api_start_game(request, pin):
 
 
 @require_POST
+@csrf_exempt
 def api_next_question(request, pin):
     """API: Avançar para próxima pergunta."""
     room = get_object_or_404(QuizRoom, pin=pin)
@@ -217,6 +250,7 @@ def api_next_question(request, pin):
 
 
 @require_POST
+@csrf_exempt
 def api_show_results(request, pin):
     """API: Mostrar resultado da rodada (antes de próxima pergunta)."""
     room = get_object_or_404(QuizRoom, pin=pin)
@@ -230,6 +264,7 @@ def api_show_results(request, pin):
 
 
 @require_POST
+@csrf_exempt
 def api_submit_answer(request, pin):
     """API: Jogador envia resposta."""
     room = get_object_or_404(QuizRoom, pin=pin)
@@ -288,6 +323,7 @@ def api_submit_answer(request, pin):
 
 
 @require_POST
+@csrf_exempt
 def api_restart(request, pin):
     """API: Reiniciar o jogo."""
     room = get_object_or_404(QuizRoom, pin=pin)

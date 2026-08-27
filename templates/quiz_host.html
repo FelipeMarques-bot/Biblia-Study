@@ -190,16 +190,82 @@ function quizHost() {
     init() {
       const params = new URLSearchParams({nome: '{{ nome }}', host: 'true'});
       const protocol = location.protocol === 'https:' ? 'wss:' : 'ws:';
-      this.ws = new WebSocket(`${protocol}//${location.host}/ws/quiz/{{ pin }}/?${params}`);
 
-      this.ws.onmessage = (e) => {
-        const data = JSON.parse(e.data);
-        this.handleMessage(data);
-      };
+      try {
+        this.ws = new WebSocket(`${protocol}//${location.host}/ws/quiz/{{ pin }}/?${params}`);
 
-      this.ws.onopen = () => {
-        this.ws.send(JSON.stringify({type: 'request_sync'}));
-      };
+        this.ws.onmessage = (e) => {
+          const data = JSON.parse(e.data);
+          this.handleMessage(data);
+        };
+
+        this.ws.onopen = () => {
+          this.wsOk = true;
+          this.stopPolling();
+          this.ws.send(JSON.stringify({type: 'request_sync'}));
+        };
+
+        this.ws.onerror = () => { this.startPolling(); };
+        this.ws.onclose = () => { this.startPolling(); };
+      } catch (e) {
+        this.startPolling();
+      }
+
+      this.startPolling();
+    },
+
+    stopPolling() {
+      if (this.pollInterval) { clearInterval(this.pollInterval); this.pollInterval = null; }
+      this.polling = false;
+    },
+
+    startPolling() {
+      if (this.polling || this.wsOk) return;
+      this.polling = true;
+      this.poll();
+      this.pollInterval = setInterval(() => this.poll(), 3000);
+    },
+
+    async poll() {
+      try {
+        const r = await fetch('/quiz/{{ pin }}/api/state/');
+        const d = await r.json();
+        const idx = d.question_index;
+
+        const isNewQuestion = d.status === 'question' && d.question &&
+          (this.lastSyncedStatus !== 'question' || idx !== this.lastSyncedIndex);
+
+        if (isNewQuestion) {
+          this.handleMessage({
+            type: this.lastSyncedStatus === 'lobby' ? 'game_started' : 'new_question',
+            question: d.question,
+            question_index: idx,
+            total: d.total,
+            players: d.players || [],
+          });
+        } else if (d.status === 'results') {
+          this.handleMessage({type: 'show_results', players: d.players || []});
+          if (d.question) this.currentQuestion = d.question;
+        } else if (d.status === 'finished') {
+          this.handleMessage({type: 'game_finished', players: d.players || []});
+        } else if (d.status === 'lobby') {
+          this.handleMessage({
+            type: 'sync_state',
+            status: 'lobby',
+            question: null,
+            question_index: idx,
+            total: d.total,
+            players: d.players || [],
+            timer: d.timer,
+          });
+        } else if (this.status === 'question') {
+          this.players = d.players || [];
+          this.answeredCount = this.players.filter(p => !p.is_host && p.pontuacao > 0).length;
+        }
+
+        this.lastSyncedIndex = idx;
+        this.lastSyncedStatus = d.status;
+      } catch (e) {}
     },
 
     handleMessage(data) {
@@ -288,11 +354,19 @@ function quizHost() {
     },
 
     nextQuestion() {
-      this.ws.send(JSON.stringify({type: 'next_question'}));
+      if (this.ws && this.ws.readyState === WebSocket.OPEN) {
+        this.ws.send(JSON.stringify({type: 'next_question'}));
+        return;
+      }
+      fetch('/quiz/{{ pin }}/api/next/', {method: 'POST'}).then(r => r.json()).catch(() => {});
     },
 
     showResults() {
-      this.ws.send(JSON.stringify({type: 'show_results'}));
+      if (this.ws && this.ws.readyState === WebSocket.OPEN) {
+        this.ws.send(JSON.stringify({type: 'show_results'}));
+        return;
+      }
+      fetch('/quiz/{{ pin }}/api/results/', {method: 'POST'}).then(r => r.json()).catch(() => {});
     },
 
     getAnswerClass(idx) {

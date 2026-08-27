@@ -124,32 +124,85 @@ function quizLobby() {
     init() {
       const params = new URLSearchParams({nome: '{{ nome }}', host: '{% if is_host %}true{% else %}false{% endif %}'});
       const protocol = location.protocol === 'https:' ? 'wss:' : 'ws:';
-      this.ws = new WebSocket(`${protocol}//${location.host}/ws/quiz/{{ pin }}/?${params}`);
 
-      this.ws.onmessage = (e) => {
-        const data = JSON.parse(e.data);
-        if (data.type === 'player_joined' || data.type === 'player_left' || data.type === 'player_answered') {
-          this.players = data.players || [];
-        }
-        if (data.type === 'game_started') {
-          window.location.href = '/quiz/{{ pin }}/' + (window.quizIsHost ? 'host/' : '');
-        }
-        if (data.type === 'sync_state') {
-          this.players = data.players || [];
-        }
-      };
+      try {
+        this.ws = new WebSocket(`${protocol}//${location.host}/ws/quiz/{{ pin }}/?${params}`);
 
-      this.ws.onopen = () => {
-        this.ws.send(JSON.stringify({type: 'request_sync'}));
-      };
+        this.ws.onmessage = (e) => {
+          const data = JSON.parse(e.data);
+          if (data.type === 'player_joined' || data.type === 'player_left' || data.type === 'player_answered') {
+            this.players = data.players || [];
+          }
+          if (data.type === 'game_started') {
+            window.location.href = '/quiz/{{ pin }}/' + (window.quizIsHost ? 'host/' : '');
+          }
+          if (data.type === 'sync_state') {
+            this.players = data.players || [];
+          }
+        };
+
+        this.ws.onopen = () => {
+          this.wsOk = true;
+          this.stopPolling();
+          this.ws.send(JSON.stringify({type: 'request_sync'}));
+        };
+
+        this.ws.onerror = () => { this.startPolling(); };
+        this.ws.onclose = () => { this.startPolling(); };
+      } catch (e) {
+        this.startPolling();
+      }
 
       window.quizIsHost = {% if is_host %}true{% else %}false{% endif %};
+      this.startPolling();
+    },
+
+    stopPolling() {
+      if (this.pollInterval) { clearInterval(this.pollInterval); this.pollInterval = null; }
+      this.polling = false;
+    },
+
+    startPolling() {
+      if (this.polling || this.wsOk) return;
+      this.polling = true;
+      this.pollState();
+      this.pollInterval = setInterval(() => this.pollState(), 3000);
+    },
+
+    async pollState() {
+      try {
+        const r = await fetch('/quiz/{{ pin }}/api/state/');
+        const d = await r.json();
+        this.players = d.players || [];
+        if (d.status !== 'lobby') {
+          window.location.href = '/quiz/{{ pin }}/' + (window.quizIsHost ? 'host/' : '');
+        }
+      } catch (e) {}
     },
 
     startGame() {
       if (this.starting) return;
       this.starting = true;
-      this.ws.send(JSON.stringify({type: 'start_game'}));
+
+      if (this.ws && this.ws.readyState === WebSocket.OPEN) {
+        this.ws.send(JSON.stringify({type: 'start_game'}));
+        return;
+      }
+
+      fetch('/quiz/{{ pin }}/api/start/', {method: 'POST'})
+        .then(r => r.json())
+        .then(d => {
+          if (d.ok) {
+            window.location.href = '/quiz/{{ pin }}/' + (window.quizIsHost ? 'host/' : '');
+          } else {
+            this.starting = false;
+            alert(d.error || 'Não foi possível iniciar o jogo');
+          }
+        })
+        .catch(() => {
+          this.starting = false;
+          alert('Falha de conexão. Tente novamente.');
+        });
     },
   }
 }
