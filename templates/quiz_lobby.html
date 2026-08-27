@@ -21,6 +21,20 @@
         </button>
       </div>
       <p class="text-sm text-text-muted">Compartilhe este PIN com os jogadores</p>
+
+      {# QR Code #}
+      <div class="mt-6 card-neon p-5 inline-block">
+        <div class="flex items-center justify-center gap-2 mb-3">
+          <span class="text-xl">📱</span>
+          <p class="font-heading text-sm text-white">Aponte a câmera para entrar</p>
+        </div>
+        <div class="bg-white rounded-xl p-3 inline-block">
+          <canvas id="quiz-qr" width="192" height="192"></canvas>
+        </div>
+        <p class="text-[11px] text-text-muted mt-3 max-w-[220px]">
+          Ao escanear, o PIN <span class="text-neon-blue font-mono">{{ pin }}</span> será preenchido automaticamente — basta digitar seu nome e tocar em <span class="text-neon-blue">Entrar na Sala</span>.
+        </p>
+      </div>
     </div>
 
     {# Players Grid #}
@@ -138,5 +152,20 @@ function quizLobby() {
     },
   }
 }
+</script>
+{% endblock %}
+
+{% block extra_scripts %}
+<script src="https://cdn.jsdelivr.net/npm/qrcode@1.5.4/build/qrcode.min.js"></script>
+<script>
+document.addEventListener('DOMContentLoaded', () => {
+  const canvas = document.getElementById('quiz-qr');
+  if (!canvas || typeof QRCode === 'undefined') return;
+  QRCode.toCanvas(canvas, '{{ qr_url|escapejs }}', {
+    width: 192,
+    margin: 1,
+    color: { dark: '#0a0e1a', light: '#ffffff' },
+  }).catch(() => {});
+});
 </script>
 {% endblock %}

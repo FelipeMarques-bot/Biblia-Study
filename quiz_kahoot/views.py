@@ -4,6 +4,7 @@ from django.http import JsonResponse
 from django.views.decorators.http import require_POST
 from django.contrib.auth.decorators import login_required
 from django.db.models import Q
+from django.urls import reverse
 
 from courses.models import Exercicio, LicaoBiblica, Trilha
 from .models import QuizRoom, QuizPlayer, QuizQuestion, generate_pin
@@ -81,6 +82,7 @@ def quiz_lobby(request, pin):
         'pin': pin,
         'is_host': is_host,
         'nome': nome,
+        'qr_url': request.build_absolute_uri(reverse('quiz_join')) + f'?pin={pin}',
     })
 
 

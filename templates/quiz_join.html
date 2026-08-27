@@ -84,8 +84,10 @@
 
 <script>
 function quizJoin() {
+  const params = new URLSearchParams(window.location.search);
+  const pinFromQR = (params.get('pin') || '').replace(/[^0-9]/g, '').slice(0, 6);
   return {
-    pin: '',
+    pin: pinFromQR,
     nome: '',
     action: 'join',
   }
