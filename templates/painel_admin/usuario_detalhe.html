@@ -82,7 +82,7 @@
       {% for t in trilhas_progresso %}
       <div class="mb-4 last:mb-0">
         <div class="flex items-center justify-between text-[13px] mb-1.5">
-          <span class="text-text flex items-center gap-1.5 truncate"><span>{{ t.icone }}</span>{{ t.nome }}</span>
+          <span class="text-text flex items-center gap-1.5 truncate"><span>{{ t.icone|icone_emoji }}</span>{{ t.nome }}</span>
           <span class="text-text-muted">{{ t.feitas }}/{{ t.total }} · +{{ t.xp }} XP</span>
         </div>
         <div class="xp-bar h-2"><div class="xp-bar-green" style="width:{% widthratio t.feitas t.total 100 %}%"></div></div>
@@ -125,7 +125,7 @@
       <div class="grid grid-cols-2 gap-3">
         {% for r in recompensas %}
         <div class="reward-tile p-4 text-center">
-          <span class="text-2xl block">{{ r.recompensa.icone }}</span>
+          <span class="text-2xl block">{{ r.recompensa.icone|icone_emoji }}</span>
           <p class="text-[12.5px] text-white font-medium mt-2 leading-tight">{{ r.recompensa.titulo }}</p>
           <p class="text-[11px] text-text-muted mt-1">{{ r.data_desbloqueio|date:"d/m/Y" }}</p>
         </div>

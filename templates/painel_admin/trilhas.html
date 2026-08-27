@@ -25,7 +25,7 @@
     {% for t in itens %}
     <div class="panel-card p-5 hover:border-neon-blue/40 transition-colors">
       <div class="flex items-start justify-between gap-3 mb-4">
-        <div class="w-12 h-12 rounded-2xl bg-neon-blue/10 border border-neon-blue/20 flex items-center justify-center text-2xl">{{ t.icone }}</div>
+        <div class="w-12 h-12 rounded-2xl bg-neon-blue/10 border border-neon-blue/20 flex items-center justify-center text-2xl">{{ t.icone|icone_emoji }}</div>
         {% if t.ativo %}<span class="p-badge p-badge-green">● Ativa</span>{% else %}<span class="p-badge p-badge-gray">Inativa</span>{% endif %}
       </div>
       <h3 class="font-heading text-white text-[15px] leading-snug">{{ t.nome }}</h3>

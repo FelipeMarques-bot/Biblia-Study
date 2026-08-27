@@ -35,7 +35,7 @@
           {% for l in itens %}
           <tr>
             <td class="font-medium text-white max-w-[320px]">{{ l.titulo }}</td>
-            <td><span class="p-badge p-badge-gray">{{ l.trilha.icone }} {{ l.trilha.nome }}</span></td>
+            <td><span class="p-badge p-badge-gray">{{ l.trilha.icone|icone_emoji }} {{ l.trilha.nome }}</span></td>
             <td class="text-text-muted">{{ l.referencia|default:"—" }}</td>
             <td class="text-right text-text-muted">{{ l.ordem }}</td>
             <td class="text-right">{{ l.n_exercicios }}</td>

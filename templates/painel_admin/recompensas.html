@@ -24,7 +24,7 @@
     {% for r in itens %}
     <div class="panel-card p-5 reward-tile relative overflow-hidden">
       {% if r.ativo %}<div class="absolute top-4 right-4"><span class="p-badge p-badge-green">● Ativa</span></div>{% else %}<div class="absolute top-4 right-4"><span class="p-badge p-badge-gray">Inativa</span></div>{% endif %}
-      <div class="w-14 h-14 rounded-2xl bg-gradient-to-br from-neon-gold/20 to-neon-pink/10 border border-neon-gold/25 flex items-center justify-center text-3xl mb-4">{{ r.icone }}</div>
+      <div class="w-14 h-14 rounded-2xl bg-gradient-to-br from-neon-gold/20 to-neon-pink/10 border border-neon-gold/25 flex items-center justify-center text-3xl mb-4">{{ r.icone|icone_emoji }}</div>
       <h3 class="font-heading text-white text-[15px]">{{ r.titulo }}</h3>
       <p class="text-[12.5px] text-text-muted mt-1 line-clamp-2">{{ r.descricao }}</p>
       <div class="flex flex-wrap gap-2 mt-4">

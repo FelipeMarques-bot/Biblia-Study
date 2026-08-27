@@ -11,6 +11,25 @@ from painel_admin.views import (
 
 register = template.Library()
 
+ICON_EMOJI = {
+    'open_in_new': '🚀', 'exit_to_app': '🚪', 'music_note': '🎵', 'book': '📖',
+    'star': '⭐', 'church': '⛪', 'local_fire_department': '🔥', 'menu_book': '📚',
+    'history_edu': '📜', 'school': '🎓', 'auto_stories': '📖', 'psychology': '🧠',
+    'visibility': '👁️', 'volunteer_activism': '❤️', 'emoji_objects': '💡',
+    'diversity_3': '🤝', 'gavel': '⚖️', 'workspace_premium': '🏆', 'groups': '👥',
+    'psychology_alt': '🧠', 'sports_esports': '🎮', 'brush': '🎨', 'biotech': '🧬',
+    'forest': '🌲', 'park': '🌿', 'water_drop': '💧', 'public': '🌍',
+    'explore': '🧭', 'map': '🗺️', 'route': '🛤️', 'flag': '🚩', 'menu': '☰',
+    'crown': '👑', 'warning': '⚠️', 'auto_awesome': '✨', 'balance': '⚖️',
+    'forum': '💬', 'emoji_people': '👥', 'engineering': '🔧', 'vertical_align_top': '⬆️',
+    'thumb_up': '👍', 'mail': '✉️', 'straighten': '📏', 'child_care': '👶',
+    'child_friendly': '🧒', 'directions_walk': '🚶', 'emoji_events': '🏆',
+}
+
+@register.filter
+def icone_emoji(nome):
+    return ICON_EMOJI.get(nome, '📖')
+
 
 @register.filter
 def nivel_style(valor):
