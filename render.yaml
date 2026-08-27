@@ -29,7 +29,7 @@ services:
         fromService:
           name: biblia-redis
           property: connectionString
-    healthCheckPath: /
+    healthCheckPath: /ping/
     autoDeploy: true
 
   - type: redis
