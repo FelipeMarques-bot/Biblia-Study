@@ -288,7 +288,10 @@ function quizPlayer() {
       if (this.polling || this.wsOk) return;
       this.polling = true;
       this.poll();
-      this.pollInterval = setInterval(() => this.poll(), 3000);
+      this.pollInterval = setInterval(() => this.poll(), 1500);
+      document.addEventListener('visibilitychange', () => {
+        if (!document.hidden && this.polling) this.poll();
+      });
     },
 
     async poll() {
