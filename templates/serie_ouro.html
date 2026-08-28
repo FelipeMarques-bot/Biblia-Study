@@ -3,6 +3,7 @@
 {% block title %}Série Ouro - Plataforma Bíblica{% endblock %}
 {% block content %}
 {{ desafios_data|json_script:"desafios-data" }}
+{{ lock|json_script:"serie-ouro-lock" }}
 <div class="flex min-h-screen bg-dark" x-data="serieOuro()" x-init='init(JSON.parse(document.getElementById("desafios-data").textContent), {{ user_xp }})'>
 
   {% include 'includes/sidebar.html' %}
@@ -76,16 +77,35 @@
       {# Desafios de Elite #}
       <div>
         <h3 class="font-heading text-xl md:text-2xl text-neon-gold mb-6">Desafios de Elite</h3>
+
+        {% if not liberado %}
+        <div class="card-neon p-5 md:p-6 mb-6" style="border:1px solid rgba(255,215,0,.25)">
+          <div class="flex items-start gap-3">
+            <span class="text-2xl">🔒</span>
+            <div class="flex-1 min-w-0">
+              <h4 class="font-heading text-sm md:text-base text-white mb-1">Desbloqueie em 3 dias de constância</h4>
+              <p class="text-xs text-text-muted mb-3">As questões de ouro dão os maiores pontos da plataforma. Estude 3 dias seguidos para liberá-las — você está em <span class="text-neon-gold font-medium">{{ streak_atual }} de {{ streak_necessario }}</span>.</p>
+              <div class="flex items-center gap-3">
+                <span class="inline-flex h-2.5 w-44 rounded-full bg-dark-elevated border border-dark-border overflow-hidden">
+                  <span class="block h-full bg-neon-gold rounded-full" style="width:{% widthratio streak_atual streak_necessario 100 %}%"></span>
+                </span>
+                <span class="text-[11px] text-neon-gold font-medium">🔥 {{ streak_atual }}/{{ streak_necessario }} dias</span>
+              </div>
+            </div>
+          </div>
+        </div>
+        {% endif %}
+
         <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 md:gap-6">
           <template x-for="desafio in desafios" :key="desafio.id">
-            <div class="card-neon p-5 md:p-6 group hover:border-neon-gold/40 transition-all duration-300 cursor-pointer hover-lift" @click="iniciarDesafio(desafio)">
+            <div class="card-neon p-5 md:p-6 group hover:border-neon-gold/40 transition-all duration-300 cursor-pointer hover-lift" @click="iniciarDesafio(desafio)" :class="{ 'opacity-70': !liberado }">
               <div class="w-12 h-12 rounded-full flex items-center justify-center mb-4 bg-neon-gold/10 border border-neon-gold/20">
                 <span class="text-xl">⭐</span>
               </div>
               <h4 class="font-heading text-sm md:text-base text-white mb-1" x-text="desafio.titulo"></h4>
               <p class="text-xs text-neon-gold mb-3" x-text="desafio.questoes + ' questões'"></p>
               <span class="inline-block text-[11px] text-neon-gold border border-neon-gold/30 px-3 py-1 rounded-full bg-neon-gold/5">
-                <span x-text="desafio.concluido ? '✅ Concluído' : '⚡ Iniciar'"></span>
+                <span x-text="desafio.concluido ? '✅ Concluído' : (!liberado ? '🔒 Bloqueado' : '⚡ Iniciar')"></span>
               </span>
             </div>
           </template>
@@ -109,9 +129,19 @@
       recompensa: null,
       aberto: false,
       chestShaking: false,
+      liberado: true,
+      streakAtual: 3,
       init(data, xp) {
         this.desafios = data || []
         this.userXp = xp || 0
+        const lockEl = document.getElementById('serie-ouro-lock')
+        if (lockEl) {
+          try {
+            const lock = JSON.parse(lockEl.textContent)
+            this.liberado = !!lock.liberado
+            this.streakAtual = lock.streak_atual || 0
+          } catch (e) {}
+        }
       },
       openChest() {
         if (this.chestShaking || this.aberto) return
@@ -149,6 +179,10 @@
         this.bauAberto = false; this.recompensa = null; this.aberto = false; this.chestShaking = false
       },
       irParaDesafio() {
+        if (!this.liberado) {
+          this.resetChest()
+          return
+        }
         const pendente = this.desafios.find(d => !d.concluido)
         if (pendente) {
           window.location.href = '/gamificacao/serie-ouro/' + pendente.id + '/'
@@ -158,6 +192,11 @@
       },
       iniciarDesafio(desafio) {
         if (typeof SoundEngine !== 'undefined') SoundEngine.select()
+        if (!this.liberado) {
+          if (typeof SoundEngine !== 'undefined') SoundEngine.error()
+          alert('🔒 Questões de ouro bloqueadas! Complete ' + this.streakAtual + '/3 dias seguidos de estudo para liberá-las.');
+          return
+        }
         if (desafio.concluido) {
           if (typeof SoundEngine !== 'undefined') SoundEngine.error()
           alert('✅ Você já concluiu este desafio!');

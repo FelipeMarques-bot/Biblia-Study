@@ -1,7 +1,7 @@
 import json
 import random
 from datetime import date, timedelta
-from django.shortcuts import render, get_object_or_404
+from django.shortcuts import get_object_or_404, redirect, render
 from django.contrib.auth.decorators import login_required
 from django.contrib.auth.models import User
 from django.http import JsonResponse
@@ -15,6 +15,10 @@ from .models import (
 from .utils import log_activity
 
 SEED_BASE_DATE = date(2024, 1, 1)
+
+# Constância mínima (dias seguidos de estudo) para liberar a Série Ouro,
+# as questões com maior pontuação da plataforma.
+STREAK_MINIMO_SERIE_OURO = 3
 
 
 @login_required
@@ -147,14 +151,26 @@ def serie_ouro_view(request):
         })
 
     profile = request.user.profile
+    liberado = profile.streak_atual >= STREAK_MINIMO_SERIE_OURO
     return render(request, 'serie_ouro.html', {
         'desafios_data': desafios_data,
         'user_xp': profile.xp_total,
+        'liberado': liberado,
+        'streak_atual': profile.streak_atual,
+        'streak_necessario': STREAK_MINIMO_SERIE_OURO,
+        'lock': {
+            'liberado': liberado,
+            'streak_atual': profile.streak_atual,
+        },
     })
 
 @login_required
 def serie_ouro_desafio_view(request, desafio_id):
     desafio = get_object_or_404(SerieOuroDesafio, id=desafio_id, ativo=True)
+
+    if request.user.profile.streak_atual < STREAK_MINIMO_SERIE_OURO:
+        return redirect('serie_ouro')
+
     exercicios = desafio.exercicios.all().order_by('id')
 
     progresso, created = SerieOuroProgresso.objects.get_or_create(
@@ -209,6 +225,11 @@ def serie_ouro_verificar_view(request, desafio_id):
     exercicio_id = data.get('exercicio_id')
     resposta = data.get('resposta')
 
+    if request.user.profile.streak_atual < STREAK_MINIMO_SERIE_OURO:
+        return JsonResponse({
+            'error': 'Constância mínima de 3 dias não atingida para as questões de ouro.',
+        }, status=403)
+
     exercicio = get_object_or_404(SerieOuroExercicio, id=exercicio_id, desafio_ouro=desafio)
 
     correta = False
@@ -251,6 +272,11 @@ def serie_ouro_finalizar_view(request, desafio_id):
 
     desafio = get_object_or_404(SerieOuroDesafio, id=desafio_id, ativo=True)
     profile = request.user.profile
+
+    if profile.streak_atual < STREAK_MINIMO_SERIE_OURO:
+        return JsonResponse({
+            'error': 'Constância mínima de 3 dias não atingida para as questões de ouro.',
+        }, status=403)
 
     progresso, _ = SerieOuroProgresso.objects.get_or_create(
         usuario=request.user,

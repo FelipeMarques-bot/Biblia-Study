@@ -5,7 +5,14 @@ from django.contrib.auth.models import User
 from django.test import TestCase, override_settings
 
 from .leagues import inicio_semana, calcular_ligas
-from .models import Liga, LigaParticipacao, UserActivityLog
+from .models import (
+    Liga,
+    LigaParticipacao,
+    SerieOuroDesafio,
+    SerieOuroExercicio,
+    SerieOuroProgresso,
+    UserActivityLog,
+)
 
 SEMANA_A = date(2026, 1, 5)    # segunda
 SEMANA_B = date(2026, 1, 12)   # segunda seguinte
@@ -233,3 +240,67 @@ class RankingViewTest(TestCase):
         self.assertEqual(len(resp.context['ligas_data']), 10)
         # staff competem no ranking; só a conta admin do seed fica fora
         self.assertEqual(len(resp.context['rows']), 2)
+
+
+@override_settings(STORAGES={
+    'default': {'BACKEND': 'django.core.files.storage.FileSystemStorage'},
+    'staticfiles': {'BACKEND': 'django.contrib.staticfiles.storage.StaticFilesStorage'},
+})
+class SerieOuroTest(TestCase):
+
+    def setUp(self):
+        self.user = _usuario('ouro')
+        self.desafio = SerieOuroDesafio.objects.create(
+            titulo='Ouro: Teste',
+            descricao='teste',
+            ativo=True,
+            xp_recompensa=400,
+        )
+        self.client.force_login(self.user)
+
+    def _streak(self, n):
+        self.user.profile.streak_atual = n
+        self.user.profile.save()
+
+    def test_lista_bloqueada_abaixo_de_3_dias(self):
+        self._streak(2)
+        resp = self.client.get('/gamificacao/serie-ouro/')
+        self.assertEqual(resp.status_code, 200)
+        self.assertFalse(resp.context['liberado'])
+        self.assertEqual(resp.context['streak_atual'], 2)
+
+    def test_desafio_redireciona_abaixo_de_3_dias(self):
+        self._streak(2)
+        resp = self.client.get(f'/gamificacao/serie-ouro/{self.desafio.id}/')
+        self.assertEqual(resp.status_code, 302)
+
+    def test_verificar_negado_abaixo_de_3_dias(self):
+        self._streak(2)
+        resp = self.client.post(
+            f'/gamificacao/serie-ouro/{self.desafio.id}/verificar/',
+            data='{"exercicio_id": 1, "resposta": 0}',
+            content_type='application/json',
+        )
+        self.assertEqual(resp.status_code, 403)
+
+    def test_finalizar_negado_abaixo_de_3_dias(self):
+        self._streak(2)
+        resp = self.client.post(
+            f'/gamificacao/serie-ouro/{self.desafio.id}/finalizar/',
+            data='{}',
+            content_type='application/json',
+        )
+        self.assertEqual(resp.status_code, 403)
+        self.assertFalse(
+            SerieOuroProgresso.objects.filter(
+                usuario=self.user, desafio_ouro=self.desafio
+            ).exists()
+        )
+
+    def test_liberada_com_3_dias(self):
+        self._streak(3)
+        resp = self.client.get('/gamificacao/serie-ouro/')
+        self.assertEqual(resp.status_code, 200)
+        self.assertTrue(resp.context['liberado'])
+        resp2 = self.client.get(f'/gamificacao/serie-ouro/{self.desafio.id}/')
+        self.assertEqual(resp2.status_code, 200)
