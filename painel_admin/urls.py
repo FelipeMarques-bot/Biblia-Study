@@ -5,6 +5,7 @@ app_name = 'painel'
 
 urlpatterns = [
     path('login/', views.painel_login, name='login'),
+    path('conta/senha/', views.alterar_senha, name='alterar_senha'),
     path('', views.dashboard, name='dashboard'),
     path('usuarios/', views.usuarios, name='usuarios'),
     path('usuarios/exportar.csv', views.exportar_usuarios_csv, name='exportar_usuarios'),

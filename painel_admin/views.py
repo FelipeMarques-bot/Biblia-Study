@@ -3,7 +3,8 @@ from datetime import date, datetime, timedelta
 from functools import wraps
 
 from django.contrib import messages
-from django.contrib.auth import authenticate, login as django_login
+from django.contrib.auth import authenticate, login as django_login, update_session_auth_hash
+from django.contrib.auth.forms import PasswordChangeForm
 from django.contrib.auth.models import User
 from django.core.paginator import Paginator
 from django.db.models import Avg, Count, Max, Sum, Q
@@ -58,6 +59,19 @@ FAIXA_ICONE = {
 }
 
 
+class PainelPasswordChangeForm(PasswordChangeForm):
+    """PasswordChangeForm com rótulos e textos em português."""
+
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+        self.fields['old_password'].label = 'Senha atual'
+        self.fields['old_password'].help_text = ''
+        self.fields['new_password1'].label = 'Nova senha'
+        self.fields['new_password1'].help_text = ''
+        self.fields['new_password2'].label = 'Confirme a nova senha'
+        self.fields['new_password2'].help_text = ''
+
+
 def painel_requerido(view_func):
     """Exige usuário autenticado e staff para acessar o painel."""
     @wraps(view_func)
@@ -105,6 +119,23 @@ def _paginas(paginator, pagina_atual, janela=2):
         resultado.append(n)
         anterior = n
     return resultado
+
+
+@painel_requerido
+def alterar_senha(request):
+    if request.method == 'POST':
+        form = PainelPasswordChangeForm(request.user, data=request.POST)
+        if form.is_valid():
+            form.save()
+            update_session_auth_hash(request, form.user)
+            messages.success(request, 'Senha alterada com sucesso!')
+            return redirect('painel:dashboard')
+    else:
+        form = PainelPasswordChangeForm(request.user)
+    return render(request, 'painel_admin/alterar_senha.html', {
+        'form': form,
+        'secao': 'senha',
+    })
 
 
 @painel_requerido
