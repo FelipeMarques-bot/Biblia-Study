@@ -329,6 +329,11 @@ def serie_ouro_finalizar_view(request, desafio_id):
 def abrir_bau_divino(request):
     import random
     profile = request.user.profile
+    if profile.streak_atual < STREAK_MINIMO_SERIE_OURO:
+        return JsonResponse({
+            'error': f'Constância mínima de {STREAK_MINIMO_SERIE_OURO} dias não atingida '
+                     f'(você está com {profile.streak_atual}).',
+        }, status=403)
     if profile.xp_total < 100:
         return JsonResponse({'error': 'XP insuficiente'}, status=400)
     xp_gasto = 50

@@ -297,6 +297,29 @@ class SerieOuroTest(TestCase):
             ).exists()
         )
 
+    def test_bau_divino_negado_abaixo_de_3_dias(self):
+        self._streak(2)
+        self.user.profile.xp_total = 500
+        self.user.profile.save()
+        resp = self.client.post(
+            '/gamificacao/serie-ouro/abrir-bau/',
+            data='{}',
+            content_type='application/json',
+        )
+        self.assertEqual(resp.status_code, 403)
+
+    def test_bau_divino_liberado_com_3_dias(self):
+        self._streak(3)
+        self.user.profile.xp_total = 500
+        self.user.profile.save()
+        resp = self.client.post(
+            '/gamificacao/serie-ouro/abrir-bau/',
+            data='{}',
+            content_type='application/json',
+        )
+        self.assertEqual(resp.status_code, 200)
+        self.assertIn('recompensa', resp.json())
+
     def test_liberada_com_3_dias(self):
         self._streak(3)
         resp = self.client.get('/gamificacao/serie-ouro/')

@@ -32,12 +32,29 @@
         <h2 class="font-heading text-2xl md:text-3xl mb-2" style="background: linear-gradient(135deg, #ffd700, #ff6b35); -webkit-background-clip: text; -webkit-text-fill-color: transparent;">Baú Divino</h2>
         <p class="text-sm text-text-muted mb-8">Complete desafios para desbloquear recompensas</p>
 
+        {% if not liberado %}
+        <div class="mx-auto w-48 h-48 md:w-60 md:h-60 rounded-2xl flex items-center justify-center" style="border:2px dashed rgba(255,215,0,.35); background:rgba(255,215,0,.04)">
+          <div class="text-center">
+            <span class="text-6xl md:text-7xl block mb-2 opacity-60">🔒</span>
+            <span class="text-[11px] text-text-muted block px-4">Requer {{ streak_necessario }} dias de constância</span>
+          </div>
+        </div>
+        <div class="mt-8">
+          <span class="btn-gold text-sm opacity-60 cursor-not-allowed" style="filter:grayscale(.6)">🔒 Abrir Baú Divino</span>
+        </div>
+        {% else %}
         <div class="relative inline-block">
           <div :class="{ 'animate-shake': chestShaking }">
             <template x-if="!aberto">
               <div class="w-48 h-48 md:w-60 md:h-60 mx-auto cursor-pointer group" @click="openChest()">
                 <div class="chest-glow rounded-2xl flex items-center justify-center transition-all duration-300 group-hover:scale-105 h-full">
-                  <span class="text-6xl md:text-7xl group-hover:scale-110 transition-transform">🎁</span>
+                  <div class="relative" style="width:132px;height:104px">
+                    <div class="absolute inset-x-0" style="top:0;height:38px;background:linear-gradient(180deg,#8a5a2a,#6b411c);border:2px solid #3d2208;border-radius:10px 10px 0 0;box-shadow:0 5px 0 rgba(255,215,0,.30)"></div>
+                    <div class="absolute" style="left:50%;transform:translateX(-50%);top:0;width:30px;height:38px;background:#ffd700;border-left:3px solid #b8860b;border-right:3px solid #b8860b;border-radius:6px 6px 0 0"></div>
+                    <div class="absolute inset-x-0" style="top:36px;height:66px;background:linear-gradient(180deg,#7a4d20,#5a3515);border:2px solid #3d2208;border-top:none;border-radius:0 0 10px 10px"></div>
+                    <div class="absolute" style="left:50%;transform:translateX(-50%);top:36px;width:30px;height:66px;background:#ffd700;border-left:3px solid #b8860b;border-right:3px solid #b8860b"></div>
+                    <div class="absolute rounded-full" style="left:50%;top:50%;transform:translate(-50%,-50%);width:20px;height:20px;background:#ffd700;border:3px solid #8a5a00;box-shadow:0 0 10px rgba(255,215,0,.7)"></div>
+                  </div>
                 </div>
               </div>
             </template>
@@ -72,6 +89,7 @@
             </div>
           </template>
         </div>
+        {% endif %}
       </div>
 
       {# Desafios de Elite #}
