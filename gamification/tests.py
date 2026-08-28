@@ -149,6 +149,24 @@ class CalcularLigasTest(TestCase):
         calcular_ligas(semana=SEMANA_A, forcar=True)
         self.assertEqual(LigaParticipacao.objects.filter(semana=SEMANA_A).count(), 2)
 
+    def test_staff_nao_compete_no_ranking(self):
+        u1 = _usuario('u1')
+        admin = _usuario('admin')
+        admin.is_staff = True
+        admin.is_superuser = True
+        admin.save()
+        _log(u1, 100, datetime.combine(SEMANA_A, time(10)))
+        _log(admin, 500, datetime.combine(SEMANA_A, time(11)))
+
+        calcular_ligas(semana=SEMANA_A)
+
+        self.assertFalse(
+            LigaParticipacao.objects.filter(usuario=admin, semana=SEMANA_A).exists()
+        )
+        p1 = _parts(u1, SEMANA_A)
+        self.assertEqual(p1.posicao, 1)
+        self.assertEqual(p1.xp_semana, 100)
+
 
 @override_settings(STORAGES={
     'default': {'BACKEND': 'django.core.files.storage.FileSystemStorage'},
@@ -193,4 +211,4 @@ class RankingViewTest(TestCase):
         self.assertEqual(resp.status_code, 200)
         self.assertEqual(resp.context['secao'], 'ranking')
         self.assertEqual(len(resp.context['ligas_data']), 10)
-        self.assertEqual(len(resp.context['rows']), 2)
+        self.assertEqual(len(resp.context['rows']), 1)

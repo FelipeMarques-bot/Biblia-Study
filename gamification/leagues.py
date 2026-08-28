@@ -31,11 +31,12 @@ def inicio_semana(dt=None):
 
 
 def xp_por_usuario(semana):
-    """Mapa {usuario_id: xp_ganho} na semana (início na segunda-feira)."""
+    """Mapa {usuario_id: xp_ganho} na semana (início na segunda-feira).\n    Exclui a equipe (staff) — o admin não compete no ranking."""
     fim = semana + timedelta(days=7)
     logs = (
         UserActivityLog.objects
         .filter(data_hora__date__gte=semana, data_hora__date__lt=fim)
+        .exclude(usuario__is_staff=True)
         .values('usuario_id')
         .annotate(total=Sum('xp_ganho'))
     )
@@ -64,6 +65,8 @@ def calcular_ligas(semana=None, forcar=False):
     liga_por_ordem = {l.ordem: l for l in ligas}
 
     if not forcar and LigaParticipacao.objects.filter(semana=semana).exists():
+        # Mantém o cálculo já feito, apenas garante que staff não participe
+        LigaParticipacao.objects.filter(semana=semana, usuario__is_staff=True).delete()
         return semana
 
     # Semana de referência = última participação registrada antes desta
@@ -82,8 +85,12 @@ def calcular_ligas(semana=None, forcar=False):
     participantes = set(xp_semana.keys()) | set(refs.keys())
     if not participantes:
         participantes = set(
-            User.objects.filter(is_active=True).values_list('id', flat=True)
+            User.objects.filter(is_active=True, is_staff=False).values_list('id', flat=True)
         )
+    # A equipe (admin) não compete no ranking
+    participantes -= set(
+        User.objects.filter(is_staff=True).values_list('id', flat=True)
+    )
 
     perfis = _perfis(participantes)
 

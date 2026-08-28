@@ -149,9 +149,10 @@ def dashboard(request, *args, **kwargs):
         for a in atividades_tipo_qs
     }
 
-    # Top 10 usuários por XP
+    # Top 10 usuários por XP (sem a equipe)
     top_usuarios = (
         UserProfile.objects.select_related('usuario')
+        .exclude(usuario__is_staff=True)
         .order_by('-xp_total')[:10]
     )
     top_nomes = [p.usuario.username for p in top_usuarios]
@@ -533,7 +534,7 @@ def ranking(request, *args, **kwargs):
     }
 
     usuarios_rank = list(
-        User.objects.filter(is_active=True)
+        User.objects.filter(is_active=True, is_staff=False)
         .select_related('profile')
         .order_by('-profile__xp_total', 'username')
     )

@@ -344,7 +344,7 @@ def ranking_view(request):
     usuario = request.user
 
     ranking_geral = list(
-        User.objects.filter(is_active=True)
+        User.objects.filter(is_active=True, is_staff=False)
         .select_related('profile')
         .order_by('-profile__xp_total', 'username')
     )
