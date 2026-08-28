@@ -88,6 +88,10 @@
           🔥 Sequência: <span class="font-bold">{{ streak }}</span>
         </p>
       </div>
+      <a href="{% url 'alterar_senha' %}" class="sidebar-link text-text-muted hover:text-neon-blue">
+        <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M8 11V7a4 4 0 018 0v4m-5 4h2.5M21 12a9 9 0 11-18 0 9 9 0 0118 0zm-9 5c.28 0 .5-.22.5-.5v-2c0-.28-.22-.5-.5-.5s-.5.22-.5.5v2c0 .28.22.5.5.5z"/></svg>
+        Alterar senha
+      </a>
       <a href="{% url 'logout' %}" class="sidebar-link text-text-muted hover:text-neon-pink">
         <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M17 16l4-4m0 0l-4-4m4 4H7m6 4v1a3 3 0 01-3 3H6a3 3 0 01-3-3V7a3 3 0 013-3h4a3 3 0 013 3v1"/></svg>
         Sair

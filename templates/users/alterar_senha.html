@@ -1,0 +1,43 @@
+{% extends 'base.html' %}
+{% load static %}
+{% block title %}Alterar Senha - Plataforma Bíblica{% endblock %}
+{% block content %}
+<div class="min-h-[70vh] flex items-center justify-center px-4 py-8">
+  <div class="max-w-md w-full animate-slide-up">
+
+    {# Cad / Card #}
+    <div class="card-glow p-8 md:p-10">
+      <div class="text-center mb-8">
+        <div class="w-16 h-16 mx-auto mb-4 rounded-2xl flex items-center justify-center pulse-glow" style="background: linear-gradient(135deg, rgba(0,212,255,0.2), rgba(168,85,247,0.2)); border: 2px solid rgba(0,212,255,0.3); box-shadow: 0 0 50px rgba(0,212,255,0.15);">
+          <span class="text-3xl">🔑</span>
+        </div>
+        <h1 class="font-heading text-2xl text-white mb-1">Alterar senha</h1>
+        <p class="text-sm text-text-muted">Conta: <span class="text-neon-blue font-medium">{{ request.user.username }}</span></p>
+      </div>
+
+      <form method="post" class="space-y-5">
+        {% csrf_token %}
+        {% for field in form %}
+        <div>
+          <label class="text-xs text-text-muted uppercase tracking-wider block mb-2 font-medium">{{ field.label }}</label>
+          <input type="password" name="{{ field.name }}" id="{{ field.id_for_label }}"
+                 class="chat-input w-full text-sm" placeholder="••••••••"
+                 autocomplete="{% if field.name == 'old_password' %}current-password{% else %}new-password{% endif %}"
+                 {% if forloop.first %}autofocus{% endif %}>
+          {% for error in field.errors %}
+          <p class="text-xs text-neon-pink mt-1">{{ error }}</p>
+          {% endfor %}
+        </div>
+        {% endfor %}
+        <button type="submit" class="btn-primary w-full text-center text-sm mt-3 py-3.5">
+          🔒 Salvar nova senha
+        </button>
+      </form>
+    </div>
+
+    <p class="text-center mt-6 text-sm text-text-muted">
+      <a href="{% url 'dashboard' %}" class="text-neon-blue font-medium hover:text-neon-purple transition-colors">← Voltar ao Dashboard</a>
+    </p>
+  </div>
+</div>
+{% endblock %}

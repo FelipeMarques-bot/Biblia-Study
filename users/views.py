@@ -1,8 +1,8 @@
 from django.shortcuts import render, redirect
-from django.contrib.auth import authenticate, login, logout
+from django.contrib.auth import authenticate, login, logout, update_session_auth_hash
 from django.contrib.auth.decorators import login_required
 from django.contrib import messages
-from .forms import RegistroForm
+from .forms import AlterarSenhaForm, RegistroForm
 
 def login_view(request):
     if request.user.is_authenticated:
@@ -34,3 +34,17 @@ def registro_view(request):
 def logout_view(request):
     logout(request)
     return redirect('login')
+
+
+@login_required
+def alterar_senha_view(request):
+    if request.method == 'POST':
+        form = AlterarSenhaForm(request.user, data=request.POST)
+        if form.is_valid():
+            form.save()
+            update_session_auth_hash(request, form.user)
+            messages.success(request, 'Senha alterada com sucesso!')
+            return redirect('dashboard')
+    else:
+        form = AlterarSenhaForm(request.user)
+    return render(request, 'users/alterar_senha.html', {'form': form})
