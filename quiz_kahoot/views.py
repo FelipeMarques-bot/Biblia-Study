@@ -238,6 +238,14 @@ def api_show_results(request, pin):
 @csrf_exempt
 def api_submit_answer(request, pin):
     """API: Jogador envia resposta."""
+    try:
+        return _api_submit_answer_impl(request, pin)
+    except Exception:
+        import traceback
+        return JsonResponse({'error': 'trace-debug', 'trace': traceback.format_exc()[:4000]}, status=500)
+
+
+def _api_submit_answer_impl(request, pin):
     room = get_object_or_404(QuizRoom, pin=pin)
     data = __import__('json').loads(request.body)
     nome = data.get('nome', '')
