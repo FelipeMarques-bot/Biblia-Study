@@ -11,14 +11,38 @@ from .models import (
     DesafioDiario, DesafioDiarioConcluido, Liga, LigaParticipacao,
     Recompensa, RecompensaUsuario,
     SerieOuroDesafio, SerieOuroExercicio, SerieOuroProgresso,
+    UserActivityLog,
 )
-from .utils import log_activity
+from .utils import log_activity, streak_efetivo
 
 SEED_BASE_DATE = date(2024, 1, 1)
 
 # Constância mínima (dias seguidos de estudo) para liberar a Série Ouro,
 # as questões com maior pontuação da plataforma.
 STREAK_MINIMO_SERIE_OURO = 3
+
+DIAS_SEMANA = ['Seg', 'Ter', 'Qua', 'Qui', 'Sex', 'Sáb', 'Dom']
+
+
+def _dias_semana_constancia(usuario):
+    """Últimos 7 dias (de ontem-6 até hoje) com sinal de atividade diária."""
+    hoje = timezone.now().date()
+    inicio = hoje - timedelta(days=6)
+    ativos_brutos = UserActivityLog.objects.filter(
+        usuario=usuario, data_hora__gte=inicio,
+    ).dates('data_hora', 'day')
+    ativos = {d if isinstance(d, date) else d.date() for d in ativos_brutos}
+    dias = []
+    for i in range(6, -1, -1):
+        dia = hoje - timedelta(days=i)
+        dias.append({
+            'data': dia,
+            'abreviacao': DIAS_SEMANA[dia.weekday()],
+            'numero': dia.day,
+            'ativo': dia in ativos,
+            'hoje': dia == hoje,
+        })
+    return dias
 
 
 @login_required
@@ -85,7 +109,7 @@ def recompensas_view(request):
     pendentes = []
     for r in recompensas_disponiveis:
         if not user_recompensas.filter(recompensa=r).exists():
-            if licoes_feitas >= r.criterio_licoes and profile.xp_total >= r.criterio_xp and profile.streak_atual >= r.criterio_streak:
+            if licoes_feitas >= r.criterio_licoes and profile.xp_total >= r.criterio_xp and streak_efetivo(profile) >= r.criterio_streak:
                 recomp, created = RecompensaUsuario.objects.get_or_create(
                     usuario=request.user, recompensa=r
                 )
@@ -151,16 +175,19 @@ def serie_ouro_view(request):
         })
 
     profile = request.user.profile
-    liberado = profile.streak_atual >= STREAK_MINIMO_SERIE_OURO
+    streak_atual = streak_efetivo(profile)
+    liberado = streak_atual >= STREAK_MINIMO_SERIE_OURO
     return render(request, 'serie_ouro.html', {
         'desafios_data': desafios_data,
         'user_xp': profile.xp_total,
         'liberado': liberado,
-        'streak_atual': profile.streak_atual,
+        'streak_atual': streak_atual,
         'streak_necessario': STREAK_MINIMO_SERIE_OURO,
+        'ultima_atividade': profile.ultimo_dia_atividade,
+        'semana_dias': _dias_semana_constancia(request.user),
         'lock': {
             'liberado': liberado,
-            'streak_atual': profile.streak_atual,
+            'streak_atual': streak_atual,
         },
     })
 
@@ -168,7 +195,7 @@ def serie_ouro_view(request):
 def serie_ouro_desafio_view(request, desafio_id):
     desafio = get_object_or_404(SerieOuroDesafio, id=desafio_id, ativo=True)
 
-    if request.user.profile.streak_atual < STREAK_MINIMO_SERIE_OURO:
+    if streak_efetivo(request.user.profile) < STREAK_MINIMO_SERIE_OURO:
         return redirect('serie_ouro')
 
     exercicios = desafio.exercicios.all().order_by('id')
@@ -225,7 +252,7 @@ def serie_ouro_verificar_view(request, desafio_id):
     exercicio_id = data.get('exercicio_id')
     resposta = data.get('resposta')
 
-    if request.user.profile.streak_atual < STREAK_MINIMO_SERIE_OURO:
+    if streak_efetivo(request.user.profile) < STREAK_MINIMO_SERIE_OURO:
         return JsonResponse({
             'error': 'Constância mínima de 3 dias não atingida para as questões de ouro.',
         }, status=403)
@@ -273,7 +300,7 @@ def serie_ouro_finalizar_view(request, desafio_id):
     desafio = get_object_or_404(SerieOuroDesafio, id=desafio_id, ativo=True)
     profile = request.user.profile
 
-    if profile.streak_atual < STREAK_MINIMO_SERIE_OURO:
+    if streak_efetivo(profile) < STREAK_MINIMO_SERIE_OURO:
         return JsonResponse({
             'error': 'Constância mínima de 3 dias não atingida para as questões de ouro.',
         }, status=403)
@@ -329,10 +356,11 @@ def serie_ouro_finalizar_view(request, desafio_id):
 def abrir_bau_divino(request):
     import random
     profile = request.user.profile
-    if profile.streak_atual < STREAK_MINIMO_SERIE_OURO:
+    streak_atual = streak_efetivo(profile)
+    if streak_atual < STREAK_MINIMO_SERIE_OURO:
         return JsonResponse({
             'error': f'Constância mínima de {STREAK_MINIMO_SERIE_OURO} dias não atingida '
-                     f'(você está com {profile.streak_atual}).',
+                     f'(você está com {streak_atual}).',
         }, status=403)
     if profile.xp_total < 100:
         return JsonResponse({'error': 'XP insuficiente'}, status=400)

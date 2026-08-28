@@ -32,6 +32,30 @@
         <h2 class="font-heading text-2xl md:text-3xl mb-2" style="background: linear-gradient(135deg, #ffd700, #ff6b35); -webkit-background-clip: text; -webkit-text-fill-color: transparent;">Baú Divino</h2>
         <p class="text-sm text-text-muted mb-8">Complete desafios para desbloquear recompensas</p>
 
+        {# Constância semanal #}
+        <div class="card-neon p-5 mb-8 max-w-md mx-auto" style="border:1px solid rgba(255,215,0,.2)">
+          <div class="flex items-center justify-between mb-4">
+            <h3 class="font-heading text-sm text-neon-gold">🔥 Constância</h3>
+            <span class="text-[11px] text-text-muted">
+              {% if ultima_atividade %}
+              Última atividade: <span class="text-neon-gold font-medium">{{ ultima_atividade|date:"d/m/Y" }}</span>
+              {% else %}
+              Complete uma atividade para começar sua série
+              {% endif %}
+            </span>
+          </div>
+          <div class="flex items-start justify-between gap-1">
+            {% for d in semana_dias %}
+            <div class="flex flex-col items-center gap-1 w-full">
+              <span class="text-[10px] uppercase tracking-wide {% if d.hoje %}text-neon-gold{% else %}text-text-muted{% endif %}">{{ d.abreviacao }}</span>
+              <div class="w-9 h-9 md:w-10 md:h-10 rounded-full flex items-center justify-center text-xs font-semibold transition-colors {% if d.ativo %}bg-neon-gold text-dark border border-neon-gold{% else %}bg-dark-elevated border border-dark-border text-text-muted{% endif %} {% if d.hoje %}ring-2 ring-neon-gold/30{% endif %}">
+                {{ d.numero }}
+              </div>
+            </div>
+            {% endfor %}
+          </div>
+        </div>
+
         {% if not liberado %}
         <div class="mx-auto w-48 h-48 md:w-60 md:h-60 rounded-2xl flex items-center justify-center" style="border:2px dashed rgba(255,215,0,.35); background:rgba(255,215,0,.04)">
           <div class="text-center">
@@ -48,12 +72,19 @@
             <template x-if="!aberto">
               <div class="w-48 h-48 md:w-60 md:h-60 mx-auto cursor-pointer group" @click="openChest()">
                 <div class="chest-glow rounded-2xl flex items-center justify-center transition-all duration-300 group-hover:scale-105 h-full">
-                  <div class="relative" style="width:132px;height:104px">
-                    <div class="absolute inset-x-0" style="top:0;height:38px;background:linear-gradient(180deg,#8a5a2a,#6b411c);border:2px solid #3d2208;border-radius:10px 10px 0 0;box-shadow:0 5px 0 rgba(255,215,0,.30)"></div>
-                    <div class="absolute" style="left:50%;transform:translateX(-50%);top:0;width:30px;height:38px;background:#ffd700;border-left:3px solid #b8860b;border-right:3px solid #b8860b;border-radius:6px 6px 0 0"></div>
-                    <div class="absolute inset-x-0" style="top:36px;height:66px;background:linear-gradient(180deg,#7a4d20,#5a3515);border:2px solid #3d2208;border-top:none;border-radius:0 0 10px 10px"></div>
-                    <div class="absolute" style="left:50%;transform:translateX(-50%);top:36px;width:30px;height:66px;background:#ffd700;border-left:3px solid #b8860b;border-right:3px solid #b8860b"></div>
-                    <div class="absolute rounded-full" style="left:50%;top:50%;transform:translate(-50%,-50%);width:20px;height:20px;background:#ffd700;border:3px solid #8a5a00;box-shadow:0 0 10px rgba(255,215,0,.7)"></div>
+                  <div class="relative" style="width:140px;height:114px">
+                    <div class="absolute" style="left:10px;right:10px;bottom:-5px;height:16px;background:rgba(0,0,0,.5);border-radius:50%;filter:blur(5px)"></div>
+                    <div class="absolute" style="left:5px;right:5px;top:0;height:42px;background:linear-gradient(180deg,#a06a2c,#6b411c 62%,#4a2c10);border:2px solid #2f1e05;border-radius:20px 20px 0 0;box-shadow:inset 0 9px 10px rgba(255,215,0,.18), 0 5px 0 rgba(255,215,0,.28);z-index:2"></div>
+                    <div class="absolute" style="left:5px;right:5px;top:42px;height:72px;background:#4a2c10;background-image:repeating-linear-gradient(0deg,transparent 0 17px,rgba(0,0,0,.35) 17px 19px),linear-gradient(180deg,#8a5a2a,#4a2c10);border:2px solid #2f1e05;border-top:0;border-radius:0 0 14px 14px;box-shadow:inset 0 6px 8px rgba(0,0,0,.35);z-index:1"></div>
+                    <div class="absolute" style="left:30px;top:0;bottom:0;width:13px;background:linear-gradient(180deg,#ffd700,#b8860b);border-left:2px solid #8a5a00;border-right:2px solid #8a5a00;z-index:3"></div>
+                    <div class="absolute" style="right:30px;top:0;bottom:0;width:13px;background:linear-gradient(180deg,#ffd700,#b8860b);border-left:2px solid #8a5a00;border-right:2px solid #8a5a00;z-index:3"></div>
+                    <div class="absolute" style="left:0;right:0;top:17px;height:7px;background:linear-gradient(180deg,#ffe28a,#b8860b);z-index:4"></div>
+                    <div class="absolute" style="left:50%;top:32px;transform:translateX(-50%);width:30px;height:24px;background:linear-gradient(180deg,#ffd700,#c9930a);border:2px solid #7a4d00;border-radius:6px;box-shadow:0 3px 5px rgba(0,0,0,.45);z-index:5"></div>
+                    <div class="absolute" style="left:50%;top:45px;transform:translateX(-50%);width:9px;height:13px;background:#3a2408;border:2px solid #1f1403;border-radius:5px 5px 7px 7px;z-index:6"></div>
+                    <div class="absolute" style="left:36.5px;top:10px;width:6px;height:6px;background:#7a4d00;border-radius:50%;box-shadow:0 0 3px rgba(0,0,0,.6);transform:translateX(-50%);z-index:6"></div>
+                    <div class="absolute" style="left:36.5px;top:52px;width:6px;height:6px;background:#7a4d00;border-radius:50%;box-shadow:0 0 3px rgba(0,0,0,.6);transform:translateX(-50%);z-index:6"></div>
+                    <div class="absolute" style="left:103.5px;top:10px;width:6px;height:6px;background:#7a4d00;border-radius:50%;box-shadow:0 0 3px rgba(0,0,0,.6);transform:translateX(-50%);z-index:6"></div>
+                    <div class="absolute" style="left:103.5px;top:52px;width:6px;height:6px;background:#7a4d00;border-radius:50%;box-shadow:0 0 3px rgba(0,0,0,.6);transform:translateX(-50%);z-index:6"></div>
                   </div>
                 </div>
               </div>

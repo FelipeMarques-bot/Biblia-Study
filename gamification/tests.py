@@ -3,6 +3,7 @@ from datetime import date, datetime, time
 
 from django.contrib.auth.models import User
 from django.test import TestCase, override_settings
+from django.utils import timezone
 
 from .leagues import inicio_semana, calcular_ligas
 from .models import (
@@ -260,6 +261,13 @@ class SerieOuroTest(TestCase):
 
     def _streak(self, n):
         self.user.profile.streak_atual = n
+        self.user.profile.ultimo_dia_atividade = timezone.now().date()
+        self.user.profile.save()
+
+    def _streak_parado(self, n, dias_sem_atividade):
+        """Streak congelado no banco, mas há ``dias_sem_atividade`` sem estudar."""
+        self.user.profile.streak_atual = n
+        self.user.profile.ultimo_dia_atividade = timezone.now().date() - timezone.timedelta(days=dias_sem_atividade)
         self.user.profile.save()
 
     def test_lista_bloqueada_abaixo_de_3_dias(self):
@@ -327,3 +335,46 @@ class SerieOuroTest(TestCase):
         self.assertTrue(resp.context['liberado'])
         resp2 = self.client.get(f'/gamificacao/serie-ouro/{self.desafio.id}/')
         self.assertEqual(resp2.status_code, 200)
+
+    def test_streak_fantasma_apos_2_dias_parado_bloqueia_bau(self):
+        # Usuário alcançou 3 dias, mas ficou 2 dias sem estudar:
+        # o valor salvo continua 3, porém o baú NÃO pode mais abrir.
+        self._streak_parado(3, dias_sem_atividade=2)
+        self.user.profile.xp_total = 500
+        self.user.profile.save()
+        resp = self.client.post(
+            '/gamificacao/serie-ouro/abrir-bau/',
+            data='{}',
+            content_type='application/json',
+        )
+        self.assertEqual(resp.status_code, 403)
+
+    def test_streak_fantasma_apos_2_dias_parado_bloqueia_serie(self):
+        self._streak_parado(3, dias_sem_atividade=2)
+        resp = self.client.get('/gamificacao/serie-ouro/')
+        self.assertEqual(resp.status_code, 200)
+        self.assertFalse(resp.context['liberado'])
+        resp2 = self.client.get(f'/gamificacao/serie-ouro/{self.desafio.id}/')
+        self.assertEqual(resp2.status_code, 302)
+
+    def test_ultimo_dia_ainda_pode_continuar_constancia(self):
+        # Ontem houve atividade: hoje ainda pode completar o dia da série.
+        self._streak_parado(3, dias_sem_atividade=1)
+        self.user.profile.xp_total = 500
+        self.user.profile.save()
+        resp = self.client.post(
+            '/gamificacao/serie-ouro/abrir-bau/',
+            data='{}',
+            content_type='application/json',
+        )
+        self.assertEqual(resp.status_code, 200)
+
+    def test_pagina_mostra_semana_e_ultima_atividade(self):
+        self._streak(3)
+        _log(self.user, 30, datetime.combine(timezone.now().date(), time(10)))
+        resp = self.client.get('/gamificacao/serie-ouro/')
+        self.assertEqual(resp.status_code, 200)
+        self.assertEqual(len(resp.context['semana_dias']), 7)
+        self.assertEqual(resp.context['ultima_atividade'], timezone.now().date())
+        hoje = [d for d in resp.context['semana_dias'] if d['hoje']][0]
+        self.assertTrue(hoje['ativo'])
