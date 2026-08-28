@@ -101,6 +101,7 @@ def quiz_host(request, pin):
     return render(request, 'quiz_host.html', {
         'room': room,
         'pin': pin,
+        'nome': request.session.get(f'quiz_nome_{pin}', ''),
         'questions': questions,
         'current_question': current_q,
         'total_questions': questions.count(),

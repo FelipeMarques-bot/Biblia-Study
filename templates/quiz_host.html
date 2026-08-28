@@ -117,7 +117,49 @@
         <template x-if="status === 'finished'">
           <div class="card-neon p-8 text-center">
             <div class="text-6xl mb-4">🏆</div>
-            <h2 class="font-heading text-2xl text-white mb-4">Jogo Encerrado!</h2>
+            <h2 class="font-heading text-2xl text-white mb-6">Jogo Encerrado!</h2>
+
+            <template x-if="rankedPlayers.length > 0">
+              <div class="mb-8">
+                <p class="text-xs text-text-muted uppercase tracking-wider mb-4">Pódium</p>
+                <div class="flex items-end justify-center gap-3 px-2">
+                  <template x-for="(p, idx) in orderedPodium" :key="'pod-' + p.nome">
+                    <div class="flex-1 max-w-[130px] text-center animate-slide-up"
+                         :style="'animation-delay: ' + (idx * 150) + 'ms'">
+                      <div class="w-14 h-14 mx-auto mb-2 rounded-full flex items-center justify-center text-3xl"
+                           :class="idx === 0 ? 'bg-neon-gold/20 border border-neon-gold/40 shadow-lg' : idx === 1 ? 'bg-gray-400/10 border border-gray-400/30' : 'bg-orange-500/10 border border-orange-500/30'">
+                        <span x-text="['🥇','🥈','🥉'][idx]"></span>
+                      </div>
+                      <p class="font-heading text-sm font-bold text-white truncate" x-text="p.nome"></p>
+                      <p class="font-heading text-xs font-bold"
+                         :class="idx === 0 ? 'text-neon-gold' : idx === 1 ? 'text-gray-400' : 'text-orange-500'"
+                         x-text="p.pontuacao + ' pts'"></p>
+                      <div class="mt-2 rounded-t-lg border-t border-x"
+                           :class="idx === 0 ? 'h-16 bg-gradient-to-t from-neon-gold/20' : idx === 1 ? 'h-12 bg-gradient-to-t from-gray-400/10' : 'h-9 bg-gradient-to-t from-orange-500/10'"
+                           :style="idx === 0 ? 'border-neon-gold/30' : idx === 1 ? 'border-gray-400/20' : 'border-orange-500/20'"></div>
+                    </div>
+                  </template>
+                </div>
+              </div>
+            </template>
+
+            <template x-if="rankedPlayers.length > 0">
+              <div class="text-left mb-8">
+                <p class="text-xs text-text-muted uppercase tracking-wider mb-3">Classificação Final</p>
+                <div class="max-h-[260px] overflow-y-auto space-y-1.5">
+                  <template x-for="(p, idx) in rankedPlayers" :key="p.nome">
+                    <div class="flex items-center gap-3 p-2 rounded-lg bg-dark-elevated">
+                      <span class="w-6 text-center font-bold text-sm"
+                            :class="idx === 0 ? 'text-neon-gold' : idx === 1 ? 'text-gray-400' : idx === 2 ? 'text-orange-500' : 'text-text-muted'"
+                            x-text="idx + 1"></span>
+                      <span class="flex-1 text-sm truncate text-white" x-text="p.nome"></span>
+                      <span class="font-heading text-sm font-bold text-neon-gold" x-text="p.pontuacao + ' pts'"></span>
+                    </div>
+                  </template>
+                </div>
+              </div>
+            </template>
+
             <a :href="'/quiz/{{ pin }}/podio/'" class="btn-primary text-lg px-8 py-4 inline-block">
               Ver Pódium
             </a>
@@ -379,6 +421,14 @@ function quizHost() {
 
     getOptionEmoji(idx) {
       return KAHOOT_EMOJI[idx] || '';
+    },
+
+    get rankedPlayers() {
+      return [...this.players].filter(p => !p.is_host).sort((a, b) => b.pontuacao - a.pontuacao);
+    },
+
+    get orderedPodium() {
+      return this.rankedPlayers.slice(0, 3);
     },
   }
 }
