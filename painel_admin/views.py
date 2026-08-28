@@ -48,6 +48,7 @@ NIVEL_STYLE = {
     'intermediario': 'bg-neon-blue/15 text-neon-blue border-neon-blue/20',
     'avancado': 'bg-neon-purple/15 text-neon-purple border-neon-purple/20',
     'mestre': 'bg-neon-gold/15 text-neon-gold border-neon-gold/20',
+    'super_cristao': 'bg-neon-white/15 text-neon-white border-neon-white/20',
 }
 
 FAIXA_ICONE = {

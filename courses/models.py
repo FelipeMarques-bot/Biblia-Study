@@ -28,7 +28,8 @@ class Trilha(models.Model):
         ('crianca', 'Criança'), ('adolescente', 'Adolescente'), ('adulto', 'Adulto')
     ], default='adulto')
     nivel = models.CharField(max_length=20, choices=[
-        ('iniciante', 'Iniciante'), ('intermediario', 'Intermediário'), ('avancado', 'Avançado')
+        ('iniciante', 'Iniciante'), ('intermediario', 'Intermediário'), ('avancado', 'Avançado'),
+        ('super_cristao', 'Super Cristão')
     ], default='iniciante')
     ordem = models.IntegerField(default=0)
     ativo = models.BooleanField(default=True)

@@ -17,6 +17,7 @@ NIVEL_CHOICES = [
     ('iniciante', 'Iniciante'),
     ('intermediario', 'Intermediário'),
     ('avancado', 'Avançado'),
+    ('super_cristao', 'Super Cristão'),
 ]
 
 

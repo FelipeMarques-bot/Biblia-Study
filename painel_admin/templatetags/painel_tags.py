@@ -51,12 +51,17 @@ def atividade_label(tipo):
     return TIPO_ATIVIDADE_LABELS.get(tipo, tipo)
 
 
+NIVEL_LABELS_EXTRA = {
+    'super_cristao': 'Super Cristão',
+}
+
+
 @register.filter
 def nivel_label(valor):
     for v, l in NIVEL_CHOICES:
         if v == valor:
             return l
-    return valor
+    return NIVEL_LABELS_EXTRA.get(valor, valor)
 
 
 @register.filter

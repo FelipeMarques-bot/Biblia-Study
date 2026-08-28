@@ -34,9 +34,11 @@ class SelecionarPerguntasTest(TestCase):
         ini = _trilha('Iniciante', 'iniciante')
         med = _trilha('Intermediario', 'intermediario')
         ava = _trilha('Avancado', 'avancado')
+        sup = _trilha('Super', 'super_cristao')
         _licao(ini, 'T1', 10)
         _licao(med, 'T2', 3)
         _licao(ava, 'T3', 8)
+        _licao(sup, 'SC', 10)
 
     _COUNTER = 1
 
@@ -77,6 +79,12 @@ class SelecionarPerguntasTest(TestCase):
         self.assertEqual(room.questions.count(), 5)
         self.assertEqual(set(niveis), {'avancado'})
 
+    def test_filtra_super_cristao(self):
+        room = self._room('super_cristao', 6)
+        niveis = self._niveis(room)
+        self.assertEqual(room.questions.count(), 6)
+        self.assertEqual(set(niveis), {'super_cristao'})
+
     def test_complementa_quando_nivel_insuficiente(self):
         room = self._room('intermediario', 5)
         niveis = self._niveis(room)
@@ -116,3 +124,16 @@ class CriarSalaViewTest(TestCase):
         room = QuizRoom.objects.latest('created_at')
         self.assertEqual(room.nivel, 'todos')
         self.assertEqual(room.perguntas_total, 20)
+
+    def test_aceita_nivel_super_cristao(self):
+        c = Client()
+        resp = c.post(reverse('quiz_join'), {
+            'action': 'create',
+            'nome': 'Host',
+            'nivel': 'super_cristao',
+            'perguntas': '10',
+        })
+        self.assertEqual(resp.status_code, 302)
+        room = QuizRoom.objects.latest('created_at')
+        self.assertEqual(room.nivel, 'super_cristao')
+        self.assertEqual(room.perguntas_total, 10)
