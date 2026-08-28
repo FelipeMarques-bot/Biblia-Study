@@ -133,6 +133,32 @@
           </div>
           {% endif %}
 
+          {# Ranking semanal #}
+          {% if liga_part %}
+          <div class="card animate-slide-up" style="animation-delay: 0.28s;">
+            <div class="flex items-center justify-between mb-2">
+              <div class="flex items-center gap-2">
+                <span class="text-lg">{{ liga_part.liga.icone }}</span>
+                <p class="text-[11px] text-text-muted uppercase tracking-wider">Sua Liga</p>
+              </div>
+              {% if liga_part.promovido %}
+              <span class="badge-green text-xs">⬆ Subiu</span>
+              {% elif liga_part.rebaixado %}
+              <span class="text-xs px-2 py-0.5 rounded-full border" style="border-color: rgba(255,0,128,0.25); background: rgba(255,0,128,0.15); color: #ff0080;">⬇ Caiu</span>
+              {% endif %}
+            </div>
+            <div class="flex items-center justify-between">
+              <div>
+                <p class="font-heading text-lg text-neon-gold">{{ liga_part.liga.nome }}</p>
+                <p class="text-xs text-text-muted mt-1">Posição #{{ liga_part.posicao }} · {{ liga_part.xp_semana }} XP na semana</p>
+              </div>
+              <a href="{% url 'ranking' %}" class="btn-primary text-xs inline-block text-center px-3 py-2">
+                Ver ranking →
+              </a>
+            </div>
+          </div>
+          {% endif %}
+
           {# Pontos de Ajuda #}
           <div class="card animate-slide-up" style="animation-delay: 0.3s;">
             <div class="flex items-center gap-2 mb-2">

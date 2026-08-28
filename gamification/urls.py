@@ -11,4 +11,5 @@ urlpatterns = [
     path('serie-ouro/<int:desafio_id>/', views.serie_ouro_desafio_view, name='serie_ouro_desafio'),
     path('serie-ouro/<int:desafio_id>/verificar/', views.serie_ouro_verificar_view, name='serie_ouro_verificar'),
     path('serie-ouro/<int:desafio_id>/finalizar/', views.serie_ouro_finalizar_view, name='serie_ouro_finalizar'),
+    path('ranking/', views.ranking_view, name='ranking'),
 ]

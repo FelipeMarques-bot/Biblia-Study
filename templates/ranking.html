@@ -1,0 +1,203 @@
+{% extends 'base.html' %}
+{% load static %}
+{% block title %}Ranking - Plataforma Bíblica{% endblock %}
+{% block content %}
+<div class="flex min-h-screen" x-data="{}">
+  {% include 'includes/sidebar.html' %}
+
+  <div class="flex-1 flex flex-col min-h-screen">
+    <main class="flex-1 p-4 md:p-8 md:pt-4 overflow-y-auto pb-24 md:pb-8 pt-16 md:pt-4">
+
+      {# Cabeçalho #}
+      <div class="mb-6 md:mb-8 animate-slide-up">
+        <div class="flex items-center justify-between flex-wrap gap-3">
+          <div>
+            <h1 class="font-heading text-xl md:text-heading-md text-white">🏆 Ranking</h1>
+            <p class="font-body text-sm text-text-muted mt-1">
+              Liga atual: <span class="text-text">{{ semana|date:"d/m" }} – {{ semana_fim|date:"d/m" }}</span>
+            </p>
+          </div>
+          {% if liga_part %}
+          <div class="flex items-center gap-2 px-3 py-1.5 rounded-full bg-neon-gold/10 border border-neon-gold/20">
+            <span class="text-lg">{{ liga_part.liga.icone }}</span>
+            <span class="text-sm font-semibold text-neon-gold">{{ liga_part.liga.nome }}</span>
+            <span class="text-sm text-text-muted">·</span>
+            <span class="text-sm font-semibold text-white">#{{ liga_part.posicao }}</span>
+          </div>
+          {% endif %}
+        </div>
+      </div>
+
+      <div class="grid grid-cols-1 lg:grid-cols-3 gap-4 md:gap-6">
+
+        {# Coluna principal #}
+        <div class="lg:col-span-2 space-y-4 md:space-y-6">
+
+          {# Evolução #}
+          {% if liga_part %}
+          <div class="card animate-slide-up" style="animation-delay: 0.05s;">
+            <p class="text-[11px] text-text-muted uppercase tracking-wider mb-3">Sua evolução na semana</p>
+            {% if liga_part.promovido %}
+            <div class="flex items-center gap-3">
+              <span class="w-12 h-12 rounded-full flex items-center justify-center bg-neon-green/10 border border-neon-green/30 text-2xl">⬆️</span>
+              <div>
+                <p class="font-heading text-base text-neon-green">Você subiu para {{ liga_part.liga.nome }}!</p>
+                <p class="text-xs text-text-muted mt-1">
+                  {% if liga_part.liga_anterior %}De {{ liga_part.liga_anterior.icone }} {{ liga_part.liga_anterior.nome }} (posição #{{ liga_part.posicao_anterior }}) — agora em #{{ liga_part.posicao }}!
+                  {% else %}Bem-vindo à liga {{ liga_part.liga.nome }}!{% endif %}
+                </p>
+              </div>
+            </div>
+            {% elif liga_part.rebaixado %}
+            <div class="flex items-center gap-3">
+              <span class="w-12 h-12 rounded-full flex items-center justify-center bg-neon-pink/10 border border-neon-pink/30 text-2xl">⬇️</span>
+              <div>
+                <p class="font-heading text-base text-neon-pink">Você caiu para {{ liga_part.liga.nome }}.</p>
+                <p class="text-xs text-text-muted mt-1">
+                  {% if liga_part.liga_anterior %}De {{ liga_part.liga_anterior.icone }} {{ liga_part.liga_anterior.nome }} — estude a Palavra para voltar ao topo!{% endif %}
+                </p>
+              </div>
+            </div>
+            {% else %}
+            <div class="flex items-center gap-3">
+              <span class="w-12 h-12 rounded-full flex items-center justify-center bg-neon-blue/10 border border-neon-blue/30 text-2xl">➡️</span>
+              <div>
+                <p class="font-heading text-base text-neon-blue">Você permanece em {{ liga_part.liga.nome }}.</p>
+                <p class="text-xs text-text-muted mt-1">
+                  {% if liga_part.liga_anterior %}
+                    {% if liga_part.xp_semana > 0 %}Continue assim para subir de etapa na próxima semana!{% else %}Ganhe XP esta semana para não ser rebaixado.{% endif %}
+                  {% else %}Complete lições para subir no ranking!{% endif %}
+                </p>
+              </div>
+            </div>
+            {% endif %}
+          </div>
+          {% endif %}
+
+          {# Ladder de ligas #}
+          <div class="card animate-slide-up" style="animation-delay: 0.1s;">
+            <h3 class="font-heading text-base md:text-lg text-white mb-4 flex items-center gap-2">
+              <svg class="w-5 h-5 text-neon-gold" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M19 5h-2V3H7v2H5c-1.1 0-2 .9-2 2v1c0 2.55 1.92 4.63 4.39 4.94.63 1.5 1.98 2.63 3.61 2.96V19H7v2h10v-2h-4v-3.1c1.63-.33 2.98-1.46 3.61-2.96C19.08 12.63 21 10.55 21 8V7c0-1.1-.9-2-2-2zM5 8V7h2v3.82C5.84 10.4 5 9.3 5 8zm14 0c0 1.3-.84 2.4-2 2.82V7h2v1z"/></svg>
+              Ligas
+            </h3>
+            <div class="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-5 gap-3">
+              {% for liga in ligas_ladder %}
+              <div class="px-4 py-3 rounded-lg border transition-colors {% if liga_part and liga_part.liga.id == liga.id %}bg-neon-gold/10 border-neon-gold/40{% else %}bg-dark-elevated border-dark-border{% endif %} text-center">
+                <span class="text-2xl block mb-1">{{ liga.icone }}</span>
+                <p class="text-xs font-semibold {% if liga_part and liga_part.liga.id == liga.id %}text-neon-gold{% else %}text-text{% endif %}">{{ liga.nome }}</p>
+                <p class="text-[10px] text-text-muted uppercase tracking-wider mt-0.5">{{ liga.get_tipo_display }}</p>
+              </div>
+              {% endfor %}
+            </div>
+          </div>
+
+          {# Líderes da sua liga #}
+          <div class="card animate-slide-up" style="animation-delay: 0.15s;">
+            <div class="flex items-center justify-between mb-4">
+              <h3 class="font-heading text-base md:text-lg text-white flex items-center gap-2">
+                {% if liga_part %}{{ liga_part.liga.icone }}{% endif %} Líderes da Liga
+                {% if liga_part %}
+                <span class="text-xs font-normal text-text-muted">({{ liga_part.liga.nome }})</span>
+                {% endif %}
+              </h3>
+            </div>
+            {% if membros_liga %}
+            <div class="space-y-1.5">
+              {% for item in membros_liga %}
+              {% with p=item.participacao u=item.usuario %}
+              <div class="flex items-center gap-3 px-3 py-2.5 rounded-lg {% if u.id == usuario.id %}bg-neon-blue/10 border border-neon-blue/30{% else %}bg-dark-elevated border border-dark-border{% endif %}">
+                <span class="w-8 text-center font-heading {% if p.posicao == 1 %}text-neon-gold{% elif p.posicao == 2 %}text-text-muted{% elif p.posicao == 3 %}text-neon-orange{% else %}text-text-muted{% endif %} text-sm">
+                  #{{ p.posicao }}
+                </span>
+                <div class="w-9 h-9 rounded-full flex items-center justify-center text-sm font-bold {% if u.id == usuario.id %}bg-neon-blue text-white{% else %}bg-dark-border text-text{% endif %}">
+                  {{ u.get_full_name|default:u.username|slice:":1" }}
+                </div>
+                <div class="flex-1 min-w-0">
+                  <p class="font-body text-sm text-text truncate {% if u.id == usuario.id %}text-neon-blue font-semibold{% endif %}">
+                    {{ u.get_full_name|default:u.username }}
+                    {% if u.id == usuario.id %}<span class="text-[10px] text-neon-blue">(você)</span>{% endif %}
+                  </p>
+                  <p class="text-[10px] text-text-muted">
+                    {% if p.promovido %}⬆️ promovido
+                    {% elif p.rebaixado %}⬇️ rebaixado
+                    {% else %}manteve a etapa{% endif %}
+                  </p>
+                </div>
+                <div class="text-right">
+                  <p class="text-sm font-semibold text-white">{{ p.xp_semana }} XP</p>
+                  <p class="text-[10px] text-text-muted">na semana</p>
+                </div>
+              </div>
+              {% endwith %}
+              {% endfor %}
+            </div>
+            {% else %}
+            <div class="py-6 text-center">
+              <p class="text-text-muted text-sm">As ligas desta semana ainda não foram formadas.</p>
+              <a href="{% url 'lista_trilhas' %}" class="text-neon-blue text-sm mt-2 inline-block hover:underline">Ganhe XP em uma lição →</a>
+            </div>
+            {% endif %}
+          </div>
+        </div>
+
+        {# Coluna lateral #}
+        <div class="space-y-4 md:space-y-6">
+
+          {# Posição global #}
+          <div class="card-glow animate-slide-up" style="animation-delay: 0.2s;">
+            <div class="flex items-center gap-2 mb-3">
+              <span class="text-lg">🌍</span>
+              <p class="text-[11px] text-neon-blue uppercase tracking-wider">Ranking Global</p>
+            </div>
+            <div class="flex items-center gap-4">
+              <p class="font-heading text-4xl text-white leading-none">
+                {% if posicao_geral %}#{{ posicao_geral }}{% else %}—{% endif %}
+              </p>
+              <div>
+                <p class="text-xs text-text-muted">de {{ total_usuarios }} usuários</p>
+                <p class="text-[11px] text-text-muted mt-1">{{ usuario.get_full_name|default:usuario.username }}</p>
+              </div>
+            </div>
+          </div>
+
+          {# Top 10 global #}
+          <div class="card animate-slide-up" style="animation-delay: 0.25s;">
+            <h3 class="font-heading text-base text-white mb-4">Top 10 Geral</h3>
+            <div class="space-y-2">
+              {% for u in ranking_geral %}
+              <div class="flex items-center gap-3 py-1.5 {% if u.id == usuario.id %}text-neon-blue{% else %}text-text{% endif %}">
+                <span class="w-6 text-center text-sm font-heading {% if forloop.counter <= 3 %}text-neon-gold{% else %}text-text-muted{% endif %}">{{ forloop.counter }}º</span>
+                <div class="flex-1 min-w-0">
+                  <p class="text-sm truncate">{{ u.get_full_name|default:u.username }}</p>
+                  <p class="text-[10px] text-text-muted">Nível {{ u.profile.nivel }} · 🔥 {{ u.profile.streak_atual }}</p>
+                </div>
+                <span class="text-xs font-semibold text-neon-gold">{{ u.profile.xp_total }} XP</span>
+              </div>
+              {% empty %}
+              <p class="text-text-muted text-sm py-4 text-center">Nenhum usuário ainda.<br>Seja o primeiro! 🚀</p>
+              {% endfor %}
+            </div>
+          </div>
+
+          {# Como funciona #}
+          <div class="card animate-slide-up" style="animation-delay: 0.3s;">
+            <div class="flex items-center gap-2 mb-3">
+              <span class="text-lg">📜</span>
+              <p class="text-[11px] text-text-muted uppercase tracking-wider">Como funciona</p>
+            </div>
+            <ul class="space-y-2 text-xs text-text-muted">
+              <li class="flex gap-2"><span>•</span> Ganhe XP em lições, desafios, série ouro e recompensas.</li>
+              <li class="flex gap-2"><span>•</span> Semanalmente as ligas são reorganizadas.</li>
+              <li class="flex gap-2"><span>•</span> Os melhores de cada liga <span class="text-neon-green">sobem de etapa</span>.</li>
+              <li class="flex gap-2"><span>•</span> Quem não gera XP pode <span class="text-neon-pink">ser rebaixado</span>.</li>
+              <li class="flex gap-2"><span>•</span> Suba até chegar ao <span class="text-neon-gold">Diamante 💎</span>.</li>
+            </ul>
+          </div>
+        </div>
+      </div>
+    </main>
+  </div>
+
+  {% include 'includes/bottom_tab_bar.html' %}
+</div>
+{% endblock %}

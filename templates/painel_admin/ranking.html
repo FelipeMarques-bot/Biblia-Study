@@ -1,0 +1,197 @@
+{% extends 'painel_admin/base_admin.html' %}
+{% load static %}
+
+{% block title %}Ranking{% endblock %}
+{% block header_title %}Ranking{% endblock %}
+
+{% block content %}
+<div class="space-y-5">
+
+  {# ===== KPIs ===== #}
+  <div class="grid grid-cols-2 lg:grid-cols-4 gap-4 animate-slide-up">
+    <div class="kpi-card kpi-blue">
+      <div class="flex items-center justify-between mb-3">
+        <span class="kpi-icon">📅</span>
+        <span class="text-[11px] text-text-muted">Semana</span>
+      </div>
+      <p class="kpi-value" style="font-size:18px">{{ kpi.semana_inicio|date:"d/m" }} – {{ kpi.semana_fim|date:"d/m" }}</p>
+      <p class="text-[13px] text-text-muted mt-1">Período das ligas</p>
+    </div>
+    <div class="kpi-card kpi-green">
+      <div class="flex items-center justify-between mb-3">
+        <span class="kpi-icon">👥</span>
+        <span class="text-[11px] text-text-muted">Ligas</span>
+      </div>
+      <p class="kpi-value">{{ kpi.participantes }}</p>
+      <p class="text-[13px] text-text-muted mt-1">Participações na semana</p>
+    </div>
+    <div class="kpi-card kpi-gold">
+      <div class="flex items-center justify-between mb-3">
+        <span class="kpi-icon">⚡</span>
+        <span class="text-[11px] text-text-muted">Semana</span>
+      </div>
+      <p class="kpi-value">{{ kpi.xp_semana }}</p>
+      <p class="text-[13px] text-text-muted mt-1">XP gerado na semana</p>
+    </div>
+    <div class="kpi-card kpi-purple">
+      <div class="flex items-center justify-between mb-3">
+        <span class="kpi-icon">🔁</span>
+        <span class="text-[11px] text-text-muted">Movimentação</span>
+      </div>
+      <p class="kpi-value"><span class="text-neon-green">▲ {{ kpi.promovidos }}</span> <span class="text-neon-pink">▼ {{ kpi.rebaixados }}</span></p>
+      <p class="text-[13px] text-text-muted mt-1">Promovidos / rebaixados</p>
+    </div>
+  </div>
+
+  {# ===== Ladder de ligas ===== #}
+  <div class="panel-card p-5 animate-slide-up" style="animation-delay:0.05s">
+    <div class="flex items-center justify-between mb-4">
+      <div>
+        <h3 class="font-heading text-white text-[15px]">Distribuição por liga</h3>
+        <p class="text-[12px] text-text-muted">Clique para ver os integrantes</p>
+      </div>
+    </div>
+    <div class="flex flex-wrap items-stretch gap-2.5">
+      {% for item in ligas_data %}
+      <a href="{% url 'painel:ranking' %}?liga={{ item.liga.id }}"
+         class="flex flex-col items-center gap-1.5 px-3.5 py-3 rounded-xl border transition-all min-w-[96px]
+         {% if liga_selecionada and liga_selecionada.id == item.liga.id %}bg-neon-gold/10 border-neon-gold/50{% else %}bg-dark-elevated border-dark-border hover:border-neon-blue/40{% endif %}">
+        <span class="text-2xl">{{ item.liga.icone }}</span>
+        <span class="text-[12px] font-semibold {% if liga_selecionada and liga_selecionada.id == item.liga.id %}text-neon-gold{% else %}text-text{% endif %}">{{ item.liga.nome }}</span>
+        {% if item.total > 0 %}
+          <span class="p-badge {% if item.liga.tipo == 'metal' %}p-badge-gold{% else %}p-badge-purple{% endif %}">{{ item.total }}</span>
+        {% else %}
+          <span class="text-[11px] text-text-muted">vazio</span>
+        {% endif %}
+      </a>
+      {% endfor %}
+    </div>
+  </div>
+
+  <div class="grid grid-cols-1 xl:grid-cols-5 gap-4">
+
+    {# ===== Integrantes da liga selecionada ===== #}
+    <div class="xl:col-span-2 panel-card p-5 animate-slide-up" style="animation-delay:0.1s">
+      <div class="flex items-center justify-between mb-4">
+        <div>
+          <h3 class="font-heading text-white text-[15px]">
+            {% if liga_selecionada %}{{ liga_selecionada.icone }} {{ liga_selecionada.nome }}{% else %}Liga{% endif %}
+            <span class="text-text-muted font-normal text-[13px]"> · {{ liga_membros|length }} integrantes</span>
+          </h3>
+          <p class="text-[12px] text-text-muted">Posições atuais na semana</p>
+        </div>
+      </div>
+      <div class="space-y-1.5 max-h-[460px] overflow-y-auto admin-scroll pr-1">
+        {% for item in liga_membros %}
+        {% with p=item.part u=item.user %}
+        <div class="flex items-center gap-3 px-3 py-2 rounded-lg bg-dark-elevated border border-dark-border
+                    {% if p.promovido %}border-neon-green/30{% elif p.rebaixado %}border-neon-pink/30{% endif %}">
+          <span class="w-7 text-center font-heading text-sm {% if p.posicao == 1 %}text-neon-gold{% elif p.posicao == 2 %}text-text-muted{% elif p.posicao == 3 %}text-neon-orange{% else %}text-text-muted{% endif %}">#{{ p.posicao }}</span>
+          <span class="avatar" style="width:30px;height:30px;font-size:12px">{{ u.username|slice:":1"|upper }}</span>
+          <div class="flex-1 min-w-0">
+            <a href="{% url 'painel:usuario_detalhe' u.id %}" class="text-[13px] text-text hover:text-neon-blue truncate block">{{ u.get_full_name|default:u.username }}</a>
+            <span class="text-[11px] text-text-muted">
+              {% if p.promovido %}<span class="text-neon-green">▲ subiu de {{ p.liga_anterior.nome }}</span>
+              {% elif p.rebaixado %}<span class="text-neon-pink">▼ caiu de {{ p.liga_anterior.nome }}</span>
+              {% else %}{% if p.liga_anterior %}manteve ({{ p.liga_anterior.nome }}){% else %}novo na liga{% endif %}{% endif %}
+            </span>
+          </div>
+          <span class="text-[13px] font-semibold text-neon-gold whitespace-nowrap">{{ p.xp_semana }} XP</span>
+        </div>
+        {% endwith %}
+        {% empty %}
+        <div class="py-10 text-center text-text-muted text-sm">
+          <span class="text-3xl block mb-2">🏜️</span>
+          Nenhum integrante nesta liga ainda.
+        </div>
+        {% endfor %}
+      </div>
+    </div>
+
+    {# ===== Ranking global ===== #}
+    <div class="xl:col-span-3 animate-slide-up" style="animation-delay:0.15s">
+      <div class="flex items-center justify-between mb-3">
+        <p class="text-[13px] text-text-muted"><span class="text-white font-semibold">{{ total }}</span> usuário{{ total|pluralize }} no ranking global</p>
+      </div>
+      <div class="admin-table-wrap">
+        <table class="admin-table">
+          <thead>
+            <tr>
+              <th>#</th>
+              <th>Usuário</th>
+              <th>Liga</th>
+              <th class="text-right">XP semana</th>
+              <th class="text-right">XP total</th>
+              <th class="text-right">Streak</th>
+              <th></th>
+            </tr>
+          </thead>
+          <tbody>
+            {% for r in rows %}
+            <tr>
+              <td class="font-heading {% if r.posicao == 1 %}text-neon-gold{% elif r.posicao == 2 %}text-text-muted{% elif r.posicao == 3 %}text-neon-orange{% else %}text-text-muted{% endif %}">{{ r.posicao }}º</td>
+              <td>
+                <a href="{% url 'painel:usuario_detalhe' r.user.id %}" class="link-user inline-flex items-center gap-3">
+                  <span class="avatar">{{ r.user.username|slice:":1"|upper }}</span>
+                  <span class="min-w-0">
+                    <span class="block truncate">{{ r.user.get_full_name|default:r.user.username }}</span>
+                    <span class="block text-[12px] text-text-muted font-normal">@{{ r.user.username }} · {{ r.nivel }}</span>
+                  </span>
+                </a>
+              </td>
+              <td>
+                {% if r.liga %}
+                  <span class="p-badge {% if r.liga.tipo == 'metal' %}p-badge-gold{% else %}p-badge-purple{% endif %}">
+                    {{ r.liga.icone }} {{ r.liga.nome }} #{{ r.liga_posicao }}
+                  </span>
+                {% else %}
+                  <span class="p-badge p-badge-gray">fora</span>
+                {% endif %}
+              </td>
+              <td class="text-right text-neon-blue font-semibold whitespace-nowrap">{{ r.xp_semana }} XP</td>
+              <td class="text-right text-neon-green font-semibold whitespace-nowrap">{{ r.xp_total }} XP</td>
+              <td class="text-right whitespace-nowrap">
+                {% if r.streak > 0 %}<span class="p-badge p-badge-orange">🔥 {{ r.streak }}</span>{% else %}<span class="text-text-muted">—</span>{% endif %}
+              </td>
+              <td class="text-right">
+                <a href="{% url 'painel:usuario_detalhe' r.user.id %}" class="p-badge p-badge-blue hover:bg-neon-blue/20 transition-colors">Abrir →</a>
+              </td>
+            </tr>
+            {% empty %}
+            <tr><td colspan="7" class="text-center py-14">
+              <span class="text-4xl block mb-3">👥</span>
+              <p class="text-text-muted">Nenhum usuário ativo ainda.</p>
+            </td></tr>
+            {% endfor %}
+          </tbody>
+        </table>
+      </div>
+
+      {% if paginas|length > 1 %}
+      <div class="flex flex-wrap items-center justify-between gap-3 mt-4 pt-1">
+        <p class="text-[12px] text-text-muted">Página {{ rows.number }} de {{ rows.paginator.num_pages }}</p>
+        <div class="p-pagination">
+          {% if rows.has_previous %}
+            <a class="p-page" href="?{% if liga_filtro %}liga={{ liga_filtro }}&{% endif %}pagina={{ rows.previous_page_number }}">‹</a>
+          {% endif %}
+          {% for p in paginas %}
+            {% if p %}
+              {% if p == rows.number %}
+                <span class="p-page current">{{ p }}</span>
+              {% else %}
+                <a class="p-page" href="?{% if liga_filtro %}liga={{ liga_filtro }}&{% endif %}pagina={{ p }}">{{ p }}</a>
+              {% endif %}
+            {% else %}
+              <span class="p-page ellipsis">…</span>
+            {% endif %}
+          {% endfor %}
+          {% if rows.has_next %}
+            <a class="p-page" href="?{% if liga_filtro %}liga={{ liga_filtro }}&{% endif %}pagina={{ rows.next_page_number }}">›</a>
+          {% endif %}
+        </div>
+      </div>
+      {% endif %}
+    </div>
+  </div>
+</div>
+{% endblock %}

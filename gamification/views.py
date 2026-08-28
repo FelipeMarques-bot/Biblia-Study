@@ -3,10 +3,13 @@ import random
 from datetime import date, timedelta
 from django.shortcuts import render, get_object_or_404
 from django.contrib.auth.decorators import login_required
+from django.contrib.auth.models import User
 from django.http import JsonResponse
 from django.utils import timezone
+from .leagues import calcular_ligas, inicio_semana
 from .models import (
-    DesafioDiario, DesafioDiarioConcluido, Recompensa, RecompensaUsuario,
+    DesafioDiario, DesafioDiarioConcluido, Liga, LigaParticipacao,
+    Recompensa, RecompensaUsuario,
     SerieOuroDesafio, SerieOuroExercicio, SerieOuroProgresso,
 )
 from .utils import log_activity
@@ -331,4 +334,71 @@ def abrir_bau_divino(request):
         'xp_gasto': xp_gasto,
         'xp_restante': profile.xp_total,
         'recompensa': premio,
+    })
+
+
+@login_required
+def ranking_view(request):
+    """Ranking estilo Duolingo: ligas semanais + posição global."""
+    semana = calcular_ligas()
+    usuario = request.user
+
+    ranking_geral = list(
+        User.objects.filter(is_active=True)
+        .select_related('profile')
+        .order_by('-profile__xp_total', 'username')
+    )
+    posicao_geral = next(
+        (i + 1 for i, u in enumerate(ranking_geral) if u.id == usuario.id), None
+    )
+
+    liga_part = (
+        LigaParticipacao.objects
+        .filter(usuario=usuario, semana=semana)
+        .select_related('liga', 'liga_anterior')
+        .first()
+    )
+
+    # Participantes da liga do usuário (semana atual)
+    membros_liga = []
+    if liga_part:
+        participacoes = list(
+            LigaParticipacao.objects
+            .filter(semana=semana, liga=liga_part.liga)
+            .select_related('liga', 'liga_anterior')
+            .order_by('posicao')
+        )
+        usuarios = {
+            u.id: u
+            for u in User.objects.filter(
+                id__in=[p.usuario_id for p in participacoes]
+            ).select_related('profile')
+        }
+        membros_liga = [
+            {'participacao': p, 'usuario': usuarios.get(p.usuario_id)}
+            for p in participacoes
+        ]
+
+    ligas_ladder = list(Liga.objects.order_by('ordem'))
+
+    evolucao = None
+    if liga_part:
+        if liga_part.promovido:
+            evolucao = 'subiu'
+        elif liga_part.rebaixado:
+            evolucao = 'caiu'
+        else:
+            evolucao = 'manteve'
+
+    return render(request, 'ranking.html', {
+        'semana': semana,
+        'semana_fim': inicio_semana() + timedelta(days=6),
+        'usuario': usuario,
+        'liga_part': liga_part,
+        'membros_liga': membros_liga,
+        'posicao_geral': posicao_geral,
+        'total_usuarios': len(ranking_geral),
+        'ranking_geral': ranking_geral[:10],
+        'ligas_ladder': ligas_ladder,
+        'evolucao': evolucao,
     })

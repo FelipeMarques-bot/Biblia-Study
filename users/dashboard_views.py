@@ -3,7 +3,8 @@ from datetime import date, timedelta
 from django.shortcuts import render
 from django.contrib.auth.decorators import login_required
 from courses.models import Trilha, LicaoBiblica, ProgressoUsuario
-from gamification.models import DesafioDiario, DesafioDiarioConcluido
+from gamification.leagues import calcular_ligas
+from gamification.models import DesafioDiario, DesafioDiarioConcluido, LigaParticipacao
 
 @login_required
 def dashboard_view(request):
@@ -52,6 +53,15 @@ def dashboard_view(request):
         usuario=request.user, concluida=True
     ).select_related('licao').order_by('-data_conclusao')[:5]
 
+    # Liga semanal (ranking estilo Duolingo)
+    semana = calcular_ligas()
+    liga_part = (
+        LigaParticipacao.objects
+        .filter(usuario=request.user, semana=semana)
+        .select_related('liga')
+        .first()
+    )
+
     return render(request, 'dashboard.html', {
         'user_full_name': request.user.get_full_name() or request.user.username,
         'streak': streak,
@@ -65,4 +75,6 @@ def dashboard_view(request):
         'desafio_concluido': desafio_concluido,
         'licoes_recentes': licoes_recentes,
         'pontos_ajuda': profile.pontos_para_ajuda,
+        'liga_part': liga_part,
+        'semana': semana,
     })

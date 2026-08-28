@@ -18,9 +18,12 @@ from courses.models import (
     ProgressoUsuario,
     Trilha,
 )
+from gamification.leagues import calcular_ligas, xp_por_usuario
 from gamification.models import (
     DesafioDiario,
     DesafioDiarioConcluido,
+    Liga,
+    LigaParticipacao,
     Recompensa,
     RecompensaUsuario,
     SerieOuroProgresso,
@@ -503,3 +506,99 @@ def recompensas(request, *args, **kwargs):
         'tipos': Recompensa.TIPO_CHOICES,
     }
     return render(request, 'painel_admin/recompensas.html', context)
+
+
+@painel_requerido
+def ranking(request, *args, **kwargs):
+    """Ranking global e ligas semanais (estilo Duolingo)."""
+    semana = calcular_ligas()
+
+    ligas = list(Liga.objects.order_by('ordem'))
+    partes_semana = LigaParticipacao.objects.filter(semana=semana)
+
+    contagem_qs = partes_semana.values('liga_id').annotate(n=Count('id'))
+    contagem = {r['liga_id']: r['n'] for r in contagem_qs}
+
+    kpi = {
+        'participantes': partes_semana.count(),
+        'promovidos': partes_semana.filter(promovido=True).count(),
+        'rebaixados': partes_semana.filter(rebaixado=True).count(),
+        'xp_semana': sum(xp_por_usuario(semana).values()),
+        'semana_inicio': semana,
+        'semana_fim': semana + timedelta(days=6),
+    }
+
+    liga_do_usuario = {
+        p.usuario_id: p for p in partes_semana.select_related('liga')
+    }
+
+    usuarios_rank = list(
+        User.objects.filter(is_active=True)
+        .select_related('profile')
+        .order_by('-profile__xp_total', 'username')
+    )
+    rows = []
+    for i, u in enumerate(usuarios_rank, 1):
+        part = liga_do_usuario.get(u.id)
+        rows.append({
+            'posicao': i,
+            'user': u,
+            'xp_total': u.profile.xp_total,
+            'streak': u.profile.streak_atual,
+            'nivel': u.profile.get_nivel_atual_display(),
+            'liga': part.liga if part else None,
+            'liga_posicao': part.posicao if part else None,
+            'xp_semana': part.xp_semana if part else 0,
+        })
+
+    paginator = Paginator(rows, 25)
+    num_pagina = request.GET.get('pagina', 1)
+    try:
+        pagina_obj = paginator.page(num_pagina)
+    except Exception:
+        pagina_obj = paginator.page(1)
+
+    # Liga selecionada para exibir o detalhe
+    liga_id = request.GET.get('liga', '')
+    liga_selecionada = None
+    if liga_id:
+        liga_selecionada = get_object_or_404(Liga, id=liga_id)
+    else:
+        liga_selecionada = next(
+            (l for l in ligas if contagem.get(l.id)), None
+        )
+
+    liga_membros = []
+    if liga_selecionada:
+        partes = list(
+            LigaParticipacao.objects
+            .filter(semana=semana, liga=liga_selecionada)
+            .order_by('posicao')
+        )
+        usuarios_mapa = {
+            u.id: u
+            for u in User.objects
+            .filter(id__in=[p.usuario_id for p in partes])
+            .select_related('profile')
+        }
+        liga_membros = [
+            {'part': p, 'user': usuarios_mapa.get(p.usuario_id)}
+            for p in partes
+        ]
+
+    ligas_data = [
+        {'liga': l, 'total': contagem.get(l.id, 0)} for l in ligas
+    ]
+
+    context = {
+        'secao': 'ranking',
+        'kpi': kpi,
+        'ligas_data': ligas_data,
+        'liga_selecionada': liga_selecionada,
+        'liga_membros': liga_membros,
+        'rows': pagina_obj,
+        'paginas': _paginas(paginator, pagina_obj.number),
+        'total': paginator.count,
+        'liga_filtro': liga_id,
+    }
+    return render(request, 'painel_admin/ranking.html', context)

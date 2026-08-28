@@ -2,6 +2,54 @@ from django.db import models
 from django.contrib.auth.models import User
 from courses.models import LicaoBiblica, Trilha
 
+LIGA_TIPO_CHOICES = [
+    ('metal', 'Metal'),
+    ('pedra', 'Pedra'),
+]
+
+
+class Liga(models.Model):
+    """Liga semanal estilo Duolingo (metais e pedras preciosas)."""
+    nome = models.CharField(max_length=50, unique=True)
+    ordem = models.IntegerField(default=0, help_text='Ordem hierárquica (1 = Bronze)')
+    tipo = models.CharField(max_length=20, choices=LIGA_TIPO_CHOICES, default='metal')
+    icone = models.CharField(max_length=10, default='🥉')
+    descricao = models.CharField(max_length=200, blank=True, default='')
+
+    class Meta:
+        ordering = ['ordem']
+        verbose_name = 'Liga'
+        verbose_name_plural = 'Ligas'
+
+    def __str__(self):
+        return f'{self.nome} ({self.get_tipo_display()})'
+
+
+class LigaParticipacao(models.Model):
+    """Participação semanal do usuário em uma liga (snapshot p/ evolução)."""
+    usuario = models.ForeignKey(User, on_delete=models.CASCADE, related_name='ligas')
+    liga = models.ForeignKey(Liga, on_delete=models.CASCADE, related_name='participacoes')
+    semana = models.DateField(help_text='Segunda-feira da semana')
+    posicao = models.IntegerField(default=0)
+    xp_semana = models.IntegerField(default=0)
+    promovido = models.BooleanField(default=False)
+    rebaixado = models.BooleanField(default=False)
+    liga_anterior = models.ForeignKey(
+        Liga, on_delete=models.SET_NULL, null=True, blank=True,
+        related_name='+', help_text='Liga na semana anterior (para evolução)'
+    )
+    posicao_anterior = models.IntegerField(default=0)
+
+    class Meta:
+        ordering = ['semana', 'posicao']
+        unique_together = ['usuario', 'semana']
+        verbose_name = 'Participação em Liga'
+        verbose_name_plural = 'Participações em Ligas'
+
+    def __str__(self):
+        return f'{self.usuario.username} - {self.liga.nome} (semana {self.semana})'
+
+
 class DesafioDiario(models.Model):
     data = models.DateField(unique=True)
     titulo = models.CharField(max_length=200)
