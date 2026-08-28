@@ -149,14 +149,18 @@ class CalcularLigasTest(TestCase):
         calcular_ligas(semana=SEMANA_A, forcar=True)
         self.assertEqual(LigaParticipacao.objects.filter(semana=SEMANA_A).count(), 2)
 
-    def test_staff_nao_compete_no_ranking(self):
+    def test_conta_admin_nao_compete_mas_staff_compete(self):
         u1 = _usuario('u1')
         admin = _usuario('admin')
         admin.is_staff = True
         admin.is_superuser = True
         admin.save()
+        staff = _usuario('equipe')
+        staff.is_staff = True
+        staff.save()
         _log(u1, 100, datetime.combine(SEMANA_A, time(10)))
         _log(admin, 500, datetime.combine(SEMANA_A, time(11)))
+        _log(staff, 200, datetime.combine(SEMANA_A, time(12)))
 
         calcular_ligas(semana=SEMANA_A)
 
@@ -164,8 +168,9 @@ class CalcularLigasTest(TestCase):
             LigaParticipacao.objects.filter(usuario=admin, semana=SEMANA_A).exists()
         )
         p1 = _parts(u1, SEMANA_A)
-        self.assertEqual(p1.posicao, 1)
+        p_staff = _parts(staff, SEMANA_A)
         self.assertEqual(p1.xp_semana, 100)
+        self.assertEqual(p_staff.xp_semana, 200)
 
 
 @override_settings(STORAGES={
@@ -202,6 +207,21 @@ class RankingViewTest(TestCase):
         resp = self.client.get('/painel/ranking/')
         self.assertEqual(resp.status_code, 302)
 
+    def test_painel_recalcular_semana_inclui_tardios(self):
+        self.other.is_staff = True
+        self.other.save()
+        novo = _usuario('novo')
+        _log(novo, 20, datetime.combine(inicio_semana(), time(15)))
+        self.client.force_login(self.other)
+        resp = self.client.get('/painel/ranking/?recalcular=1')
+        self.assertEqual(resp.status_code, 200)
+        self.assertTrue(resp.context['recalculado'])
+        self.assertTrue(
+            LigaParticipacao.objects.filter(
+                usuario=novo, semana=inicio_semana()
+            ).exists()
+        )
+
     def test_painel_ranking_staff(self):
         self.other.is_staff = True
         self.other.is_superuser = True
@@ -211,4 +231,5 @@ class RankingViewTest(TestCase):
         self.assertEqual(resp.status_code, 200)
         self.assertEqual(resp.context['secao'], 'ranking')
         self.assertEqual(len(resp.context['ligas_data']), 10)
-        self.assertEqual(len(resp.context['rows']), 1)
+        # staff competem no ranking; só a conta admin do seed fica fora
+        self.assertEqual(len(resp.context['rows']), 2)

@@ -7,6 +7,15 @@
 {% block content %}
 <div class="space-y-5">
 
+  {% if recalculado %}
+  <div class="p-badge p-badge-green">✅ Ligas da semana recalculadas.</div>
+  {% endif %}
+
+  <div class="flex items-center justify-between gap-3">
+    <p class="text-[12px] text-text-muted">Ligas semanais estilo Duolingo · cálculo automático ao abrir o ranking</p>
+    <a href="{% url 'painel:ranking' %}?recalcular=1" class="p-btn p-btn-ghost text-[12px]" onclick="return confirm('Recomputar as ligas desta semana? Isso pode mudar promoções/rebaixamentos já exibidos.');">🔄 Recalcular semana</a>
+  </div>
+
   {# ===== KPIs ===== #}
   <div class="grid grid-cols-2 lg:grid-cols-4 gap-4 animate-slide-up">
     <div class="kpi-card kpi-blue">

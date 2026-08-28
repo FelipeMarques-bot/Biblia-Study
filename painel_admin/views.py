@@ -18,7 +18,7 @@ from courses.models import (
     ProgressoUsuario,
     Trilha,
 )
-from gamification.leagues import calcular_ligas, xp_por_usuario
+from gamification.leagues import USUARIOS_ADMIN, calcular_ligas, xp_por_usuario
 from gamification.models import (
     DesafioDiario,
     DesafioDiarioConcluido,
@@ -149,10 +149,10 @@ def dashboard(request, *args, **kwargs):
         for a in atividades_tipo_qs
     }
 
-    # Top 10 usuários por XP (sem a equipe)
+    # Top 10 usuários por XP (sem a conta administrativa do seed)
     top_usuarios = (
         UserProfile.objects.select_related('usuario')
-        .exclude(usuario__is_staff=True)
+        .exclude(usuario__username__in=USUARIOS_ADMIN)
         .order_by('-xp_total')[:10]
     )
     top_nomes = [p.usuario.username for p in top_usuarios]
@@ -512,6 +512,10 @@ def recompensas(request, *args, **kwargs):
 @painel_requerido
 def ranking(request, *args, **kwargs):
     """Ranking global e ligas semanais (estilo Duolingo)."""
+    recalculado = False
+    if request.GET.get('recalcular') == '1':
+        calcular_ligas(forcar=True)
+        recalculado = True
     semana = calcular_ligas()
 
     ligas = list(Liga.objects.order_by('ordem'))
@@ -534,7 +538,8 @@ def ranking(request, *args, **kwargs):
     }
 
     usuarios_rank = list(
-        User.objects.filter(is_active=True, is_staff=False)
+        User.objects.filter(is_active=True)
+        .exclude(username__in=USUARIOS_ADMIN)
         .select_related('profile')
         .order_by('-profile__xp_total', 'username')
     )
@@ -593,6 +598,7 @@ def ranking(request, *args, **kwargs):
 
     context = {
         'secao': 'ranking',
+        'recalculado': recalculado,
         'kpi': kpi,
         'ligas_data': ligas_data,
         'liga_selecionada': liga_selecionada,

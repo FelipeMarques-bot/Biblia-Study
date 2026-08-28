@@ -8,6 +8,7 @@ na semana seguinte.
 """
 from datetime import date, timedelta
 from math import ceil
+import os
 
 from django.contrib.auth.models import User
 from django.db.models import Sum
@@ -15,6 +16,13 @@ from django.db.models import Sum
 from users.models import UserProfile
 
 from .models import Liga, LigaParticipacao, UserActivityLog
+
+# Conta administrativa criada pelo seed (ensure_admin) não compete no ranking.
+# Demais membros da equipe (staff) participam como usuário comum.
+USUARIOS_ADMIN = tuple(
+    nome for nome in {os.environ.get('DJANGO_SUPERUSER_USERNAME', '').strip(), 'admin'}
+    if nome
+)
 
 # Quantos usuários no topo/bottom de cada liga sobem/descem
 TOP_PROMOCAO = 0.30
@@ -31,12 +39,13 @@ def inicio_semana(dt=None):
 
 
 def xp_por_usuario(semana):
-    """Mapa {usuario_id: xp_ganho} na semana (início na segunda-feira).\n    Exclui a equipe (staff) — o admin não compete no ranking."""
+    """Mapa {usuario_id: xp_ganho} na semana (início na segunda-feira).
+    A conta administrativa (seed) não compete no ranking."""
     fim = semana + timedelta(days=7)
     logs = (
         UserActivityLog.objects
         .filter(data_hora__date__gte=semana, data_hora__date__lt=fim)
-        .exclude(usuario__is_staff=True)
+        .exclude(usuario__username__in=USUARIOS_ADMIN)
         .values('usuario_id')
         .annotate(total=Sum('xp_ganho'))
     )
@@ -65,8 +74,10 @@ def calcular_ligas(semana=None, forcar=False):
     liga_por_ordem = {l.ordem: l for l in ligas}
 
     if not forcar and LigaParticipacao.objects.filter(semana=semana).exists():
-        # Mantém o cálculo já feito, apenas garante que staff não participe
-        LigaParticipacao.objects.filter(semana=semana, usuario__is_staff=True).delete()
+        # Mantém o cálculo já feito, apenas garante que a conta admin não participe
+        LigaParticipacao.objects.filter(
+            semana=semana, usuario__username__in=USUARIOS_ADMIN
+        ).delete()
         return semana
 
     # Semana de referência = última participação registrada antes desta
@@ -85,11 +96,13 @@ def calcular_ligas(semana=None, forcar=False):
     participantes = set(xp_semana.keys()) | set(refs.keys())
     if not participantes:
         participantes = set(
-            User.objects.filter(is_active=True, is_staff=False).values_list('id', flat=True)
+            User.objects.filter(is_active=True)
+            .exclude(username__in=USUARIOS_ADMIN)
+            .values_list('id', flat=True)
         )
-    # A equipe (admin) não compete no ranking
+    # A conta administrativa (seed) não compete no ranking
     participantes -= set(
-        User.objects.filter(is_staff=True).values_list('id', flat=True)
+        User.objects.filter(username__in=USUARIOS_ADMIN).values_list('id', flat=True)
     )
 
     perfis = _perfis(participantes)

@@ -6,7 +6,7 @@ from django.contrib.auth.decorators import login_required
 from django.contrib.auth.models import User
 from django.http import JsonResponse
 from django.utils import timezone
-from .leagues import calcular_ligas, inicio_semana
+from .leagues import USUARIOS_ADMIN, calcular_ligas, inicio_semana
 from .models import (
     DesafioDiario, DesafioDiarioConcluido, Liga, LigaParticipacao,
     Recompensa, RecompensaUsuario,
@@ -344,7 +344,8 @@ def ranking_view(request):
     usuario = request.user
 
     ranking_geral = list(
-        User.objects.filter(is_active=True, is_staff=False)
+        User.objects.filter(is_active=True)
+        .exclude(username__in=USUARIOS_ADMIN)
         .select_related('profile')
         .order_by('-profile__xp_total', 'username')
     )
