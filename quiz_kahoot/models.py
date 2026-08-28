@@ -25,6 +25,7 @@ class QuizRoom(models.Model):
     host_session_key = models.CharField(max_length=100, blank=True, default='')
     status = models.CharField(max_length=20, choices=STATUS_CHOICES, default='lobby')
     current_question_index = models.IntegerField(default=0)
+    perguntas_total = models.IntegerField(default=10, help_text='Quantidade de perguntas escolhida pelo criador')
     timer_seconds = models.IntegerField(default=20)
     created_at = models.DateTimeField(auto_now_add=True)
     finished_at = models.DateTimeField(null=True, blank=True)
@@ -70,6 +71,7 @@ class QuizQuestion(models.Model):
     correta_idx = models.IntegerField(default=0)
     dica = models.CharField(max_length=500, blank=True, default='')
     afirmativa = models.TextField(blank=True, default='')
+    contexto = models.CharField(max_length=200, blank=True, default='')
 
     class Meta:
         ordering = ['ordem']

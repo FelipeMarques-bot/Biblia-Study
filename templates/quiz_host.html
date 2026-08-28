@@ -67,6 +67,9 @@
               <p class="text-xs text-neon-purple uppercase tracking-wider mb-2">
                 <span x-text="currentQuestion.tipo === 'VF' ? 'Verdadeiro ou Falso' : 'Múltipla Escolha'"></span>
               </p>
+              <template x-if="currentQuestion.contexto">
+                <p class="text-xs text-neon-blue font-heading mb-1" x-text="currentQuestion.contexto"></p>
+              </template>
               <p class="font-heading text-lg md:text-xl text-white" x-text="currentQuestion.pergunta"></p>
               <template x-if="currentQuestion.afirmativa">
                 <p class="text-sm text-text-muted mt-2 italic" x-text="'\"' + currentQuestion.afirmativa + '\"'"></p>
@@ -174,7 +177,7 @@
               <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 5l7 7-7 7M5 5l7 7-7 7"/>
               </svg>
-              Próxima Pergunta
+              <span x-text="isLastQuestion ? 'Mostrar Resultado' : 'Próxima Pergunta'"></span>
             </span>
           </button>
           <button @click="showResults()" x-show="status === 'question' && timer === 0"
@@ -357,6 +360,7 @@ function quizHost() {
         case 'show_results':
           this.status = 'results';
           this.players = data.players || [];
+          if (data.question) this.currentQuestion = data.question;
           this.stopTimer();
           break;
 
@@ -432,6 +436,10 @@ function quizHost() {
 
     get orderedPodium() {
       return this.rankedPlayers.slice(0, 3);
+    },
+
+    get isLastQuestion() {
+      return this.totalQuestions > 0 && this.questionIndex + 1 >= this.totalQuestions;
     },
   }
 }

@@ -21,6 +21,7 @@
         </button>
       </div>
       <p class="text-sm text-text-muted">Compartilhe este PIN com os jogadores</p>
+      <p class="text-xs text-text-muted mt-1">Quiz com <span class="text-neon-purple font-heading">{{ room.perguntas_total }}</span> perguntas</p>
 
       {# QR Code #}
       <div class="mt-6 card-neon p-5 inline-block">
@@ -43,7 +44,7 @@
       <div class="flex items-center justify-between mb-4">
         <h2 class="font-heading text-lg text-white">
           Jogadores
-          <span class="text-neon-blue" x-text="'(' + players.length + ')'"></span>
+          <span class="text-neon-blue" x-text="'(' + playersVisible().length + ')'"></span>
         </h2>
         <div class="flex items-center gap-2">
           <span class="w-2 h-2 bg-neon-green rounded-full animate-pulse"></span>
@@ -52,7 +53,7 @@
       </div>
 
       <div class="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 gap-3">
-        <template x-for="(player, idx) in players" :key="player.nome">
+        <template x-for="(player, idx) in playersVisible()" :key="player.nome">
           <div class="card-neon p-4 text-center animate-slide-up"
                :style="'animation-delay: ' + (idx * 50) + 'ms'">
             <div class="w-12 h-12 mx-auto mb-2 rounded-full flex items-center justify-center text-xl"
@@ -65,7 +66,7 @@
         </template>
 
         {# Placeholder para jogadores ainda não entrados #}
-        <template x-for="i in Math.max(0, 4 - players.length)" :key="'empty-' + i">
+        <template x-for="i in Math.max(0, 4 - playersVisible().length)" :key="'empty-' + i">
           <div class="border border-dashed border-dark-border rounded-lg p-4 text-center opacity-30">
             <div class="w-12 h-12 mx-auto mb-2 rounded-full bg-dark-elevated flex items-center justify-center">
               <svg class="w-5 h-5 text-text-muted" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -83,8 +84,8 @@
       {% if is_host %}
       <button @click="startGame()"
               class="btn-primary text-lg px-8 py-4"
-              :class="{ 'opacity-40 cursor-not-allowed': players.filter(p => !p.is_host).length === 0 }"
-              :disabled="players.filter(p => !p.is_host).length === 0"
+              :class="{ 'opacity-40 cursor-not-allowed': playersVisible().length === 0 }"
+              :disabled="playersVisible().length === 0"
               x-show="!starting">
         <span class="flex items-center gap-2">
           <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -106,7 +107,7 @@
       {% endif %}
 
       {% if is_host %}
-      <p class="text-xs text-text-muted mt-3" x-show="players.filter(p => !p.is_host).length === 0">
+      <p class="text-xs text-text-muted mt-3" x-show="playersVisible().length === 0">
         Aguarde pelo menos 1 jogador entrar
       </p>
       {% endif %}
@@ -120,6 +121,13 @@ function quizLobby() {
     players: [],
     starting: false,
     ws: null,
+    polling: false,
+    pollInterval: null,
+    wsOk: false,
+
+    playersVisible() {
+      return this.players.filter(p => !p.is_host);
+    },
 
     init() {
       const params = new URLSearchParams({nome: '{{ nome }}', host: '{% if is_host %}true{% else %}false{% endif %}'});

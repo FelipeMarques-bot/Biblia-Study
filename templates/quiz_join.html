@@ -64,6 +64,17 @@
           <div class="relative flex justify-center text-xs"><span class="bg-dark-surface px-3 text-text-muted">ou</span></div>
         </div>
 
+        <div class="mb-4">
+          <label class="block text-xs text-text-muted uppercase tracking-wider mb-2">Quantas perguntas?</label>
+          <select name="perguntas" x-model.number="perguntas"
+                  class="w-full bg-dark-elevated border border-dark-border rounded-lg px-4 py-3 text-white font-body focus:border-neon-purple focus:outline-none transition-colors">
+            <option value="5">5 perguntas (rápido)</option>
+            <option value="10">10 perguntas (padrão)</option>
+            <option value="15">15 perguntas</option>
+            <option value="20">20 perguntas</option>
+          </select>
+        </div>
+
         <button type="submit" @click="action='create'"
                 class="w-full py-4 rounded-lg font-heading text-lg font-bold transition-all duration-300"
                 :class="nome.length > 0 ? 'bg-neon-purple hover:bg-neon-purple/80 shadow-neon-purple text-white' : 'bg-neon-purple/60 hover:bg-neon-purple/40 shadow-neon-purple/50 text-white'">
@@ -90,6 +101,7 @@ function quizJoin() {
     pin: pinFromQR,
     nome: '',
     action: 'join',
+    perguntas: 10,
   }
 }
 </script>

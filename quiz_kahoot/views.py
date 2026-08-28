@@ -7,8 +7,8 @@ from django.contrib.auth.decorators import login_required
 from django.db.models import Q
 from django.urls import reverse
 
-from courses.models import Exercicio, LicaoBiblica, Trilha
 from .models import QuizRoom, QuizPlayer, QuizQuestion, generate_pin
+from .quiz_utils import payload_pergunta, selecionar_perguntas
 
 
 def quiz_join(request):
@@ -31,9 +31,17 @@ def _create_room(request, nome):
     if not nome:
         nome = 'Host'
 
+    perguntas = request.POST.get('perguntas', '10') or '10'
+    try:
+        perguntas = int(perguntas)
+    except (TypeError, ValueError):
+        perguntas = 10
+    perguntas = max(5, min(20, perguntas))
+
     pin = generate_pin()
     room = QuizRoom.objects.create(
         pin=pin,
+        perguntas_total=perguntas,
         host_session_key=request.session.session_key or '',
         host_user=request.user if request.user.is_authenticated else None,
     )
@@ -144,14 +152,7 @@ def api_game_state(request, pin):
     question = None
     q = room.questions.filter(ordem=room.current_question_index + 1).first()
     if q:
-        question = {
-            'pergunta': q.pergunta,
-            'opcoes': q.opcoes,
-            'tipo': q.tipo,
-            'afirmativa': q.afirmativa,
-            'ordem': q.ordem,
-            'correta_idx': q.correta_idx,
-        }
+        question = payload_pergunta(q, revelar=(room.status == 'results'))
 
     return JsonResponse({
         'status': room.status,
@@ -164,38 +165,8 @@ def api_game_state(request, pin):
 
 
 def _pick_questions(room, quantity=10):
-    """Seleciona exercícios MULTIPLA_ESCOLHA ou VF de lições aleatórias."""
-    exercicios = list(
-        Exercicio.objects.filter(
-            tipo__in=['MULTIPLA_ESCOLHA', 'VF']
-        ).select_related('licao').order_by('?')[:quantity]
-    )
-
-    QuizQuestion.objects.filter(room=room).delete()
-
-    for idx, ex in enumerate(exercicios):
-        dados = ex.dados or {}
-        afirmativa = dados.get('afirmativa', '')
-
-        # Para VF, construir opções manualmente
-        if ex.tipo == 'VF':
-            opcoes = ['Verdadeiro', 'Falso']
-            correta_idx = 0 if dados.get('resposta_correta', True) else 1
-        else:
-            opcoes = dados.get('alternativas', [])
-            correta_idx = dados.get('indice_correto', 0)
-
-        QuizQuestion.objects.create(
-            room=room,
-            exercicio_id=ex.id,
-            ordem=idx + 1,
-            tipo=ex.tipo,
-            pergunta=ex.enunciado,
-            opcoes=opcoes,
-            correta_idx=correta_idx,
-            dica=dados.get('dica', ''),
-            afirmativa=afirmativa,
-        )
+    """Seleciona perguntas para a sala (delegado ao utilitário compartilhado)."""
+    selecionar_perguntas(room)
 
 
 @require_POST
@@ -215,9 +186,8 @@ def api_start_game(request, pin):
     if player_count == 0:
         return JsonResponse({'error': 'Necessário pelo menos 1 jogador'}, status=400)
 
-    # Selecionar perguntas
-    quantity = min(10, max(5, player_count * 3))
-    _pick_questions(room, quantity)
+    # Selecionar perguntas (quantidade escolhida pelo criador da sala)
+    selecionar_perguntas(room)
 
     room.status = 'question'
     room.current_question_index = 0

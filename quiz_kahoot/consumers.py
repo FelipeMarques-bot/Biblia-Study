@@ -75,8 +75,7 @@ class QuizConsumer(AsyncWebsocketConsumer):
             await self.send(text_data=json.dumps({'type': 'error', 'msg': 'Necessário pelo menos 1 jogador'}))
             return
 
-        quantity = min(10, max(5, player_count * 3))
-        await self.pick_questions(room, quantity)
+        await self.pick_questions(room)
 
         room.status = 'question'
         room.current_question_index = 0
@@ -164,6 +163,7 @@ class QuizConsumer(AsyncWebsocketConsumer):
         await self.channel_layer.group_send(self.room_group, {
             'type': 'show_results',
             'players': players,
+            'question': await self.get_current_question(revelar=True),
         })
 
     async def handle_restart(self):
@@ -241,10 +241,13 @@ class QuizConsumer(AsyncWebsocketConsumer):
         }))
 
     async def show_results(self, event):
-        await self.send(text_data=json.dumps({
+        payload = {
             'type': 'show_results',
             'players': event['players'],
-        }))
+        }
+        if event.get('question'):
+            payload['question'] = event['question']
+        await self.send(text_data=json.dumps(payload))
 
     async def game_finished(self, event):
         await self.send(text_data=json.dumps({
@@ -313,23 +316,15 @@ class QuizConsumer(AsyncWebsocketConsumer):
         ]
 
     @database_sync_to_async
-    def get_current_question(self):
-        from .models import QuizRoom, QuizQuestion
+    def get_current_question(self, revelar=False):
+        from .models import QuizRoom
+        from .quiz_utils import payload_pergunta
         try:
             room = QuizRoom.objects.get(pin=self.pin)
-            q = QuizQuestion.objects.filter(room=room, ordem=room.current_question_index + 1).first()
-            if q:
-                return {
-                    'pergunta': q.pergunta,
-                    'opcoes': q.opcoes,
-                    'tipo': q.tipo,
-                    'afirmativa': q.afirmativa,
-                    'ordem': q.ordem,
-                    'dica': q.dica,
-                }
+            q = room.questions.filter(ordem=room.current_question_index + 1).first()
+            return payload_pergunta(q, revelar=revelar)
         except QuizRoom.DoesNotExist:
-            pass
-        return None
+            return None
 
     @database_sync_to_async
     def get_total_questions(self):
@@ -380,40 +375,9 @@ class QuizConsumer(AsyncWebsocketConsumer):
         }
 
     @database_sync_to_async
-    def pick_questions(self, room, quantity):
-        from .models import QuizQuestion
-        from courses.models import Exercicio
-
-        QuizQuestion.objects.filter(room=room).delete()
-
-        exercicios = list(
-            Exercicio.objects.filter(tipo__in=['MULTIPLA_ESCOLHA', 'VF'])
-            .select_related('licao')
-            .order_by('?')[:quantity]
-        )
-
-        for idx, ex in enumerate(exercicios):
-            dados = ex.dados or {}
-            if ex.tipo == 'VF':
-                opcoes = ['Verdadeiro', 'Falso']
-                correta_idx = 0 if dados.get('resposta_correta', True) else 1
-                afirmativa = dados.get('afirmativa', '')
-            else:
-                opcoes = dados.get('alternativas', [])
-                correta_idx = dados.get('indice_correto', 0)
-                afirmativa = ''
-
-            QuizQuestion.objects.create(
-                room=room,
-                exercicio_id=ex.id,
-                ordem=idx + 1,
-                tipo=ex.tipo,
-                pergunta=ex.enunciado,
-                opcoes=opcoes,
-                correta_idx=correta_idx,
-                dica=dados.get('dica', ''),
-                afirmativa=afirmativa,
-            )
+    def pick_questions(self, room):
+        from .quiz_utils import selecionar_perguntas
+        selecionar_perguntas(room)
 
     @database_sync_to_async
     def reset_game(self, room):
