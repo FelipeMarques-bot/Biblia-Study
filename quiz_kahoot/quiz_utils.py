@@ -1,6 +1,8 @@
 # -*- coding: utf-8 -*-
 """Utilitarios do quiz: selecao de perguntas, limpeza de texto e contexto."""
 
+import random
+
 # Correcoes de palavras com acentuacao/grafia faltante (tokens completos, de alta confianca).
 CORRECOES = {
     # Palavras comuns muito usadas
@@ -93,7 +95,12 @@ def payload_pergunta(pergunta, revelar=False):
 
 
 def selecionar_perguntas(room):
-    """Seleciona exercicios aleatorios para a sala e recria as perguntas do quiz."""
+    """Seleciona exercicios aleatorios para a sala e recria as perguntas do quiz.
+
+    Respeita a quantidade (`perguntas_total`) e o nivel (`nivel`) escolhidos pelo
+    criador da sala. Se o nivel escolhido nao tiver perguntas suficientes,
+    complementa com perguntas dos demais niveis.
+    """
     from courses.models import Exercicio
     from .models import QuizQuestion
 
@@ -102,11 +109,22 @@ def selecionar_perguntas(room):
 
     QuizQuestion.objects.filter(room=room).delete()
 
-    exercicios = list(
+    base = (
         Exercicio.objects.filter(tipo__in=['MULTIPLA_ESCOLHA', 'VF'])
-        .select_related('licao')
-        .order_by('?')[:total]
+        .select_related('licao', 'licao__trilha')
     )
+
+    nivel = getattr(room, 'nivel', 'todos') or 'todos'
+    if nivel != 'todos':
+        pool_nivel = list(base.filter(licao__trilha__nivel=nivel))
+        pool_outros = list(base.exclude(licao__trilha__nivel=nivel))
+        random.shuffle(pool_nivel)
+        random.shuffle(pool_outros)
+        exercicios = pool_nivel[:total]
+        if len(exercicios) < total:
+            exercicios += pool_outros[:total - len(exercicios)]
+    else:
+        exercicios = list(base.order_by('?')[:total])
 
     for idx, ex in enumerate(exercicios):
         dados = ex.dados or {}

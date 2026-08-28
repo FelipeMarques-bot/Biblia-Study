@@ -21,7 +21,15 @@
         </button>
       </div>
       <p class="text-sm text-text-muted">Compartilhe este PIN com os jogadores</p>
-      <p class="text-xs text-text-muted mt-1">Quiz com <span class="text-neon-purple font-heading">{{ room.perguntas_total }}</span> perguntas</p>
+      <p class="text-xs text-text-muted mt-1">
+        Quiz
+        {% if room.nivel != 'todos' %}
+        <span class="text-neon-blue font-heading">{{ room.get_nivel_display }}</span>
+        {% else %}
+        <span class="text-neon-blue font-heading">com todos os níveis</span>
+        {% endif %}
+        • <span class="text-neon-purple font-heading">{{ room.perguntas_total }}</span> perguntas
+      </p>
 
       {# QR Code #}
       <div class="mt-6 card-neon p-5 inline-block">

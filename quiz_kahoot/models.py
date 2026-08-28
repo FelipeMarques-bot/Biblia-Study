@@ -12,6 +12,14 @@ def generate_pin():
             return pin
 
 
+NIVEL_CHOICES = [
+    ('todos', 'Todos os níveis'),
+    ('iniciante', 'Iniciante'),
+    ('intermediario', 'Intermediário'),
+    ('avancado', 'Avançado'),
+]
+
+
 class QuizRoom(models.Model):
     STATUS_CHOICES = [
         ('lobby', 'Aguardando'),
@@ -26,6 +34,8 @@ class QuizRoom(models.Model):
     status = models.CharField(max_length=20, choices=STATUS_CHOICES, default='lobby')
     current_question_index = models.IntegerField(default=0)
     perguntas_total = models.IntegerField(default=10, help_text='Quantidade de perguntas escolhida pelo criador')
+    nivel = models.CharField(max_length=20, choices=NIVEL_CHOICES, default='todos',
+                             help_text='Nível das perguntas escolhido pelo criador')
     timer_seconds = models.IntegerField(default=20)
     created_at = models.DateTimeField(auto_now_add=True)
     finished_at = models.DateTimeField(null=True, blank=True)

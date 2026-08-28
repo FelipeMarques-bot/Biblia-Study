@@ -50,6 +50,7 @@
         {% csrf_token %}
         <input type="hidden" name="pin" :value="pin">
         <input type="hidden" name="nome" :value="nome">
+        <input type="hidden" name="nivel" :value="nivel">
         <input type="hidden" name="action" :value="action">
 
         <button type="submit" @click="action='join'"
@@ -65,11 +66,23 @@
         </div>
 
         <div class="mb-4">
+          <label class="block text-xs text-text-muted uppercase tracking-wider mb-2">Nível</label>
+          <select name="nivel" x-model="nivel"
+                  class="w-full bg-dark-elevated border border-dark-border rounded-lg px-4 py-3 text-white font-body focus:border-neon-blue focus:outline-none transition-colors">
+            <option value="todos">Todos os níveis</option>
+            <option value="iniciante">Iniciante</option>
+            <option value="intermediario">Intermediário</option>
+            <option value="avancado">Avançado</option>
+          </select>
+        </div>
+
+        <div class="mb-4">
           <label class="block text-xs text-text-muted uppercase tracking-wider mb-2">Quantas perguntas?</label>
           <select name="perguntas" x-model.number="perguntas"
                   class="w-full bg-dark-elevated border border-dark-border rounded-lg px-4 py-3 text-white font-body focus:border-neon-purple focus:outline-none transition-colors">
             <option value="5">5 perguntas (rápido)</option>
             <option value="10">10 perguntas (padrão)</option>
+            <option value="12">12 perguntas</option>
             <option value="15">15 perguntas</option>
             <option value="20">20 perguntas</option>
           </select>
@@ -101,6 +114,7 @@ function quizJoin() {
     pin: pinFromQR,
     nome: '',
     action: 'join',
+    nivel: 'todos',
     perguntas: 10,
   }
 }

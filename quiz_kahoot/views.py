@@ -7,7 +7,7 @@ from django.contrib.auth.decorators import login_required
 from django.db.models import Q
 from django.urls import reverse
 
-from .models import QuizRoom, QuizPlayer, QuizQuestion, generate_pin
+from .models import QuizRoom, QuizPlayer, QuizQuestion, generate_pin, NIVEL_CHOICES
 from .quiz_utils import payload_pergunta, selecionar_perguntas
 
 
@@ -38,10 +38,16 @@ def _create_room(request, nome):
         perguntas = 10
     perguntas = max(5, min(20, perguntas))
 
+    nivel = request.POST.get('nivel', 'todos') or 'todos'
+    niveis_validos = {n for n, _ in NIVEL_CHOICES}
+    if nivel not in niveis_validos:
+        nivel = 'todos'
+
     pin = generate_pin()
     room = QuizRoom.objects.create(
         pin=pin,
         perguntas_total=perguntas,
+        nivel=nivel,
         host_session_key=request.session.session_key or '',
         host_user=request.user if request.user.is_authenticated else None,
     )
