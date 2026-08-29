@@ -31,15 +31,15 @@
       .safe-top { padding-top: env(safe-area-inset-top); }
     }
 
-    /* ── BANNER DE DOAÇÃO — destaque animado ── */
+    /* ── BANNER DE DOAÇÃO — destaque animado (a animação é na escrita, não no fundo) ── */
     #global-donation-banner {
       overflow: hidden;
       max-height: 0;
       opacity: 0;
       padding: 0 1rem;
       text-align: center;
-      background: linear-gradient(90deg, rgba(0,212,255,0.10), rgba(168,85,247,0.10), rgba(255,0,128,0.10));
-      border-bottom: 1px solid rgba(0,212,255,0.20);
+      background: transparent;
+      border-bottom: 0;
       transition: max-height .8s ease, opacity .8s ease, padding .8s ease;
     }
     #global-donation-banner .donation-inner {
@@ -49,20 +49,23 @@
       max-height: 400px;
       opacity: 1;
       padding: 0 1rem 0.5rem;
-      animation: donation-glow 3.2s ease-in-out infinite;
     }
-    /* Mobile: desloca o banner para baixo da top bar fixa, garantindo o texto visível */
+    /* Glow pulsante aplicado à ESCRITA do banner (sem glow no fundo) */
+    #global-donation-banner.donation-visible .donation-inner p,
+    #global-donation-banner.donation-visible .donation-inner strong,
+    #global-donation-banner.donation-visible .donation-inner code {
+      animation: donation-text-glow 2.4s ease-in-out infinite;
+    }
+    /* Mobile: desloca o banner para baixo da top bar fixa (incl. safe-area), garantindo o texto visível */
     @media (max-width: 767px) {
       #global-donation-banner.donation-visible {
-        margin-top: 52px;
-        border-bottom: 0;
-        border-top: 1px solid rgba(0,212,255,0.20);
+        margin-top: calc(env(safe-area-inset-top, 0px) + 56px);
       }
     }
-    @keyframes donation-glow {
-      0%   { box-shadow: 0 0 6px rgba(0,212,255,0.0); }
-      50%  { box-shadow: 0 0 24px rgba(0,212,255,0.35), 0 0 42px rgba(168,85,247,0.30), inset 0 0 14px rgba(0,255,136,0.08); }
-      100% { box-shadow: 0 0 6px rgba(0,212,255,0.0); }
+    @keyframes donation-text-glow {
+      0%,
+      100% { text-shadow: 0 0 2px rgba(255,215,0,0.0), 0 0 0 rgba(0,212,255,0.0); }
+      50%   { text-shadow: 0 0 6px rgba(255,215,0,0.55), 0 0 16px rgba(0,212,255,0.40); }
     }
     @media (prefers-reduced-motion: reduce) {
       #global-donation-banner,
