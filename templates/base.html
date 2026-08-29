@@ -42,13 +42,13 @@
       -webkit-backdrop-filter: blur(10px);
       font-size: 0.65rem;
     }
-    /* Mobile: top bar fixa cobre o topo → empurra o banner para abaixo dela */
+    /* Mobile: banner no fluxo do topo (top bar fixa removida) → ocupa a largura, deixa espaço p/ botão menu */
     @media (max-width: 767px) {
       #global-donation-banner {
-        margin-top: calc(env(safe-area-inset-top, 0px) + 3.5rem);
         max-width: calc(100% - 1rem);
-        margin-left: auto;
+        margin-left: 3.25rem;
         margin-right: auto;
+        padding-left: 0.5rem;
         border-left: 1px solid rgba(0, 212, 255, 0.2);
         border-right: 1px solid rgba(0, 212, 255, 0.2);
       }
@@ -86,62 +86,15 @@
     </div>
   </div>
 
-  {# Mobile Top Bar — fixo no topo, voltar + logout + som #}
-  {% block topbar %}
-  <div class="fixed top-0 left-0 right-0 z-40 hide-desktop safe-top bg-dark-surface/90 backdrop-blur-xl border-b border-dark-border">
-    <div class="flex items-center justify-between px-3 py-2">
-      <div class="flex items-center gap-2">
-        {# Botão Menu (hambúrguer) #}
-        <button onclick="window.dispatchEvent(new Event('open-hamburger')); if(typeof SoundEngine!=='undefined') SoundEngine.menuOpen()"
-                class="w-8 h-8 rounded-full flex items-center justify-center bg-dark-elevated border border-dark-border text-text-muted hover:text-neon-blue hover:border-neon-blue/30 transition-all"
-                title="Menu">
-          <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M4 6h16M4 12h16M4 18h16"/>
-          </svg>
-        </button>
-        {# Botão Voltar #}
-        <button onclick="history.length > 1 ? history.back() : window.location.href='{% url 'dashboard' %}'"
-                class="w-8 h-8 rounded-full flex items-center justify-center bg-dark-elevated border border-dark-border text-text-muted hover:text-neon-blue hover:border-neon-blue/30 transition-all"
-                title="Voltar">
-          <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M15 19l-7-7 7-7"/>
-          </svg>
-        </button>
-        <h1 class="font-heading text-sm text-white flex items-center gap-1.5">
-          <span class="w-1.5 h-1.5 bg-neon-blue rounded-full inline-block"
-                style="box-shadow: 0 0 6px rgba(0,212,255,0.5);"></span>
-          Bíblia Study
-        </h1>
-      </div>
-      <div class="flex items-center gap-2">
-        {# Botão Som (mobile fixo) #}
-        <button id="mobile-sound-toggle" onclick="cycleSoundStateMobile()"
-                class="w-8 h-8 rounded-full flex items-center justify-center bg-dark-elevated border border-dark-border transition-all"
-                title="Som: ligado">
-          <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M15.536 8.464a5 5 0 010 7.072m2.828-9.9a9 9 0 010 12.728M9 10a1 1 0 011-1h1a1 1 0 011 1v4a1 1 0 01-1 1h-1a1 1 0 01-1-1v-4z"/>
-          </svg>
-        </button>
-        {# Botão Configurações (Alterar senha) — mobile #}
-        <a href="{% url 'alterar_senha' %}"
-           class="w-8 h-8 rounded-full flex items-center justify-center bg-dark-elevated border border-dark-border text-text-muted hover:text-neon-blue hover:border-neon-blue/30 transition-all"
-           title="Configurações">
-          <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M10.325 4.317c.426-1.756 2.924-1.756 3.35 0a1.724 1.724 0 002.573 1.066c1.543-.94 3.31.826 2.37 2.37a1.724 1.724 0 001.065 2.572c1.756.426 1.756 2.924 0 3.35a1.724 1.724 0 00-1.066 2.573c.94 1.543-.826 3.31-2.37 2.37a1.724 1.724 0 00-2.572 1.065c-.426 1.756-2.924 1.756-3.35 0a1.724 1.724 0 00-2.573-1.066c-1.543.94-3.31-.826-2.37-2.37a1.724 1.724 0 00-1.065-2.572c-1.756-.426-1.756-2.924 0-3.35a1.724 1.724 0 001.066-2.573c-.94-1.543.826-3.31 2.37-2.37.996.608 2.296.07 2.572-1.065z"/><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"/>
-          </svg>
-        </a>
-        {# Botão Sair #}
-        <a href="{% url 'logout' %}"
-           class="w-8 h-8 rounded-full flex items-center justify-center bg-dark-elevated border border-dark-border text-text-muted hover:text-neon-pink hover:border-neon-pink/30 transition-all"
-           title="Sair">
-          <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M17 16l4-4m0 0l-4-4m4 4H7m6 4v1a3 3 0 01-3 3H6a3 3 0 01-3-3V7a3 3 0 013-3h4a3 3 0 013 3v1"/>
-          </svg>
-        </a>
-      </div>
-    </div>
-  </div>
-  {% endblock %}
+  {# Botão Menu (hambúrguer) — flutuante no topo esquerdo, abre o menu lateral #}
+  <button id="fab-menu" onclick="window.dispatchEvent(new Event('open-hamburger')); if(typeof SoundEngine!=='undefined') SoundEngine.menuOpen()"
+          class="fixed left-2 z-50 w-9 h-9 rounded-full flex items-center justify-center bg-dark-elevated border border-dark-border text-text-muted hover:text-neon-blue hover:border-neon-blue/30 transition-all hide-desktop"
+          style="top: calc(env(safe-area-inset-top, 0px) + 0.4rem);"
+          title="Menu" aria-label="Abrir menu">
+    <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+      <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16"/>
+    </svg>
+  </button>
 
   {% block content %}{% endblock %}
   {% block extra_scripts %}{% endblock %}
@@ -153,16 +106,6 @@
         }).catch(() => {});
       });
     }
-
-    // ── Donation banner: ajusta posição no mobile se não houver top bar (login/registro) ──
-    function positionDonationBanner() {
-      const banner = document.getElementById('global-donation-banner');
-      if (!banner) return;
-      if (!document.getElementById('mobile-sound-toggle')) {
-        banner.style.top = 'calc(env(safe-area-inset-top, 0px) + 0.5rem)';
-      }
-    }
-    document.addEventListener('DOMContentLoaded', positionDonationBanner);
 
     // ── PWA install banner ──
     let deferredPrompt;
@@ -212,12 +155,12 @@
         btn.innerHTML = isOn ? onSvg : offSvg;
         btn.title = isOn ? 'Som: ligado' : 'Som: desligado';
       }
-      // Mobile button
-      const mbtn = document.getElementById('mobile-sound-toggle');
-      if (mbtn) {
-        mbtn.innerHTML = isOn ? onSvgSmall : offSvgSmall;
-        mbtn.title = isOn ? 'Som: ligado' : 'Som: desligado';
-        mbtn.className = 'w-8 h-8 rounded-full flex items-center justify-center bg-dark-elevated border transition-all ' + (isOn ? 'border-neon-blue/30 text-neon-blue' : 'border-dark-border text-text-muted');
+      // Drawer button (menu lateral)
+      const dbtn = document.getElementById('drawer-sound-toggle');
+      if (dbtn) {
+        const icon = dbtn.querySelector('.sound-icon');
+        if (icon) icon.innerHTML = isOn ? onSvg : offSvg;
+        dbtn.title = isOn ? 'Som: ligado' : 'Som: desligado';
       }
     }
   </script>
