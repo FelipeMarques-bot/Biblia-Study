@@ -46,10 +46,18 @@
       padding: 0.5rem 0;
     }
     #global-donation-banner.donation-visible {
-      max-height: 220px;
+      max-height: 400px;
       opacity: 1;
       padding: 0 1rem 0.5rem;
       animation: donation-glow 3.2s ease-in-out infinite;
+    }
+    /* Mobile: desloca o banner para baixo da top bar fixa, garantindo o texto visível */
+    @media (max-width: 767px) {
+      #global-donation-banner.donation-visible {
+        margin-top: 52px;
+        border-bottom: 0;
+        border-top: 1px solid rgba(0,212,255,0.20);
+      }
     }
     @keyframes donation-glow {
       0%   { box-shadow: 0 0 6px rgba(0,212,255,0.0); }
