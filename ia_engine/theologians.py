@@ -12,7 +12,7 @@ TEOLOGOS = {
             'fe': [
                 'A fé é crer o que ainda não vemos; a recompensa da fé é ver o que cremos. (Agostinho)',
                 'Se compreendes, não é Deus. (Agostinho, Confissões)',
-                'O coração inquieto só descansará em Ti, ó Deus. (Agostinho, Confissões III)',
+                'O coração inquieto só descansará em Ti, ó Deus. (Agostinho, Confissões I.1)',
             ],
             'graça': [
                 'A graça não é recompensa de boas obras, mas o princípio delas. (Agostinho)',
@@ -29,11 +29,11 @@ TEOLOGOS = {
                 'Tudo o que fazemos sem amor é vazio. (Agostinho)',
             ],
             'oracao': [
-                'Orai como se tudo dependesse de Deus; trabalhai como se tudo dependesse de vós. (Agostinho)',
-                'A oração é a chave para o dia e a tranqüilidade para a noite. (Agostinho)',
+                'Orai como se tudo dependesse de Deus e trabalhai porque tudo depende de Deus. (atribuída a Agostinho)',
+                'Quando oramos, falamos com Deus; quando lemos as Escrituras, Deus fala conosco. (Agostinho)',
             ],
             'esperanca': [
-                'A esperança tem dois filhos: a indignação e a coragem. A indignação com as coisas como são; a coragem para mudá-las. (Agostinho)',
+                'A esperança tem dois filhos: a indignação e a coragem. A indignação com as coisas como são; a coragem para mudá-las. (atribuída a Agostinho)',
             ],
         },
     },
@@ -44,21 +44,21 @@ TEOLOGOS = {
         'frases': {
             'fe': [
                 'A fé não é um assentimento vazio do intelecto, mas uma confiança viva e ousada do coração. (Lutero)',
-                'A fé justificadora é uma confiança_Header cheia de certeza na graça de Deus. (Lutero)',
+                'A fé justificadora é uma confiança viva e ousada, cheia de certeza na graça de Deus. (Lutero)',
                 'Somos justificados pela fé somente, sem as obras da lei. (Lutero, Romanos Comentário)',
             ],
             'graça': [
                 'A graça de Deus é encontrada onde há sofrimento e cruz. (Lutero)',
                 'Não somos justos pelas nossas obras, mas pela graça de Deus em Cristo. (Lutero)',
-                'A graça é o início, o meio e o fim da nossa salvação. (Lutero)',
+                'Toda a nossa justiça está em Cristo, e não em nós mesmos. (Lutero)',
             ],
             'cruz': [
                 'Deus não pode dar-nos a graça sem que nos humilhe primeiro. (Lutero)',
                 'A cruz é o julgamento de Deus sobre a justiça humana. (Lutero)',
-                'Quem não carrega sua cruz não pode ser meu discípulo. (Lutero, sobre Mc 8:34)',
+                'Palavras de Cristo: "Quem não carrega a sua cruz e não me segue, não pode ser meu discípulo" (Mc 8:34; Lc 14:27).',
             ],
             'biblia': [
-                'A Bíblia é o bezerro de ouro dos teólogos. (Lutero)',
+                'A Escritura é a verdadeira Palavra de Deus, autoridade suprema em fé e prática. (Lutero)',
                 'Sola Scriptura — Somente a Escritura é a autoridade suprema. (Lutero)',
                 'Não aceito nem o papa nem os concílios, porque é evidente que erraram. Somente a Escritura me governa. (Lutero)',
             ],
@@ -75,7 +75,7 @@ TEOLOGOS = {
         'frases': {
             'soberania': [
                 'A soberania de Deus é a verdade mais consoladora para o crente. (Calvino)',
-                'Deus governa todas as coisas commandos invioláveis. (Calvino, Institutas)',
+                'Deus governa todas as coisas por decretos providenciais invioláveis. (Calvino, Institutas)',
                 'Nada acontece no mundo sem o conselho determinado de Deus. (Calvino)',
             ],
             'graça': [
@@ -106,12 +106,12 @@ TEOLOGOS = {
             'evangelho': [
                 'O evangelho é bom demais para ser verdade, mas é verdadeiro demais para ser bom demais. (Spurgeon)',
                 'O evangelho não é "faça", mas "feito". (Spurgeon)',
-                'Se o teu religião não te dá nada melhor do que o que o mundo dá, desista dele. (Spurgeon)',
+                'Se a tua religião não te dá nada melhor do que o que o mundo dá, desiste dela. (Spurgeon)',
             ],
             'fe': [
                 'A fé é a mão que recebe os presentes de Deus. (Spurgeon)',
                 'Quanto mais fraco tu és, mais forte é a tua fé, porque depende mais de Deus. (Spurgeon)',
-                'A fé não é Sentir, é Saber. (Spurgeon)',
+                'A fé não é um sentimento, é um conhecimento que se apoia na Palavra de Deus. (Spurgeon)',
             ],
             'tristeza': [
                 'A tristeza do crente é temporária; a alegria do crente é eterna. (Spurgeon)',
@@ -138,12 +138,12 @@ TEOLOGOS = {
         'frases': {
             'deus': [
                 'O que pensamos sobre Deus é a coisa mais importante de nós. (Tozer, O Conhecimento do Santo)',
-                'Deus é tudo o queEleé, e nada do que nãoé. (Tozer)',
-                'Deus não precisa de ouras provas da Sua existência;EleSe auto-revela. (Tozer)',
+                'Deus é tudo o que Ele é, e nada do que não é. (Tozer)',
+                'Deus não precisa de outras provas da Sua existência; Ele Se auto-revela. (Tozer)',
             ],
             'adoracao': [
-                'A adoração é a Poeira da alma no salão do céu. (Tozer)',
-                'A adoração é o único ato humano que não será eterno. (Tozer)',
+                'A adoração é a expressão da alma que contempla a grandeza de Deus. (Tozer)',
+                'A adoração é o único ato humano que será eterno. (Tozer)',
                 'Quebrar o primeiro mandamento é a pior idolatria. (Tozer)',
             ],
             'espirito': [
@@ -151,7 +151,7 @@ TEOLOGOS = {
                 'A plenitude do Espírito não é para uns poucos, é para todos. (Tozer)',
             ],
             'descanso': [
-                'Deus não quer que você tenha ansiedade;Elequer que você tenha confiança. (Tozer)',
+                'Deus não quer que você tenha ansiedade; Ele quer que você tenha confiança. (Tozer)',
                 'O cristão mais feliz é aquele que mais confia em Deus. (Tozer)',
             ],
         },
@@ -166,8 +166,8 @@ TEOLOGOS = {
                 'Ora, o Cristo que morreu pelos nossos pecados não pode ser meramente um grande mestre. Um homem que dissesse as coisas que Jesus disse não seria um grande mestre — seria um lunático. (Lewis)',
             ],
             'raciocinio': [
-                'Eu acredito no cristianismo tão firmemente quanto acredito que a geometria euclidiana é verdadeira. (Lewis)',
-                'Se Deus existisse, seria impossível provarSugeriuou refutá-Lo apenas com a razão. (Lewis)',
+                'Creio no cristianismo como creio que o sol nasceu: não apenas porque o vejo, mas porque por ele vejo tudo. (Lewis, É só o Cristianismo)',
+                'A existência de Deus não pode ser provada nem refutada apenas pela razão; ela se conhece em Cristo. (Lewis)',
             ],
             'problemas': [
                 'Deus sussurra aos nossos ouvidos na nossa prosperidade, grita na nossa dor. É Seu megafone para o surdo mundo. (Lewis, A Dor)',
@@ -178,7 +178,7 @@ TEOLOGOS = {
                 'Você não pode voltar atrás. Mas você pode começar de novo. (Lewis)',
             ],
             'conhecimento': [
-                'Não háKnowledge semHumildade. (Lewis)',
+                'Não há conhecimento sem humildade. (Lewis)',
                 'A experiência é a professora mais cruel, porque faz o teste primeiro e a explicação depois. (Lewis)',
             ],
         },
@@ -198,7 +198,7 @@ TEOLOGOS = {
                 'A comunidade cristã não é uma ideia, é uma realidade viva. (Bonhoeffer)',
             ],
             'oracao': [
-                'A oração não é um meio de逃避da realidade, mas de enfrentá-la. (Bonhoeffer)',
+                'A oração não é um meio de fugir da realidade, mas de enfrentá-la. (Bonhoeffer)',
                 'Quem reza, não pode Odiar. (Bonhoeffer)',
             ],
             'amor': [
@@ -261,7 +261,7 @@ TEOLOGOS = {
 
 
 TOPICOS_KEYWORDS = {
-    'fe': ['fé', 'crer', 'crença', 'confiança', 'acreditar', 'fé', 'falar', 'fé em deus', ' fé'],
+    'fe': ['fé', 'crer', 'crença', 'confiança', 'acreditar', 'fé em deus'],
     'graça': ['graça', 'perdão', 'perdoar', 'misericórdia', 'salvação', 'salvo', 'justificação', 'justificado'],
     'pecado': ['pecado', 'pecar', 'culpa', 'culpado', 'arrependimento', 'arrepender', 'transgressão'],
     'amor': ['amor', 'amar', 'caridade', 'bondade', 'compaixão', 'misericórdia'],

@@ -116,7 +116,7 @@ add_licoes(t2, [
     ('As Dez Pragas do Egito', 'Deus enviou dez pragas sobre o Egito para libertar Israel: agua em sangue, ranca, mosquitos, moscas, peste, furunculos, granizo, gafanhotos, trevas e morte dos primogenitos.', 'Exodo 7:1-12:32', 'Reconhecer o poder de Deus sobre os deuses do Egito', 'Cada praga atingiu um deus egipcio, demonstrando a supremacia do Deus de Israel.', [
         mc('Quantas pragas Deus enviou ao Egito?', ['7','8','10','12'], 2, 'Exodo 7-12'),
         mc('Qual foi a ultima praga?', ['Trevas','Granizo','Morte dos primogenitos','Gafanhotos'], 2, 'Exodo 12:29'),
-        vf('As pragas afetaram apenas os egipcios.', 'As pragas afetaram apenas os egipcios.', 0, 'Alcancaram tambem os israelitas em Gosen'),
+        vf('As pragas afetaram apenas os egipcios.', 'As pragas afetaram apenas os egipcios.', 1, 'Deus poupou os israelitas em Gosen das pragas - Exodo 8:22-23'),
     ]),
     ('A Passagem do Mar Vermelho', 'Israel cruzou o Mar Vermelho em seco, com as aguas erguidas como muralhas. Os egipcios que os perseguiram foram engolidos pelas aguas. Moises e Miriam cantaram de louvor.', 'Exodo 14:1-15:21', 'Entender a salvacao de Deus e o louvor que se segue', 'O Mar Vermelho e o maior ato de salvacao do AT, tipo do batismo e da libertacao do pecado.', [
         mc('Como Israel cruzou o mar?', ['Nadando','Em barcos','Em seco','Por ponte'], 2, 'Exodo 14:22'),
@@ -251,7 +251,7 @@ add_licoes(t4, [
     ]),
     ('Salmo 8 - Grandeza do Ser Humano', 'Senhor, o Teu nome e em toda a terra! Como e glorioso o Teu nome sobre os ceus! Pus os Teus abismos abaixo do homem.', 'Salmo 8:1-9', 'Reconhecer a dignidade que Deus deu ao ser humano', 'O salmo contempla a grandeza da criacao e a honra que Deus deu ao homem, colocando tudo sob seus pes.', [
         mc('Como e o nome do Senhor?', ['Fraco','Glorioso em toda a terra','Secreto','Irrelevante'], 1, 'Salmo 8:1'),
-        vf('O homem e menor que os anjos segundo o salmo.', 'O homem e menor que os anjos segundo o salmo.', 0, 'Deus o coroa de gloria e honra'),
+        vf('O homem e menor que os anjos segundo o salmo.', 'O homem e menor que os anjos segundo o salmo.', 1, 'Salmo 8:5 - um pouco menor que os anjos, coroado de gloria e honra'),
         mc('O que Deus pos sob os pes do homem?', ['Os anjos','Os animais e a terra','Os pecados','As nuvens'], 1, 'Salmo 8:6-8'),
     ]),
     ('Salmo 16 - Alegria na Presenca', 'Conserva-me, ó Deus, porque em Ti confio. Ao Senhor disse tu és o meu Senhor, o meu bem nao esta em outro. Alegria ha na Tua presenca.', 'Salmo 16:1-11', 'Encontrar verdadeira alegria somente em Deus', 'Davi declara que o seu bem esta em Deus, e que na Sua presenca ha plenitude de alegria e gozo eterno.', [
@@ -385,7 +385,7 @@ add_licoes(t6, [
         vf('Podemos frutificar sem Jesus.', 'Podemos frutificar sem Jesus.', 0, 'Sem mim nada podeis fazer'),
         mc('O que acontece com o ramo que nao permanece?', ['Fica no chao','E cortado e seco','Floresce','Cresce'], 1, 'João 15:6 - cortado e seco'),
     ]),
-    ('Marcos 8 - A Curacao dos Cegos', 'Jesus aplicou lama nos olhos de um cego de Betesda e ele passou a ver. Depois Jesus perguntou: "Que vêes?" E o homem via tudo claramente.', 'Marcos 8:22-26', 'Reconhecer Jesus como o curador completo', 'Jesus curou em etapas, mostrando que o milagre e gradual e que Ele cuida de cada detalhe da cura.', [
+    ('Marcos 8 - A Curacao dos Cegos', 'Jesus aplicou lama nos olhos de um cego de Betsaida e ele passou a ver. Depois Jesus perguntou: "Que vêes?" E o homem via tudo claramente.', 'Marcos 8:22-26', 'Reconhecer Jesus como o curador completo', 'Jesus curou em etapas, mostrando que o milagre e gradual e que Ele cuida de cada detalhe da cura.', [
         mc('O que Jesus aplicou nos olhos do cego?', ['Agua','Oleo','Lama','Sangue'], 2, 'Marcos 8:23'),
         vf('O cego enxergou perfeitamente de primeira.', 'O cego enxergou perfeitamente de primeira.', 0, 'Jesus aplicou duas vezes'),
         mc('Jesus perguntou ao cego:', ['Quem és?', 'Que vêes?', 'Onde vais?', 'O que fazes?'], 1, 'Marcos 8:23'),
@@ -790,7 +790,7 @@ add_licoes(t13, [
     ('1 Pedro 3: Casamento', 'Vos, mulheres, sujeitas-vos ao vosso marido. Vos, maridos, vivei com elas com entendimento, honrando-as como vasos mais fracos. A graça e a heranca da vida.', '1 Pedro 3:1-7', 'Viver harmonia no casamento segundo Deus', 'O amor mutuo, o respeito e a oracao fortalecem o casamento cristã.', [
         mc('As mulheres devem ser:', ['Dominadas','Sujeitas com entendimento','Obedientes sem pensar','Lideres'], 1, 'Sujeitas com entendimento'),
         vf('Os maridos podem tratar mal as esposas.', 'Os maridos podem tratar mal as esposas.', 0, 'Vivei com entendimento, honrando-as'),
-        mc('O que impede as oracoes?', ['O pecado','A raiva','A arrogancia'], 2, 'O que impede a comunhao com Deus'),
+        mc('O que impede as oracoes?', ['O pecado','A raiva','A arrogancia'], 0, '1 Pedro 3:7 - a desarmonia no lar impede as oracoes'),
     ]),
     ('2 Pedro 1: Crescimento Espiritual', 'Procurai tornar ainda mais firmes a vocação e a eleicao. Acrescentai a vossa fe a virtude, a virtude ao conhecimento, o conhecimento a temperanca.', '2 Pedro 1:3-11', 'Crescer ativamente na fé e nas virtudes', 'O crescimento espiritual e intencional. Cada virtude leva a outra, produzindo frutos.', [
         mc('O que devemos acrescentar a fe?', ['Nada','Virtude','Riqueza','Fama'], 1, 'Acrescentai a vossa fe a virtude'),
@@ -891,7 +891,7 @@ add_licoes(t15, [
     ('Apocalipse 8-9: As Trombetas', 'Sete anjos tocam trombetas. Grandes destruições caem sobre a terra: metade dos arvores queimadas, os mares transformados em sangue, trevas sobre a terra.', 'Apocalipse 8:1-9:21', 'Entender a gravidade dos juízos das trombetas', 'Os juízos se intensificam. Mesmo assim, os homens nao se arrependem de suas obras.', [
         mc('O que acontece quando a primeira trombeta soa?', ['Paz','Granizo e fogo misturado com sangue caem na terra','Nada','Nuvens'], 1, 'Granizo e fogo misturado com sangue caem na terra'),
         vf('Os homens se arrependem completamente com as trombetas.', 'Os homens se arrependem completamente.', 0, 'Nao se arrependem de suas obras'),
-        mc('O que o terceiro anjo derrama?', ['Agua limpa','Sangue','Ouro','Leite'], 1, 'O terceiro anjo derrama sangue'),
+        mc('O que o terceiro anjo derrama?', ['Agua limpa','Absinto (amargura)','Ouro','Leite'], 1, 'Apocalipse 8:10-11 - a estrela Absinto torna as aguas amargas'),
     ]),
     ('Apocalipse 12: A Mulher e o Dragao', 'Uma mulher revestida de sol, com a lua sob seus pes, deu a luz um varao que governaria as nações. O grande dragão, a serpente antiga, perseguiu a mulher e o seu descendente.', 'Apocalipse 12:1-17', 'Reconhecer a guerra espiritual entre o bem e o mal', 'A mulher representa Israel/Igreja. O dragão e Satanás. O descendente e Cristo. A guerra espiritual e real.', [
         mc('O dragao e identificado como:', ['O imperador romano','Satanás, a serpente antiga','Um animal real','O profeta falso'], 1, 'Satanás, a serpente antiga, o diabo'),
@@ -1130,7 +1130,7 @@ add_licoes(t19, [
     ('Deuteronomio 8: Lembra do Senhor', 'Lembra-te de todo o caminho por onde o Senhor te conduziu no deserto, para te humilhar e para provares se guardas ou nao os mandamentos.', 'Deuteronomio 8:1-20', 'Reconhecer que tudo vem de Deus e que devemos obedecer', 'Deus humilhou Israel no deserto para ensinar que nao soe de pao vive o homem.', [
         mc('Por que Deus conduziu Israel no deserto?', ['Para punir','Para humilhar e provar obediencia','Para recrear','Para matar'], 1, 'Para te humilhar e provar se guardas os mandamentos'),
         vf('Israel podia se gabar por sua forca.', 'Podia se gabar.', 0, 'Lembra de que tudo vem de Deus'),
-        mc('O homem nao vive soe de:', ['Pao','Agua','Palavras de Deus','Dinheiro'], 2, 'Deuteronomio 8:3 - nao soe de pao vive o homem'),
+        mc('O homem nao vive soe de:', ['Pao','Agua','Palavras de Deus','Dinheiro'], 0, 'Deuteronomio 8:3 - nao so de pao vive o homem, mas de toda palavra que sai da boca de Deus'),
     ]),
     ('Deuteronomio 28: Bencoes e Pragas', 'Se ouvires a voz do Senhor, serás abençoado em tudo. Mas se nao ouvires, virão pragas, fome, peste e exilio. A desobediencia traz maldicao.', 'Deuteronomio 28:1-68', 'Entender as consequencias da obediencia e da desobediencia', 'A alianca traz bencoes na obediencia e pragas na desobediencia.', [
         mc('Se Israel obedecesse, seria:', ['Apenas pobre','Abençoado em tudo','Igual aos outros','Irrelevante'], 1, 'Abencoado na cidade e no campo'),
@@ -1481,7 +1481,7 @@ add_licoes(t25, [
     ('Romanos 8: Glorificacao', 'Nao ha condenacao para quem esta em Cristo. O Espirito nos vivifica. Nada pode nos separar do amor de Deus. Todos os que foram predestinados serao chamados e justificados.', 'Romanos 8:1-39', 'Compreender a glorificacao como etapa final da salvacao', 'Deus completa Sua obra em nos. A gloria eterna e certa.', [
         mc('Ha condenacao?', ['Sim','Nunca','As vezes','Depende'], 1, 'Nao ha nenhuma condenacao'),
         mc('O que pode nos separar do amor de Deus?', ['Nada','Pecado','O diabo','A morte'], 0, 'Nada pode nos separar do amor de Deus'),
-        vf('Todos que Deus predestinou serao justificados.', 'Nem todos serao.', 0, 'Todos os predestinados serao chamados, justificados e glorificados'),
+        vf('Todos que Deus predestinou serao justificados.', 'Todos serao - Romanos 8:30.', 1, 'Todos os predestinados serao chamados, justificados e glorificados'),
     ]),
     ('Efesios 1: Eleição', 'Deus nos escolheu em Cristo antes da fundacao do mundo, predestinando-nos para adocao. Tudo segundo o proposito da Sua vontade.', 'Efesios 1:3-14', 'Entender a doutrina da eleição divina', 'Deus e soberano na Sua escolha, por amor e para Sua gloria.', [
         mc('Quando Deus nos escolheu?', ['Quando nascemos','Depois de pecar','Antes da fundacao do mundo','Quando aceitamos'], 2, 'Antes da fundacao do mundo'),

@@ -61,7 +61,7 @@ RESPOSTAS_POR_TOPICO = {
     },
     'espirito': {
         'respostas': [
-            'O Espírito Santo é a pessoa da Trindade que habita no crente. "Não vos esqueçais do Espírito Santo" (Hb 2:4). Ele convence do pecado, regenera, santifica e concede dons.\n\nCalvino ensinava que o Espírito é "o sentido espiritual" que nos permite compreender as Escrituras. Sem Ele, a Bíblia é letra morta.\n\nNão viva sem a direção do Espírito. Peça-Lhe que guie seus passos e renove sua mente cada dia.\n\n📖 *Referências*: Hb 2:4, Jo 16:13, Rm 8:9',
+            'O Espírito Santo é a pessoa da Trindade que habita no crente. "Não extingais o Espírito" (1 Ts 5:19). Ele convence do pecado, regenera, santifica e concede dons.\n\nCalvino ensinava que o Espírito é "o sentido espiritual" que nos permite compreender as Escrituras. Sem Ele, a Bíblia é letra morta.\n\nNão viva sem a direção do Espírito. Peça-Lhe que guie seus passos e renove sua mente cada dia.\n\n📖 *Referências*: 1 Ts 5:19, Jo 16:13, Rm 8:9',
             'O Espírito Santo é o consolador prometido por Jesus. "Outro Consolador, para que fique convosco para sempre" (Jo 14:16). Ele não é uma força impessoal, mas uma pessoa que habita em nós.\n\nTozer dizia: "O Espírito Santo não é apenas um invitado, mas o Senhor da casa." Devemos dar-Lhe controle total da nossa vida.\n\nPeça ao Espírito que lhe mostre verdades da Palavra hoje.\n\n📖 *Referências*: Jo 14:16, Jo 16:13, 1 Co 6:19',
         ],
         'passagens': ['Jo 14:16', 'Jo 16:13', 'Rm 8:9', 'Gl 5:22-23', 'Ef 5:18'],
@@ -75,42 +75,42 @@ RESPOSTAS_POR_TOPICO = {
     },
     'biblia': {
         'respostas': [
-            'A Bíblia é a Palavra inspirada de Deus. "Toda Escritura é inspirada por Deus e proveitosa para ensinar, para redarguir, para corrigir, para instruir em justiça" (2 Tm 3:16).\n\nLutero dizia: "A Bíblia é o bezerro de ouro que todos acoltem." Ela é a autoridade suprema em assuntos de fé e prática.\n\nLeia a Bíblia todos os dias. Comece pelo Evangelho de João, depois seguindo um plano de leitura. A Palavra transforma quem a lê.\n\n📖 *Referências*: 2 Tm 3:16, Sl 119:105, Jo 5:39',
+            'A Bíblia é a Palavra inspirada de Deus. "Toda Escritura é inspirada por Deus e proveitosa para ensinar, para redarguir, para corrigir, para instruir em justiça" (2 Tm 3:16).\n\nLutero dizia: "A Escritura é a verdadeira Palavra de Deus, autoridade suprema em fé e prática." Ela é a autoridade suprema em assuntos de fé e prática.\n\nLeia a Bíblia todos os dias. Comece pelo Evangelho de João, depois seguindo um plano de leitura. A Palavra transforma quem a lê.\n\n📖 *Referências*: 2 Tm 3:16, Sl 119:105, Jo 5:39',
             'A Escritura é mais preciosa que o ouro. "Tua Palavra é lâmpada para os meus pés e luz para o meu caminho" (Sl 119:105). Ela nos guia em meio às trevas da vida.\n\nA infalibilidade da Bíblia é um pilar da fé reformada. Não erra em nada, pois Deus é seu autor. Podemos confiar em cada palavra.\n\nEstude a Bíblia com humildade e oração. O Espírito Santo ilumina a mente para compreender as verdades divinas.\n\n📖 *Referências*: Sl 119:105, 2 Tm 3:16, Jo 5:39',
         ],
         'passagens': ['2 Tm 3:16', 'Sl 119:105', 'Jo 5:39', '1 Pe 1:25', 'Is 40:8'],
     },
     'justica': {
         'respostas': [
-            'Deus é justo e ama a justiça. "O Senhor é justo em todos os Seus caminhos" (Sl 145:17). A justiça de Deus é o padrão contra o qual somos medidos.\n\nA justificação pela fé é o artigo por qual a igreja se sustenta ou cai (Lutero). Somos declarados justos diante de Deus não por nossas obras, mas pela fé em Cristo.\n\nBusque a justiça social e pessoal. "Praticai a justiça, amai a bondade, e andai humildemente com o vosso Deus" (Mq 6:8).\n\n📖 *Referências*: Sl 145:17, Rm 3:26, Mq 6:8',
+            'Deus é justo e ama a justiça. "O Senhor é justo em todos os Seus caminhos" (Sl 145:17). A justiça de Deus é o padrão contra o qual somos medidos.\n\nA justificação pela fé é o artigo por qual a igreja se sustenta ou cai (Lutero). Somos declarados justos diante de Deus não por nossas obras, mas pela fé em Cristo.\n\nBusque a justiça social e pessoal. "Praticai a justiça, amai a misericórdia, e andai humildemente com o vosso Deus" (Mq 6:8).\n\n📖 *Referências*: Sl 145:17, Rm 3:26, Mq 6:8',
             'A justiça de Deus se revela no evangelho. "A justiça de Deus se manifesta pela fé em Jesus Cristo para todos os que crêem" (Rm 3:22). Não somos justos por mérito próprio, mas pela imputação da justiça de Cristo.\n\nA teologia reformada ensina que Cristo tornou-se pecado por nós para que nós tornássemos justiça de Deus Nele (2 Co 5:21). É a grande troca da salvação.\n\nViva como justo diante de Deus, não por medo, mas por gratidão.\n\n📖 *Referências*: Rm 3:22, 2 Co 5:21, Mq 6:8',
         ],
         'passagens': ['Rm 3:22', '2 Co 5:21', 'Mq 6:8', 'Sl 145:17', 'Ef 2:8-10'],
     },
     'tristeza': {
         'respostas': [
-            'A tristeza é parte da vida humana, mas não é o fim. "Alegro-me no Senhor" (Fp 4:4) — Paulo escreveu isso da prisão, mostrando que a alegria cristã transcende as circunstâncias.\n\nJesus chorou (Jo 11:35), chorou sobre Jerusalém (Lc 19:41). Ele entende nossa dor. Não temas sentir tristeza — mas não fiques nela.\n\nOre a Deus com sua dor. "De perto está o Senhor dos que têm o coração quebrantado" (Sl 34:18).\n\n📖 *Referências*: Fp 4:4, Sl 34:18, Jo 11:35',
+            'A tristeza é parte da vida humana, mas não é o fim. "Alegrai-vos sempre no Senhor" (Fp 4:4) — Paulo escreveu isso da prisão, mostrando que a alegria cristã transcende as circunstâncias.\n\nJesus chorou (Jo 11:35), chorou sobre Jerusalém (Lc 19:41). Ele entende nossa dor. Não temas sentir tristeza — mas não fiques nela.\n\nOre a Deus com sua dor. "De perto está o Senhor dos que têm o coração quebrantado" (Sl 34:18).\n\n📖 *Referências*: Fp 4:4, Sl 34:18, Jo 11:35',
             'Não tenha vergonha de estar triste. Jesus disse: "Neste mundo tereis aflições; mas tende bom ânimo, eu venci o mundo" (Jo 16:33).\n\nKeller dizia: "O evangelho não é apenas o começo da vida cristã; é o meio de tudo." Mesmo na tristeza, Cristo é suficiente.\n\nEntregue sua tristeza a Deus. Ele não a despreza, mas a recebe com compaixão.\n\n📖 *Referências*: Jo 16:33, Sl 42:1-3, 1 Pe 5:7',
         ],
         'passagens': ['Fp 4:4', 'Sl 34:18', 'Jo 16:33', 'Sl 42:1-3', '1 Pe 5:7'],
     },
     'medo': {
         'respostas': [
-            'Deus não nos deu espírito de timidez, mas de fortaleza (2 Tm 1:7). O medo é natural, mas não deve nos governar. Em Cristo, somos mais que vencedores.\n\n"Não temas, porque eu sou contigo" é a frase mais repetida na Bíblia. Deus sabe que temos medo, e nos assegura de Sua presença.\n\nQuando o medo vier, lembre-se: Deus é maior que qualquer ameaça. Não Ele permite que passemos por provações sem saída (1 Co 10:13).\n\n📖 *Referências*: 2 Tm 1:7, Js 1:9, 1 Co 10:13',
+            'Deus não nos deu espírito de timidez, mas de fortaleza (2 Tm 1:7). O medo é natural, mas não deve nos governar. Em Cristo, somos mais que vencedores.\n\n"Não temas, porque eu sou contigo" é a frase mais repetida na Bíblia. Deus sabe que temos medo, e nos assegura de Sua presença.\n\nQuando o medo vier, lembre-se: Deus é maior que qualquer ameaça e não permite que sejamos provados além do que podemos suportar (1 Co 10:13).\n\n📖 *Referências*: 2 Tm 1:7, Js 1:9, 1 Co 10:13',
             'O medo paralisa, mas a fé move. Pedro andou sobre as águas enquanto olhava para Jesus (Mt 14:29). Quando olhou para as ondas, afundou. Olhe para Cristo, não para as circunstâncias.\n\nBonhoeffer: "Quando Cristo chama um homem, ele vem e morre." Isso inclui morrer para o medo.\n\nEntregue seus medos a Deus em oração. Ele é o nosso refúgio e fortaleza (Sl 46:1).\n\n📖 *Referências*: Mt 14:29-31, Sl 46:1, Is 41:10',
         ],
         'passagens': ['2 Tm 1:7', 'Js 1:9', 'Sl 46:1', 'Mt 14:29-31', 'Is 41:10'],
     },
     'duvida': {
         'respostas': [
-            'A dúvida não é pecado — é oportunidade de fé crescer. Jesus disse ao pai do menino epiléptico: "Crede, e nada será impossível" (Mc 9:23). O homem respondeu: "Creio, mas ajuda a minha incredulidade."\n\nAté grandes homens de Deus tiveram dúvidas: Davi, Tiago, o próprio Tomé. O importante é trazer as dúvidas a Cristo, não guardá-las para si.\n\nLeia a Bíblia, ore, converse com cristãos maduros. A fé cresce pelo estudo e pela comunidade.\n\n📖 *Referências*: Mc 9:23-24, Rm 10:17, Hb 11:1',
-            'Dúvida intelectual pode ser resolvida com estudo. "Provaide todas as coisas; reténe o que é bom" (1 Ts 5:21). A fé reformada não pede para abandonar a razão, mas submetê-la à Palavra.\n\nLewis passou de ateu a cristão pela razão. C.S. Lewis dizia: "Eu creio no cristianismo assim como creio que o sol nasceu: não apenas porque o vejo, mas porque por ele vejo tudo."\n\nEstude as Escrituras e encontre respostas. A fé não é cega.\n\n📖 *Referências*: 1 Ts 5:21, Rm 10:17, Is 1:18',
+            'A dúvida não é pecado — é oportunidade de fé crescer. Jesus disse ao pai do menino epiléptico: "Crede, e nada será impossível" (Mc 9:23). O homem respondeu: "Creio, mas ajuda a minha incredulidade."\n\nAté grandes homens de Deus tiveram dúvidas: Tomé, Jó e até João Batista. O importante é trazer as dúvidas a Cristo, não guardá-las para si.\n\nLeia a Bíblia, ore, converse com cristãos maduros. A fé cresce pelo estudo e pela comunidade.\n\n📖 *Referências*: Mc 9:23-24, Rm 10:17, Hb 11:1',
+            'Dúvida intelectual pode ser resolvida com estudo. "Provai todas as coisas; retende o que é bom" (1 Ts 5:21). A fé reformada não pede para abandonar a razão, mas submetê-la à Palavra.\n\nLewis passou de ateu a cristão pela razão. C.S. Lewis dizia: "Eu creio no cristianismo assim como creio que o sol nasceu: não apenas porque o vejo, mas porque por ele vejo tudo."\n\nEstude as Escrituras e encontre respostas. A fé não é cega.\n\n📖 *Referências*: 1 Ts 5:21, Rm 10:17, Is 1:18',
         ],
         'passagens': ['Mc 9:23-24', 'Rm 10:17', 'Hb 11:1', '1 Ts 5:21', 'Is 1:18'],
     },
     'perdao': {
         'respostas': [
-            'Assim como Cristo nos perdoou, somos chamados a perdoar. "Perdoai-vos uns aos outros, como também Deus vos perdoou em Cristo" (Ef 4:32). O perdão não é opcional para o cristão.\n\nSpurgeon dizia: "O perdão é a droga mais amarga que o diabo produz, mas a mais curativa para a alma." Perdoar é libertar a si mesmo.\n\nSe alguém te ofendeu, ore por essa pessoa. Isso não significa concordar com o erro, mas libertar o coração da amargura.\n\n📖 *Referências*: Ef 4:32, Cl 3:13, Mt 6:14',
+            'Assim como Cristo nos perdoou, somos chamados a perdoar. "Perdoai-vos uns aos outros, como também Deus vos perdoou em Cristo" (Ef 4:32). O perdão não é opcional para o cristão.\n\nSpurgeon dizia: "Perdoar é a maior semelhança com Deus a que um homem pode aspirar." O perdão é um ato de obediência a Deus que liberta o coração da amargura.\n\nSe alguém te ofendeu, ore por essa pessoa. Isso não significa concordar com o erro, mas libertar o coração da amargura.\n\n📖 *Referências*: Ef 4:32, Cl 3:13, Mt 6:14',
             'O perdão de Cristo na cruz é o modelo supremo. "Pai, perdoa-lhes, porque não sabem o que fazem" (Lc 23:34). Jesus perdoou Seus assassinos. Quem somos nós para guardar rancor?\n\nA parábola do servo impiedoso (Mt 18:21-35) nos mostra que quem recebeu tanto perdão não pode recusar perdoar aos outros.\n\nPerdoe hoje, antes que o ódio crie raízes. O perdão é um ato de obediência, não de sentimento.\n\n📖 *Referências*: Lc 23:34, Mt 18:21-35, Ef 4:32',
         ],
         'passagens': ['Ef 4:32', 'Cl 3:13', 'Lc 23:34', 'Mt 6:14-15', 'Mt 18:21-35'],

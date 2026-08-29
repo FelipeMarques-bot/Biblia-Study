@@ -85,7 +85,7 @@ class Command(BaseCommand):
         l4 = mk_licao(t2, 'O Êxodo do Egito',
             'Deus livrou Israel do cativeiro egípcio com 10 pragas poderosas. O Cordeiro Pascal salvou os primogênitos israelitas. O mar Vermelho se abriu para o povo atravessar.',
             'Êxodo 12-15', 'Compreender a redenção tipológica do Êxodo',
-            'O �êxodo é o maior ato redentor do Antigo Testamento, prefigurando Cristo.', 1)
+            'O êxodo é o maior ato redentor do Antigo Testamento, prefigurando Cristo.', 1)
         mk_ex(l4, *mc('Quantas pragas Deus enviou ao Egito?', ['7', '10', '12', '5'], 1, 'Êxodo 7-12'))
         mk_ex(l4, *vf('O mar Vermelho se abriu para Israel.', 'O mar Vermelho se abriu para Israel.', 1, 'Êxodo 14:21-22'))
 
@@ -187,7 +187,7 @@ class Command(BaseCommand):
             'Em Cristo, somos abençoados com toda bênção espiritual: eleitos, predestinados, redimidos, selados pelo Espírito.',
             'Efésios 1:3-14', 'Reconhecer as bênçãos espirituais em Cristo',
             'Tudo o que precisamos para a vida e piedade já nos foi dado em Cristo.', 1)
-        mk_ex(l15, *mc('Quantas bênçãos espirituais temos em Cristo?', ['Duas', 'Sete', 'Toda', 'Nenhuma'], 2, 'Efésios 1:3'))
+        mk_ex(l15, *mc('Como Paulo descreve as bênçãos espirituais em Cristo?', ['Duas', 'Sete', 'Toda', 'Nenhuma'], 2, 'Efésios 1:3'))
 
         # ── TRILHA 9: Hebreus e a Superioridade de Cristo ──
         t9 = mk_trilha(

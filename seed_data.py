@@ -138,7 +138,7 @@ criar_exercicio(l, 'ASSOCIACAO', 'Associe cada personagem ao que representa:', {
 
 l = criar_licao(t_c3, 'José: Perdão e Propósito', 'Gênesis 37; 45; 50', 'Gn 37;45;50', 'Ver como Deus usa até o sofrimento para o bem', 'Deus transformou o mal em bem na vida de José.', 4, 50)
 criar_exercicio(l, 'MULTIPLA_ESCOLHA', 'O que os irmãos de José fizeram com ele?', {"alternativas":["Abraçaram","Venderam como escravo","Pedir desculpas","Deram presentes"],"indice_correto":1,"dica":"Gn 37:28 — Venderam José por 20 moedas."}, 1)
-criar_exercicio(l, 'VF', 'Josém se vingou de seus irmãos.', {"afirmativa":"José se vingou de seus irmãos.","alternativas":["Falso","Verdadeiro"],"indice_correto":0,"dica":"Gn 50:20 — Vós planejastes o mal, Deus o tornou em bem."}, 2)
+criar_exercicio(l, 'VF', 'José se vingou de seus irmãos.', {"afirmativa":"José se vingou de seus irmãos.","alternativas":["Falso","Verdadeiro"],"indice_correto":0,"dica":"Gn 50:20 — Vós planejastes o mal, Deus o tornou em bem."}, 2)
 criar_exercicio(l, 'MULTIPLA_ESCOLHA', 'O que José disse sobre o que seus irmãos fizeram?', {"alternativas":["Vou me vingar","Deus transformou em bem","Nunca mais quero vê-los","Foram maus"],"indice_correto":1,"dica":"Gn 50:20 — Deus tornou em bem."}, 3)
 
 # ============================================================
@@ -166,8 +166,8 @@ criar_exercicio(l, 'MULTIPLA_ESCOLHA', 'O que Nabucodonosor ordenou?', {"alterna
 criar_exercicio(l, 'VF', 'Os três jovens se curvaram à estátua por medo.', {"afirmativa":"Os três jovens se curvaram à estátua por medo.","alternativas":["Falso","Verdadeiro"],"indice_correto":0,"dica":"Dn 3:18 — Não serviremos a teus deuses."}, 2)
 criar_exercicio(l, 'ASSOCIACAO', 'Associe cada elemento à história:', {"pares":[{"esquerda":"Fornalha","direita_correta":"Lugar de provação"},{"esquerda":"Anjo","direita_correta":"Proteção de Deus"},{"esquerda":"Quarto homem","direita_correta":"Presença divina"}]}, 3)
 
-l = criar_licao(t_a3, 'Perdão Entre Amigos', 'Mateus 18:21-35', 'Mt 18:21-35', 'Entender que o perdão que recebemos deve fluir para outros', 'Perdoai para que sejais perdoados.', 5, 50)
-criar_exercicio(l, 'MULTIPLA_ESCOLHA', 'Quantas vezes Pedro perguntou se devia perdoar?', {"alternativas":["3","7","70x7","150"],"indice_correto":2,"dica":"Mt 18:22 — Não até sete, mas até setenta vezes sete."}, 1)
+l = criar_licao(t_a3, 'Perdão Entre Amigos', 'Mateus 18:21-35', 'Mt 18:21-35', 'Entender que o perdão que recebemos deve fluir para outros', 'Perdoamos porque fomos perdoados por Deus em Cristo.', 5, 50)
+criar_exercicio(l, 'MULTIPLA_ESCOLHA', 'Quantas vezes Jesus disse que devemos perdoar o irmão?', {"alternativas":["3","7","70x7","150"],"indice_correto":2,"dica":"Mt 18:22 — Não até sete, mas até setenta vezes sete."}, 1)
 criar_exercicio(l, 'VF', 'Devemos perdoar porque já fomos perdoados por Deus.', {"afirmativa":"Devemos perdoar porque já fomos perdoados por Deus.","alternativas":["Falso","Verdadeiro"],"indice_correto":1,"dica":"A parábola mostra que quem muito foi perdoado, muito deve perdoar."}, 2)
 criar_exercicio(l, 'ORDENACAO', 'Ordene a parábola do credor incompassivo:', {"itens":["Servo deve 10 mil talentos","Rei perdoa a dívida","Servo cobra 100 denários do outro","Servo é cobrado pelo rei","Rei o entrega aos torturadores"]}, 3, 2)
 
@@ -354,7 +354,7 @@ criar_pool_exercicio('genesis', 'ASSOCIACAO', 'Associe cada dia da criação:', 
 
 # --- Êxodo ---
 criar_pool_exercicio('exodo', 'MULTIPLA_ESCOLHA', 'Quem Deus enviou para libertar Israel do Egito?', {"alternativas":["Abraão","Isaque","Moisés","Davi"],"indice_correto":2,"dica":"Êxodo 3"}, 1, 'adulto', 'Êxodo 3:1-15')
-criar_pool_exercicio('exodo', 'VF', 'As dez pragas recaíram apenas sobre o Egito.', {"afirmativa":"As dez pragas recaíram apenas sobre o Egito.","alternativas":["Falso","Verdadeiro"],"indice_correto":0,"dica":"A décima praga afetou os primogênitos de todo o Egito, mas Israel também foi afetado em其他 coisas."}, 2, 'adulto', 'Êxodo 7-12')
+criar_pool_exercicio('exodo', 'VF', 'As dez pragas recaíram apenas sobre o Egito.', {"afirmativa":"As dez pragas recaíram apenas sobre o Egito.","alternativas":["Falso","Verdadeiro"],"indice_correto":1,"dica":"Deus poupou os israelitas em Gosen das pragas — Êxodo 8:22-23; 12:13."}, 2, 'adulto', 'Êxodo 7-12')
 criar_pool_exercicio('exodo', 'ORDENACAO', 'Ordene as dez pragas do Egito:', {"itens":["Água em sangue","Rãs","Piolhos","Moscas","Peste","Úlceras","Granizo","Gafanhotos","Trevas","Morte dos primogênitos"]}, 3, 'adulto', 'Êxodo 7-12')
 
 # --- Salmos ---
