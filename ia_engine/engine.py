@@ -159,6 +159,10 @@ def _call_llm(prompt, temperature=0.3):
 
 
 def gerar_dica_exercicio(exercicio, resposta_usuario=None):
+    dados = exercicio.dados
+    dica_gravada = dados.get('dica') if isinstance(dados, dict) else None
+    if dica_gravada:
+        return dica_gravada
     if not LLM_API_KEY:
         return gerar_dica_fallback(exercicio)
     try:
