@@ -45,12 +45,13 @@
       -webkit-backdrop-filter: blur(10px);
       font-size: 0.65rem;
     }
-    /* Web: rodapé discreto no fim da tela */
+    /* Web: banner no topo, flui com o conteúdo (não cobre nada) */
     @media (min-width: 768px) {
       #global-donation-banner {
-        bottom: 0;
-        border-bottom: 0;
-        border-top: 1px solid rgba(0, 212, 255, 0.2);
+        position: static;
+        top: auto;
+        bottom: auto;
+        border-bottom: 1px solid rgba(0, 212, 255, 0.2);
       }
     }
     /* Mobile: abaixo da top bar fixa (incl. safe-area), deixando espaço entre eles */
