@@ -31,35 +31,29 @@
       .safe-top { padding-top: env(safe-area-inset-top); }
     }
 
-    /* ── BANNER DE DOAÇÃO — destaque animado (a animação é na escrita, não no fundo) ── */
+    /* ── BANNER DE DOAÇÃO — fixo discreto no rodapé, sempre visível (web e mobile) ── */
     #global-donation-banner {
-      overflow: hidden;
-      max-height: 0;
-      opacity: 0;
-      padding: 0 1rem;
+      position: fixed;
+      left: 0;
+      right: 0;
+      bottom: 0;
+      z-index: 45;
+      padding: 0.5rem 1rem;
       text-align: center;
-      background: transparent;
-      border-bottom: 0;
-      transition: max-height .8s ease, opacity .8s ease, padding .8s ease;
+      background: rgba(10, 14, 26, 0.92);
+      border-top: 1px solid rgba(0, 212, 255, 0.2);
+      backdrop-filter: blur(10px);
+      -webkit-backdrop-filter: blur(10px);
     }
-    #global-donation-banner .donation-inner {
-      padding: 0.5rem 0;
-    }
-    #global-donation-banner.donation-visible {
-      max-height: 400px;
-      opacity: 1;
-      padding: 0 1rem 0.5rem;
-    }
-    /* Glow pulsante aplicado à ESCRITA do banner (sem glow no fundo) */
-    #global-donation-banner.donation-visible .donation-inner p,
-    #global-donation-banner.donation-visible .donation-inner strong,
-    #global-donation-banner.donation-visible .donation-inner code {
+    #global-donation-banner .donation-inner p,
+    #global-donation-banner .donation-inner strong,
+    #global-donation-banner .donation-inner code {
       animation: donation-text-glow 2.4s ease-in-out infinite;
     }
-    /* Mobile: desloca o banner para baixo da top bar fixa (incl. safe-area), garantindo o texto visível */
+    /* Mobile: posiciona acima da bottom tab bar fixa (incl. safe-area) */
     @media (max-width: 767px) {
-      #global-donation-banner.donation-visible {
-        margin-top: calc(env(safe-area-inset-top, 0px) + 56px);
+      #global-donation-banner {
+        bottom: calc(env(safe-area-inset-bottom, 0px) + 2.75rem);
       }
     }
     @keyframes donation-text-glow {
@@ -68,9 +62,7 @@
       50%   { text-shadow: 0 0 6px rgba(255,215,0,0.55), 0 0 16px rgba(0,212,255,0.40); }
     }
     @media (prefers-reduced-motion: reduce) {
-      #global-donation-banner,
-      #global-donation-banner.donation-visible {
-        transition: none;
+      #global-donation-banner {
         animation: none;
       }
     }
@@ -84,16 +76,16 @@
     <div class="donation-inner">
       <p class="text-xs text-gray-300">
         ❤️ <strong class="text-[#00ff88]">Apoie a Plataforma Bíblica!</strong> Ajude-nos a manter o app e alcançar mais vidas.
-        <span class="block sm:inline mt-1 sm:mt-0">
+        <span class="inline sm:ml-1">
           Pix: <code class="text-[#00ff88] font-mono">1b831057-321a-4580-9ebe-bff9b5fb2529</code>
-          <button onclick="navigator.clipboard.writeText('1b831057-321a-4580-9ebe-bff9b5fb2529').then(()=>this.textContent='✅ Copiado!')" class="text-[#00d4ff] hover:text-white ml-1 underline">Copiar</button>
+          <button onclick="navigator.clipboard.writeText('1b831057-321a-4580-9ebe-bff9b5fb2529').then(()=>this.textContent='✅ Copiado!')" class="text-[#00d4ff] hover:text-white underline">Copiar</button>
         </span>
-        <button onclick="dismissDonation()" class="ml-2 text-gray-500 hover:text-white">✕</button>
       </p>
     </div>
   </div>
 
   {# Mobile Top Bar — fixo no topo, voltar + logout + som #}
+  {% block topbar %}
   <div class="fixed top-0 left-0 right-0 z-40 hide-desktop safe-top bg-dark-surface/90 backdrop-blur-xl border-b border-dark-border">
     <div class="flex items-center justify-between px-3 py-2">
       <div class="flex items-center gap-2">
@@ -139,6 +131,7 @@
       </div>
     </div>
   </div>
+  {% endblock %}
 
   {% block content %}{% endblock %}
   {% block extra_scripts %}{% endblock %}
@@ -150,48 +143,6 @@
         }).catch(() => {});
       });
     }
-
-    // ── Donation banner — destaque animado (aparece/desaparece) ──
-    (function donationHighlight() {
-      const banner = document.getElementById('global-donation-banner');
-      if (!banner) return;
-
-      // Se o usuário já fechou, nunca mais mostra.
-      if (localStorage.getItem('donation_dismissed') === '1') { banner.remove(); return; }
-
-      const DISPLAY_MS = 3 * 60 * 1000;  // 3 minutos visível e brilhando
-      const GAP_MS     = 45 * 1000;      // 45s escondido entre destaques
-      let timers = [];
-
-      function clearTimers() { timers.forEach(clearTimeout); timers = []; }
-      function show() { banner.classList.add('donation-visible'); }
-      function hide() { banner.classList.remove('donation-visible'); }
-
-      function scheduleShow() {
-        timers.push(setTimeout(function () {
-          show();
-          timers.push(setTimeout(hide, DISPLAY_MS));
-          scheduleGap();
-        }, GAP_MS));
-      }
-      function scheduleGap() {
-        timers.push(setTimeout(scheduleShow, GAP_MS));
-      }
-
-      window.dismissDonation = function () {
-        clearTimers();
-        hide();
-        banner.style.display = 'none';
-        localStorage.setItem('donation_dismissed', '1');
-      };
-
-      // Inicia o ciclo: mostra na carga, permanece uns minutos brilhando, some e reaparece.
-      show();
-      timers.push(setTimeout(function () {
-        hide();
-        scheduleGap();
-      }, DISPLAY_MS));
-    })();
 
     // ── PWA install banner ──
     let deferredPrompt;
