@@ -31,12 +31,9 @@
       .safe-top { padding-top: env(safe-area-inset-top); }
     }
 
-    /* ── BANNER DE DOAÇÃO — fixo, sempre visível (web e mobile) ── */
+    /* ── BANNER DE DOAÇÃO — no fluxo do topo, empurra o conteúdo (não cobre) ── */
     #global-donation-banner {
-      position: fixed;
-      left: 0;
-      right: 0;
-      z-index: 45;
+      position: static;
       padding: 0.2rem 1rem;
       text-align: center;
       background: rgba(10, 14, 26, 0.92);
@@ -45,24 +42,15 @@
       -webkit-backdrop-filter: blur(10px);
       font-size: 0.65rem;
     }
-    /* Web: banner no topo, flui com o conteúdo (não cobre nada) */
-    @media (min-width: 768px) {
-      #global-donation-banner {
-        position: static;
-        top: auto;
-        bottom: auto;
-        border-bottom: 1px solid rgba(0, 212, 255, 0.2);
-      }
-    }
-    /* Mobile: abaixo da top bar fixa (incl. safe-area), deixando espaço entre eles */
+    /* Mobile: top bar fixa cobre o topo → empurra o banner para abaixo dela */
     @media (max-width: 767px) {
       #global-donation-banner {
-        top: calc(env(safe-area-inset-top, 0px) + 3.5rem);
+        margin-top: calc(env(safe-area-inset-top, 0px) + 3.5rem);
         max-width: calc(100% - 1rem);
-        left: 0.5rem;
-        right: 0.5rem;
-        margin: 0 auto;
-        border: 1px solid rgba(0, 212, 255, 0.2);
+        margin-left: auto;
+        margin-right: auto;
+        border-left: 1px solid rgba(0, 212, 255, 0.2);
+        border-right: 1px solid rgba(0, 212, 255, 0.2);
       }
     }
     #global-donation-banner .donation-inner p,
@@ -103,6 +91,14 @@
   <div class="fixed top-0 left-0 right-0 z-40 hide-desktop safe-top bg-dark-surface/90 backdrop-blur-xl border-b border-dark-border">
     <div class="flex items-center justify-between px-3 py-2">
       <div class="flex items-center gap-2">
+        {# Botão Menu (hambúrguer) #}
+        <button onclick="window.dispatchEvent(new Event('open-hamburger')); if(typeof SoundEngine!=='undefined') SoundEngine.menuOpen()"
+                class="w-8 h-8 rounded-full flex items-center justify-center bg-dark-elevated border border-dark-border text-text-muted hover:text-neon-blue hover:border-neon-blue/30 transition-all"
+                title="Menu">
+          <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M4 6h16M4 12h16M4 18h16"/>
+          </svg>
+        </button>
         {# Botão Voltar #}
         <button onclick="history.length > 1 ? history.back() : window.location.href='{% url 'dashboard' %}'"
                 class="w-8 h-8 rounded-full flex items-center justify-center bg-dark-elevated border border-dark-border text-text-muted hover:text-neon-blue hover:border-neon-blue/30 transition-all"
@@ -271,5 +267,8 @@
       </div>
     </div>
   </div>
+
+  {# Menu lateral (drawer mobile) — todas as funcionalidades #}
+  {% include 'includes/hamburger_menu.html' %}
 </body>
 </html>
