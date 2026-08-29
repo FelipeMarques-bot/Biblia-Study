@@ -31,30 +31,43 @@
       .safe-top { padding-top: env(safe-area-inset-top); }
     }
 
-    /* ── BANNER DE DOAÇÃO — fixo discreto no rodapé, sempre visível (web e mobile) ── */
+    /* ── BANNER DE DOAÇÃO — fixo, sempre visível (web e mobile) ── */
     #global-donation-banner {
       position: fixed;
       left: 0;
       right: 0;
-      bottom: 0;
       z-index: 45;
-      padding: 0.5rem 1rem;
+      padding: 0.25rem 1rem;
       text-align: center;
       background: rgba(10, 14, 26, 0.92);
-      border-top: 1px solid rgba(0, 212, 255, 0.2);
+      border-bottom: 1px solid rgba(0, 212, 255, 0.2);
       backdrop-filter: blur(10px);
       -webkit-backdrop-filter: blur(10px);
+      font-size: 0.7rem;
+    }
+    /* Web: rodapé discreto no fim da tela */
+    @media (min-width: 768px) {
+      #global-donation-banner {
+        bottom: 0;
+        border-bottom: 0;
+        border-top: 1px solid rgba(0, 212, 255, 0.2);
+      }
+    }
+    /* Mobile: abaixo da top bar fixa (incl. safe-area), deixando espaço entre eles */
+    @media (max-width: 767px) {
+      #global-donation-banner {
+        top: calc(env(safe-area-inset-top, 0px) + 3.5rem);
+        max-width: calc(100% - 1rem);
+        left: 0.5rem;
+        right: 0.5rem;
+        margin: 0 auto;
+        border: 1px solid rgba(0, 212, 255, 0.2);
+      }
     }
     #global-donation-banner .donation-inner p,
     #global-donation-banner .donation-inner strong,
     #global-donation-banner .donation-inner code {
       animation: donation-text-glow 2.4s ease-in-out infinite;
-    }
-    /* Mobile: posiciona acima da bottom tab bar fixa (incl. safe-area) */
-    @media (max-width: 767px) {
-      #global-donation-banner {
-        bottom: calc(env(safe-area-inset-bottom, 0px) + 2.75rem);
-      }
     }
     @keyframes donation-text-glow {
       0%,
@@ -143,6 +156,16 @@
         }).catch(() => {});
       });
     }
+
+    // ── Donation banner: ajusta posição no mobile se não houver top bar (login/registro) ──
+    function positionDonationBanner() {
+      const banner = document.getElementById('global-donation-banner');
+      if (!banner) return;
+      if (!document.getElementById('mobile-sound-toggle')) {
+        banner.style.top = 'calc(env(safe-area-inset-top, 0px) + 0.5rem)';
+      }
+    }
+    document.addEventListener('DOMContentLoaded', positionDonationBanner);
 
     // ── PWA install banner ──
     let deferredPrompt;
