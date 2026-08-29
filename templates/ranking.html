@@ -28,6 +28,31 @@
         </div>
       </div>
 
+      {# Sua posição — mobile only, destaque logo abaixo do cabeçalho #}
+      <div class="lg:hidden mb-4 md:mb-6 animate-slide-up">
+        <div class="card-glow flex items-center justify-between gap-3">
+          <div class="flex items-center gap-3 min-w-0">
+            <div class="w-11 h-11 rounded-full flex items-center justify-center bg-neon-blue/10 border border-neon-blue/30 shrink-0">
+              <span class="text-xl">🌍</span>
+            </div>
+            <div class="min-w-0">
+              <p class="text-[10px] text-neon-blue uppercase tracking-wider">Sua posição global</p>
+              <p class="font-heading text-xl text-white leading-tight">
+                {% if posicao_geral %}#{{ posicao_geral }}{% else %}—{% endif %}
+                <span class="text-xs font-normal text-text-muted">de {{ total_usuarios }} usuários</span>
+              </p>
+            </div>
+          </div>
+          {% if liga_part %}
+          <div class="flex items-center gap-1.5 px-3 py-1.5 rounded-full bg-neon-gold/10 border border-neon-gold/20 shrink-0">
+            <span class="text-base">{{ liga_part.liga.icone }}</span>
+            <span class="text-xs font-semibold text-neon-gold">{{ liga_part.liga.nome }}</span>
+            <span class="text-xs font-semibold text-white">#{{ liga_part.posicao }}</span>
+          </div>
+          {% endif %}
+        </div>
+      </div>
+
       <div class="grid grid-cols-1 lg:grid-cols-3 gap-4 md:gap-6">
 
         {# Coluna principal #}
