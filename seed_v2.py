@@ -66,7 +66,7 @@ add_licoes(t1, [
         mc('Quantos filhos teve Abraao com Sara?', ['1 - Isaac','2 - Ismael e Isaac','3 - Zorobael e outros','Nenhum'], 0, 'Genesis 21:2'),
     ]),
     ('A Prova de Isaque', 'Deus ordenou a Abraao que oferecesse Isaac em sacrificio no monte Moria. No momento final um anjo deteve sua mao e um cordeiro foi oferecido em substituicao.', 'Genesis 22:1-19', 'Reconhecer o exemplo de obediencia e fe de Abraao', 'A prova do Moria e tipologia do sacrificio de Cristo. Deus proveu o cordeiro como substituto.', [
-        mc('Onde Deus pediu o sacrificio?', ['Monte Sinai','Monte Moria','Monte Sinai','Monte Nebo'], 1, 'Genesis 22:2'),
+        mc('Onde Deus pediu o sacrificio?', ['Monte Sinai','Monte Moria','Monte das Oliveiras','Monte Nebo'], 1, 'Genesis 22:2 - montanha de Moria'),
         vf('Deus permitiu que Isaque fosse morto.', 'Deus permitiu que Isaque fosse morto.', 0, 'Genesis 22:12 - um anjo o deteve'),
         mc('O que foi oferecido em vez de Isaque?', ['Touro','Cordeiro','Carneiro preso num carrapicho','Pomba'], 2, 'Genesis 22:13'),
     ]),
@@ -88,7 +88,7 @@ add_licoes(t1, [
     ('Jose Perdoa seus Irmaos', 'Jose revelou sua identidade: "Vós pensastes mal contra mim, mas Deus o encaminhou para bem." Jose chorou e abraçou seus irmaos.', 'Genesis 42:1-45:15', 'Reconhecer o poder do perdão e a soberania de Deus', 'O perdão de Jose e um dos mais belos exemplos na Biblia. Ele reconheceu a mao de Deus em tudo.', [
         mc('Como Jose reagiu ao ver os irmaos?', ['Rejeitou-os','Perdoou-os','Expulsou-os','Cobrou-lhes'], 1, 'Genesis 45:14-15'),
         vf('Jose nunca chorou quando reencontrou os irmaos.', 'Jose nunca chorou quando reencontrou os irmaos.', 0, 'Chorou muito'),
-        mc('Quantos irmãos de Jose vieram ao Egito?', ['10','11','12','7'], 2, 'Genesis 42:3 - sem Benjamim e Jose'),
+        mc('Quantos irmãos de Jose vieram ao Egito?', ['10','11','12','7'], 0, 'Genesis 42:3 - sem Benjamim e Jose'),
     ]),
     ('A Descida ao Egito', 'Jacó e toda a sua familia desceram ao Egito, reunindo-se a Jose. Foram 70 pessoas. Israel estabeleceu-se na terra de Gosen.', 'Genesis 46:1-47:12', 'Entender como a descendencia de Abraao se multiplicou', 'A descida ao Egito cumpriu a profecia de que sua descendencia seria estrangeira por 400 anos.', [
         mc('Quantas pessoas desceram ao Egito?', ['50','70','100','200'], 1, 'Genesis 46:27'),
@@ -143,9 +143,9 @@ add_licoes(t2, [
         vf('A alianca era apenas de Israel.', 'A alianca era apenas de Israel.', 0, 'Era bidirecional: Deus e Israel'),
         mc('O que o sangue representava?', ['Vida','Pecado','Morte','Poder'], 0, 'Vida esta no sangue - Levitico 17:11'),
     ]),
-    ('Levitico: Santidade de Deus', 'Levitico revela a santidade de Deus e as instrucoes para sacrificios,纯za e festival. "Sede santos, porque eu sou santo."', 'Levitico 11:44-45; 19:2', 'Compreender o chamado a santidade', 'Levitico ensina que a接近 de Deus exige pureza e obediencia, apontando para a santidade necessaria na nova alianca.', [
+    ('Levitico: Santidade de Deus', 'Levitico revela a santidade de Deus e as instrucoes para sacrificios, pureza e festivais. "Sede santos, porque eu sou santo."', 'Levitico 11:44-45; 19:2', 'Compreender o chamado a santidade', 'Levitico ensina que a aproximacao a Deus exige pureza e obediencia, apontando para a santidade necessaria na nova alianca.', [
         mc('Quantas vezes Deus diz "sede santos" em Levitico?', ['1 vez','3 vezes','7 vezes','Nenhuma'], 1, 'Levitico 11:44, 19:2, 20:7'),
-        vf('Levitico fala apenas de sacrificios.', 'Levitico fala apenas de sacrificios.', 0, 'Tambem fala de纯za, festivais e santidade'),
+        vf('Levitico fala apenas de sacrificios.', 'Levitico fala apenas de sacrificios.', 0, 'Tambem fala de pureza, festivais e santidade'),
         mc('Qual e o principal sacrificio expiatório?', ['Holocausto','Pecado','Comunhao','Obrigacao'], 1, 'Levitico 4-5'),
     ]),
     ('O Dia da Expiação', 'Uma vez por ano, o sumo sacerdote entrava no Santo dos Santos com sangue de um bode, para expiar os pecados de Israel. Dois bodes: um morto, outro vivo (scapegoat).', 'Levitico 16', 'Entender o simbolismo do Dia da Expiação', 'O Dia da Expiação antecipa a obra expiatória de Cristo, o nosso sumo sacerdote que entrou no céu.', [
@@ -174,7 +174,7 @@ add_licoes(t3, [
     ('A Amizade Davi e Jonatas', 'Jonatas, filho do rei Saul, amou Davi como a si mesmo e fez alianca com ele. Quando Saul quis matar Davi, Jonatas o alertou e o protegeu.', '1 Samuel 18:1-4; 20:1-42', 'Reconhecer o valor da amizade fiel', 'A amizade Davi-Jonatas e um dos mais belos exemplos de lealdade na Biblia, prefigurando o amor fraternal.', [
         mc('Quem era Jonatas?', ['Irmao de Davi','Filho do rei Saul','Sacerdote','Profeta'], 1, '1 Samuel 18:1'),
         vf('Saul aprovou a amizade entre Davi e Jonatas.', 'Saul aprovou a amizade entre Davi e Jonatas.', 0, 'Saul ficou com inveja e queria matar Davi'),
-        mc('O que Jonatas fez por Davi?', ['Deu-lhe roupas','Deu-lhe armas','Alertou-o sobre Saul','Todos anteriores'], 2, '1 Samuel 20'),
+        mc('O que Jonatas fez por Davi?', ['Deu-lhe roupas','Deu-lhe armas','Alertou-o sobre Saul','Todos anteriores'], 3, '1 Samuel 18:4; 20:1-42'),
     ]),
     ('O Pecado de Davi e Bate-Seba', 'Davi viu Bate-Seba tomando banho, chamou-a e cometeu adultério. Para encobrir, mandou matar Urias, o marido. Profeta Natan o confrontou.', '2 Samuel 11:1-27', 'Reconhecer que mesmo os mais fiéis podem cair', 'O pecado de Davi demonstra que ninguem esta acima da tentacao. A consequencia foi severa, mas a misericordia de Deus prevaleceu.', [
         mc('Com quem Davi cometeu adultério?', ['Mical','Abigail','Bate-Seba','Rute'], 2, '2 Samuel 11:2-4'),
@@ -204,7 +204,7 @@ add_licoes(t3, [
     ('Salmo 139: Omnipresenca de Deus', '"Para onde fugirei do Teu espirito? Para onde irei da Tua presenca?" Davi reconhece que Deus o conhece completamente e esta em todo lugar.', 'Salmo 139:1-24', 'Entender que Deus nos conhece e nos acompanha', 'Deus sabe tudo sobre nos, antes mesmo de nascermos, e nunca nos deixa sozinhos.', [
         mc('Deus pode estar em algum lugar sem ser visto?', ['Sim','Nao','As vezes','Nunca'], 0, 'Para onde fugirei? - em todo lugar'),
         vf('Deus nos conheceu quando ja eramos adultos.', 'Deus nos conheceu quando ja eramos adultos.', 0, 'Antes de nascermos - Salmo 139:13-16'),
-        mc('O que David diz sobre a Palavra de Deus?', ['E pesada','E alegria','E facil','E confusa'], 1, 'Salmo 139 - a Tua mao direita me sustenta'),
+        mc('O que Davi reconhece no Salmo 139?', ['Que Deus o conhece e o sustenta em todo lugar','Que Deus esta longe e distante','Que Deus se esquece dele','Que Deus nao se importa'], 0, 'Salmo 139:1-10 - a Tua mao direita me sustenta'),
     ]),
 ], 50)
 print("  Trilha 3 completa - 9 licoes")
@@ -217,7 +217,7 @@ add_licoes(t4, [
     ('Salmo 91 - Protecao Divina', 'Aquele que habita no esconderijo do Altissimo, descansara a sombra do Todo-Poderoso. Direi do Senhor: Ele e o meu refugio e a minha fortaleza, o meu Deus, em quem confio.', 'Salmo 91:1-16', 'Confiar na protecao absoluta de Deus', 'Salmo 91 e a declaracao biblica de protecao divina. Quem se refugia em Deus esta guardado de pragas, armas e perigos.', [
         mc('Quem habita no esconderijo do Altissimo?', ['O pecador','O que confia em Deus','O rei','O sacerdote'], 1, 'Salmo 91:1'),
         vf('Salmo 91 promete que nada mau acontecera ao justo.', 'Salmo 91 promete que nada mau acontecera ao justo.', 0, 'Deus protege, mas nao livra de toda dificuldade'),
-        mc('Quantos anjos Deus ordenara para guardar o justo?', ['Um','Dois','Sete','Nenhum'], 2, 'Salmo 91:11 - ordenara anjos'),
+        mc('O que Salmo 91:11 diz sobre os anjos?', ['Deus dara ordem aos Seus anjos para guardarem o justo','Cada justo recebera exatamente dois anjos','Nao ha anjos guardando ninguem','Os anjos guardam apenas os sacerdotes'], 0, 'Salmo 91:11 - aos Seus anjos dara ordem a teu respeito'),
     ]),
     ('Salmo 46 - Refugio Inabalavel', 'Deus e o nosso refugio e fortaleza, socorro sempre presente nas angustias. Por isso nao temerei, ainda que a terra se mude e os montes se abalem no mar.', 'Salmo 46:1-11', 'Encontrar paz no meio do caos', 'Salmo 46 ensina que, mesmo quando o mundo desmorona, Deus e oura rocha imovel. Basta parar e reconhecer que Ele e Deus.', [
         mc('O que e Deus para quem O busca?', ['Um projeto','Refugio e fortaleza','Um castigo','Uma ideia'], 1, 'Salmo 46:1'),
@@ -226,7 +226,7 @@ add_licoes(t4, [
     ]),
     ('Salmo 103 - Bondade de Deus', 'Bendize, ó minha alma, ao Senhor, e nao esquecas de nenhum dos seus beneficios. Ele perdoa todas as tuas enfermidades e coroa de benignidade.', 'Salmo 103:1-22', 'Cultivar a gratidao por tudo que Deus faz', 'Salmo 103 enumera os beneficios de Deus: perdao, cura, resgate, amor, misericordia e satisfacao. E um hino de gratidao.', [
         mc('O que o salmista pede a sua alma?', ['Chorar','Esquecer','Bendizer ao Senhor','Dormir'], 2, 'Salmo 103:1'),
-        vf('Deus perdoa todas as enfermidades.', 'Deus perdoa todas as enfermidades.', 1, 'Salmo 103:3'),
+        vf('Deus sara todas as tuas enfermidades.', 'Deus sara todas as tuas enfermidades.', 1, 'Salmo 103:3 - perdoa as iniquidades e sara as enfermidades'),
         mc('Quantos beneficios Deus da?', ['Muitos','Sete','Doze','Apenas perdao'], 0, 'Nao esquecas de nenhum dos seus beneficios'),
     ]),
     ('Salmo 27 - O Senhor e a Minha Luz', 'O Senhor e a minha luz e a minha salvacao; a quem temerei? O Senhor e a fortaleza da minha vida; de quem me assustarei?', 'Salmo 27:1-14', 'Buscar a presenca de Deus acima de tudo', 'Davi declara que, mesmo cercado de inimigos, sua unica busca e habitar na casa do Senhor e contemplar a Sua beleza.', [
@@ -307,14 +307,14 @@ add_licoes(t5, [
         vf('Deus abandonou Israel por ser infiel.', 'Deus abandonou Israel por ser infiel.', 0, 'Deus prometeu restaurar e amar novamente'),
         mc('O que Deus prometeu a Israel?', ['Castigo eterno','Restauracao e amor','Silencio','Esquecimento'], 1, 'Oseias 2:19-20 - te desposarei para sempre'),
     ]),
-    ('Amos 5 - Justica e Equidade', 'Buscai ao Senhor e viverei; buscai justica e保dei a equidade. Odeio e desprezo os vossos festivais; nao aceitarei as vossas ofertas.', 'Amos 5:4-24', 'Compreender que Deus prioriza justica sobre ritual', 'Amos denunciou a religiosidade vazia: Deus quer justica e equidade, nao sacrificios sem amor.', [
-        mc('O que Deus odeia?', ['Festivais','Ofertas sem justica','O povo','O culto'], 1, 'Amos 5:21 - odeio e desprezo os festivais'),
+    ('Amos 5 - Justica e Equidade', 'Buscai ao Senhor e viverei; buscai justica e ponde a equidade. Odeio e desprezo os vossos festivais; nao aceitarei as vossas ofertas.', 'Amos 5:4-24', 'Compreender que Deus prioriza justica sobre ritual', 'Amos denunciou a religiosidade vazia: Deus quer justica e equidade, nao sacrificios sem amor.', [
+        mc('O que Deus odeia em Amos 5?', ['Os festivais e ofertas dos que praticam injustica','A busca da justica','O povo de Israel','A adoracao no templo'], 0, 'Amos 5:21-24 - odeio as vossas festas; buscai justica, nao rituais vazios'),
         vf('Deus aceita sacrificios de quem pratica injustica.', 'Deus aceita sacrificios de quem pratica injustica.', 0, 'Rejeitou as ofertas dos opressores'),
         mc('O que Amos diz que devemos buscar?', ['Riqueza','Fama','Justica e equidade','Vinganca'], 2, 'Amos 5:24 - corra a justica como agua'),
     ]),
     ('Mateus 6 - O Messias Pobre', 'Jesus nasceu em manjedoura e cresceu em Nazare, cidade humilde. Disse: "A raposa tem tocas, e as aves do ceu tem ninhos, mas o Filho do Homem nao tem onde repousar a cabeca."', 'Mateus 8:19-20; Lucas 2:7', 'Reconhecer a humildade do Deus que veio ao mundo', 'Jesus escolheu a pobreza para redimir os pobres. O Messias prometido veio sem ostentacao, em humildade.', [
         mc('Onde Jesus nasceu?', ['Num palacio','Numa manjedoura','Num templo','Numa cidade grande'], 1, 'Lucas 2:7'),
-        vf('Jesus viveu em luxury durante seu ministerio.', 'Jesus viveu em luxury durante seu ministerio.', 0, 'Nao tinha onde repousar a cabeca'),
+        vf('Jesus viveu em luxo durante seu ministerio.', 'Jesus viveu em luxo durante seu ministerio.', 0, 'Mateus 8:20 - nao tinha onde repousar a cabeca'),
         mc('Que cidade Jesus cresceu?', ['Jerusalem','Nazare','Betlem','Capernaum'], 1, 'Mateus 2:23 - Nazare da Galileia'),
     ]),
     ('Joel 2 - O Dia do Senhor', 'O dia do Senhor vem, dia de trevas e nao de luz. Mas depois diz: "Derramarei do Meu Espirito sobre toda carne; vossos filhos e vossas filhas profetizarao."', 'Joel 2:1-32', 'Preparar-se para o Dia do Senhor e receber o Espirito', 'Joel profetizou o juizo e a restauracao, e a promessa do derramamento do Espirito, cumprida em Atos 2.', [
@@ -428,9 +428,9 @@ add_licoes(t7, [
         vf('Pedro sempre soube que o evangelho era para os gentios.', 'Pedro sempre soube que o evangelho era para os gentios.', 0, 'Precisou de uma visão de Deus'),
         mc('O que Deus disse a Pedro sobre os animais?', ['São impuros', 'O que Deus purificou, nao chames de impuro','Deves comer todos','Nao deves tocar'], 1, 'Atos 10:15'),
     ]),
-    ('Atos 16 - A Conversao em Filipos', 'Paulo e Silas foram presos em Filipos, mas cantavam himnos na prisão. Um terremoto abriu as portas. O carcereiro perguntou: "Que devo fazer para ser salvo?" Resposta: "Crê no Senhor Jesus."', 'Atos 16:16-34', 'Experimentar a liberdade que vem da fé em Jesus', 'Mesmo na prisão, Paulo e Silas louvavam. Deus abriu as portas e salvou o carcereiro e toda a sua familia.', [
-        mc('O que Paulo e Silas faziam na prisão?', ['Dormiam','Cantavam himnos','Choravam','Gritavam'], 1, 'Atos 16:25'),
-        vf('O carcereiro se tornou cristão antes de hearing sobre Jesus.', 'O carcereiro se tornou cristão antes de hearing sobre Jesus.', 0, 'Ouviu a pregação e creu'),
+    ('Atos 16 - A Conversao em Filipos', 'Paulo e Silas foram presos em Filipos, mas cantavam hinos na prisão. Um terremoto abriu as portas. O carcereiro perguntou: "Que devo fazer para ser salvo?" Resposta: "Crê no Senhor Jesus."', 'Atos 16:16-34', 'Experimentar a liberdade que vem da fé em Jesus', 'Mesmo na prisão, Paulo e Silas louvavam. Deus abriu as portas e salvou o carcereiro e toda a sua familia.', [
+        mc('O que Paulo e Silas faziam na prisão?', ['Dormiam','Cantavam hinos','Choravam','Gritavam'], 1, 'Atos 16:25'),
+        vf('O carcereiro se tornou cristão antes de ouvir sobre Jesus.', 'O carcereiro se tornou cristão antes de ouvir sobre Jesus.', 0, 'Ouviu a pregação e creu'),
         mc('O que aconteceu quando Paulo e Silas cantavam?', ['Nada','Um terremoto abriu as portas','O carcereiro dormiu','Choveu'], 1, 'Atos 16:26'),
     ]),
     ('Atos 17 - O Areópago', 'Paulo preguou em Atenas, no Areópago, citando poetas gregos. Falou do "Deus desconhecido" que deu vida a todos. Alguns zombaram, outros creveram.', 'Atos 17:16-34', 'Usar a cultura para comunicar o evangelho', 'Paulo usou a cultura local para apresentar o Deus verdadeiro, adaptando sua mensagem sem comprometer a verdade.', [
@@ -529,9 +529,9 @@ add_licoes(t9, [
         mc('Por que devemos glorificar a Deus no corpo?', ['Por obrigacao','Porque fomos comprados por preco','Para ganhar dinheiro','Por medo'], 1, '1 Corintios 6:20 - fostes comprados por preco'),
     ]),
     ('1 Corintios 13: O Capitulo do Amor', 'Sem amor, nada temos. O amor e paciente, bondoso, nao se irrita, nao busca seus interesses. A fe, a esperanca e o amor permanecem, mas o maior e o amor.', '1 Corintios 13:1-13', 'Entender a centralidade do amor na vida cristã', 'O amor e o mais excelente caminho. Sem ele, todos os dons e sacrificios sao vaos.', [
-        mc('Qual e a primeira caracteristica do amor mencionada?', ['Poderoso','Impaciente','Bondoso','Esperto'], 2, '1 Corintios 13:4 - o amor e paciente, e bondoso'),
+        mc('Qual e a primeira caracteristica do amor mencionada?', ['Poderoso','Paciente','Bondoso','Esperto'], 1, '1 Corintios 13:4 - o amor e paciente, e bondoso'),
         vf('O amor busca seus proprios interesses.', 'O amor busca seus proprios interesses.', 0, 'O amor nao busca seus interesses - 1 Corintios 13:5'),
-        mc('Qual dos tres permanece?', ['Fe','Esperanca','Amor','Todas'], 2, '1 Corintios 13:13 - o maior e o amor'),
+        mc('Qual dos tres permanece?', ['Fe','Esperanca','Amor','Todas'], 3, '1 Corintios 13:13 - permanecem a fe, a esperanca e o amor'),
     ]),
     ('1 Corintios 15: A Ressurreicao', 'Paulo recorda que Cristo ressuscitou e apareceu a mais de 500 irmaos. Se Cristo nao ressuscitou, a fe e va. Mas Cristo e a primicia dos que dormem.', '1 Corintios 15:1-58', 'Firmar a fe na ressurreicao de Cristo e na nossa', 'A ressurreicao de Cristo e o fundamento da fe cristã. Sem ela, nao ha esperanca.', [
         mc('A quem Cristo apareceu apos ressuscitar?', ['A ninguem','A mais de 500 pessoas','A Pedro apenas','A Paulo apenas'], 1, '1 Corintios 15:6 - apareceu a mais de quinhentos'),
@@ -644,7 +644,7 @@ add_licoes(t11, [
     ('1 Tessalonicenses 5: O Dia do Senhor', 'O dia do Senhor vem como um ladrão na noite. Somos filhos da luz, nao da escuridao. Examinai tudo e guarda o que e bom. Orai sem cessar.', '1 Tessalonicenses 5:1-28', 'Viver preparados para a vinda do Senhor', 'O crente deve viver como filho da luz, vigilante, orando e rejubilando sempre.', [
         mc('Como vem o dia do Senhor?', ['Com aviso previo','Como um ladrao na noite','Em paz','Com festas'], 1, '1 Tessalonicenses 5:2 - vem como um ladrao na noite'),
         vf('Somos filhos da escuridao.', 'Somos filhos da escuridao.', 0, 'Somos filhos da luz - 1 Tessalonicenses 5:5'),
-        mc('O que Paulo manda fazer sem cessar?', ['Odiar','Orar','Dormir','Viajar'], 2, 'Orai sem cessar - 1 Tessalonicenses 5:17'),
+        mc('Segundo 1 Tessalonicenses 5:16-18, o que Paulo ordena que o crente faça continuamente?', ['Alegrar-se, orar e dar graças','Confiar somente nas próprias forças','Guardar rancor e buscar vingança','Evitar o sofrimento a todo custo'], 0, '1 Tessalonicenses 5:16-18 - alegrai-vos sempre, orai sem cessar, em tudo dai graças'),
     ]),
     ('2 Tessalonicenses 3: A Preguica', 'Paulo ordena que os preguicosos nao comam. Aquele que nao quer trabalhar, nao coma. Nao desanimem no bem. Nao andem como inquietos.', '2 Tessalonicenses 3:6-15', 'Cultivar disciplina e trabalho na vida cristã', 'A fé produtiva e o trabalho honesto sao parte da vida cristã. A preguica desonra o evangelho.', [
         mc('O que Paulo diz ao preguicoso?', ['Que durma mais','Que coma bastante','Que nao coma','Que va embora'], 2, '2 Tessalonicenses 3:10 - aquele que nao quer trabalhar, nao coma'),
@@ -710,7 +710,7 @@ add_licoes(t12, [
         mc('Quem construiu a casa?', ['Moises','Deus Pai','Cristo','Abraao'], 2, 'Cristo e o construtor de tudo'),
     ]),
     ('Hebreus 4: Entrando no Descanso', 'Deus preparou um descanso para o Seu povo. Nao endurecais os vossos coracoes. A Palavra de Deus e viva e eficaz, penetrante ate dividir espirito e alma.', 'Hebreus 4:1-16', 'Buscar o descanso que Deus oferece pela fe', 'Ha um descanso espiritual para os que creem. A Palavra de Deus e cortante e penetrante.', [
-        mc('Deus preparou:', ['Um castigo','Um descanso','Um监狱','Um palacio'], 1, 'Hebreus 4:9 - ha um descanso para o povo de Deus'),
+        mc('Deus preparou:', ['Um castigo','Um descanso','Um carcere','Um palacio'], 1, 'Hebreus 4:9 - ha um descanso para o povo de Deus'),
         vf('A Palavra de Deus e morta e ineficaz.', 'A Palavra de Deus e morta e ineficaz.', 0, 'Viva e eficaz - Hebreus 4:12'),
         mc('A Palavra de Deus penetra ate:', ['O corpo','A alma e o espirito','A mente apenas','O coracao apenas'], 1, 'Hebreus 4:12 - dividir alma e espirito'),
     ]),
@@ -759,7 +759,7 @@ add_licoes(t13, [
     ]),
     ('Tiago 2: Fe sem Obras', 'Se alguem diz que tem fe e nao tem obras, que lhe aproveita? A fe sem obras e morta. Abramaao foi justificado pelas obras quando ofereceu Isaque.', 'Tiago 2:14-26', 'Entender que a fe genuina produz obras', 'A fe verdadeira se demonstra por acoes. Fe e obras caminham juntas na vida do crente.', [
         mc('Fe sem obras e:', ['Valiosa','Morta','Grande','Suficiente'], 1, 'Tiago 2:17 - a fe, se nao tiver obras, e morta'),
-        vf('Apenas a fe basta para a salvacao.', 'Apenas a fe basta para a salvacao.', 0, 'A fe sem obras e morta'),
+        vf('Somos justificados somente pela fe, e nao pelas obras.', 'Somos justificados somente pela fe, e nao pelas obras.', 1, 'Romanos 3:28 e Efesios 2:8-9 - pela fe, nao por obras'),
         mc('Quem foi justificado pelas obras?', ['Moises','Abel','Abraao','Noe'], 2, 'Abraao foi justificado quando ofereceu Isaque'),
     ]),
     ('Tiago 3: A Lingua', 'A lingua e um pequeno membro, mas faz grandes estragos. Ninguem pode domar a lingua. Ela e um mundo de maldade, cheia de veneno mortal.', 'Tiago 3:1-12', 'Aprender a controlar a propria lingua', 'A lingua pode destruir ou construir. O crente deve ser cuidadoso com suas palavras.', [
@@ -790,7 +790,7 @@ add_licoes(t13, [
     ('1 Pedro 3: Casamento', 'Vos, mulheres, sujeitas-vos ao vosso marido. Vos, maridos, vivei com elas com entendimento, honrando-as como vasos mais fracos. A graça e a heranca da vida.', '1 Pedro 3:1-7', 'Viver harmonia no casamento segundo Deus', 'O amor mutuo, o respeito e a oracao fortalecem o casamento cristã.', [
         mc('As mulheres devem ser:', ['Dominadas','Sujeitas com entendimento','Obedientes sem pensar','Lideres'], 1, 'Sujeitas com entendimento'),
         vf('Os maridos podem tratar mal as esposas.', 'Os maridos podem tratar mal as esposas.', 0, 'Vivei com entendimento, honrando-as'),
-        mc('O que impede as oracoes?', ['O pecado','A raiva','A arrogancia'], 0, '1 Pedro 3:7 - a desarmonia no lar impede as oracoes'),
+        mc('Segundo 1 Pedro 3:7, o que pode impedir as oracoes?', ['O marido nao honrar a esposa','A oracao em si mesma','A idade do casal','A profissao do esposo'], 0, '1 Pedro 3:7 - para que as vossas oracoes nao sejam impedidas'),
     ]),
     ('2 Pedro 1: Crescimento Espiritual', 'Procurai tornar ainda mais firmes a vocação e a eleicao. Acrescentai a vossa fe a virtude, a virtude ao conhecimento, o conhecimento a temperanca.', '2 Pedro 1:3-11', 'Crescer ativamente na fé e nas virtudes', 'O crescimento espiritual e intencional. Cada virtude leva a outra, produzindo frutos.', [
         mc('O que devemos acrescentar a fe?', ['Nada','Virtude','Riqueza','Fama'], 1, 'Acrescentai a vossa fe a virtude'),
@@ -900,11 +900,11 @@ add_licoes(t15, [
     ]),
     ('Apocalipse 13: A Besta', 'Uma besta subiu do mar, com dez chifres e sete cabecas, blasfemando contra Deus. O mundo inteiro adorou a besta. Outra besta fez um nome para a primeira.', 'Apocalipse 13:1-18', 'Reconhecer os sistemas malignos contra o povo de Deus', 'A besta representa poderes politicos anticristos. A marca da besta controla o comercio e a vida.', [
         mc('De onde subiu a besta?', ['Do ceu','Do mar','Da terra','Do inferno'], 1, 'Do mar, com dez chifres e sete cabecas'),
-        vf('A besta recebeu poder do diabo.', 'A besta recebeu poder do diabo.', 0, 'O dragao deu poder a besta'),
+        vf('A besta recebeu poder do diabo.', 'A besta recebeu poder do diabo.', 1, 'O dragao deu poder a besta - Apocalipse 13:2'),
         mc('Quantos podem ser comerciaveis sem a marca?', ['Todos','Ninguem','Apenas ricos','Apenas lideres'], 1, 'Ninguem pode comprar ou vender sem a marca'),
     ]),
     ('Apocalipse 14: O Ceifao', 'Angeloes ceifam a terra. O ceifador e mandado porque a terra ja esta madura para o juizo. Outro anjo ceifou os cachos da terra, atirando-os no grande lagar da ira de Deus.', 'Apocalipse 14:14-20', 'Entender a vindima final e o juizo de Deus', 'A terra esta madura para o juizo. Deus separa os justos e os injustos.', [
-        mc('O que o ceifador representa?', ['A colheita','O juizo final','A colheita da terra'], 2, 'A terra ja esta madura para o juizo'),
+        mc('O que a ceifa da terra representa?', ['A colheita comum','O juizo final de Deus','A festa de acao de gracas','Um dia comum de trabalho'], 1, 'Apocalipse 14:14-20 - a terra esta madura para o juizo'),
         vf('O juizo de Deus e justo.', 'O juizo de Deus e justo.', 1, 'Os pecados sao julgados conforme suas obras'),
         mc('O que e o grande lagar?', ['Um rio','A ira de Deus derramada','Um lago de agua','Um campo'], 1, 'A ira de Deus derramada sem misericordia'),
     ]),
@@ -952,7 +952,7 @@ add_licoes(t16, [
         mc('O que acontece com o sol?', ['Para de girar','Nasce e volta ao seu lugar','Nao existe','Muda de cor'], 1, 'O sol nasce e volta ao seu lugar'),
     ]),
     ('Eclesiastes 2: Tentativas Vas', 'Provei com o vinho, com a musica, com as grandes obras, com palacios e jardins. Tudo era vaidade e aflicao de espirito. Nao ha nada de novo sob o sol.', 'Eclesiastes 2:1-26', 'Entender que prazeres e conquistas nao satisfazem plenamente', 'O autor experimentou tudo, mas nada trouxe satisfacao duradoura. O bem esta em Deus.', [
-        mc('O que o autor experimentou?', ['Apenas oracao','Vin, musica, obras, palacios','Nada','Apenas trabalho'], 1, 'Eclesiastes 2 - provou todas as coisas'),
+        mc('O que o autor experimentou?', ['Apenas oracao','Vinho, musica, obras, palacios','Nada','Apenas trabalho'], 1, 'Eclesiastes 2 - provou todas as coisas'),
         vf('O autor encontrou satisfacao total na riqueza.', 'Encontrou satisfacao total na riqueza.', 0, 'Tudo era vaidade e aflicao de espirito'),
         mc('Onde esta o bem?', ['No dinheiro','Em si mesmo','Em Deus','No mundo'], 2, 'Eclesiastes 2:24 - nao ha nada melhor do que alegrar-se'),
     ]),
@@ -1052,10 +1052,10 @@ add_licoes(t18, [
         vf('Baraque lutou sozinho contra Sisera.', 'Lutou sozinho.', 0, 'Recusou ir sem Debora'),
         mc('Quem venceu Sisera, o general?', ['Baraque','Debora','Jael, a mulher de Heber','Moises'], 2, 'Jael matou Sisera com um prego'),
     ]),
-    ('Juizes 6: Gideao, o Valente', 'Deus chamou Gideao, o menor da familia mais fraca, para libertar Israel. Gideao pediu sinais: o orvalho no feltro e a orvalho na lancha.', 'Juizes 6:1-40', 'Entender que Deus usa os fracos para confundir os fortes', 'Gideao duvidou, mas Deus o fortaleceu e usou seu exerzinho pequeno.', [
+    ('Juizes 6: Gideao, o Valente', 'Deus chamou Gideao, o menor da familia mais fraca, para libertar Israel. Gideao pediu sinais: o orvalho no velo de la e a orvalho na eira.', 'Juizes 6:1-40', 'Entender que Deus usa os fracos para confundir os fortes', 'Gideao duvidou, mas Deus o fortaleceu e usou seu exerzinho pequeno.', [
         mc('Quem Deus chamou para libertar Israel?', ['Um grande guerreiro','Gideao, o menor da familia mais fraca','O rei','O sacerdote'], 1, 'Gideao, o menor da familia mais fraca'),
         vf('Gideao aceitou imediatamente o chamado.', 'Aceitou imediatamente.', 0, 'Duvidou e pediu sinais'),
-        mc('O que Gideao pediu como sinal?', ['Um exercito','O orvalho no feltro e na lancha','Um anjo','Um rei'], 1, 'O orvalho no feltro e na lancha'),
+        mc('O que Gideao pediu como sinal?', ['Um exercito','O orvalho no velo de la e na eira','Um anjo','Um rei'], 1, 'Juizes 6:37-40 - o velo de la na eira'),
     ]),
     ('Juizes 7: Os 300 Homens', 'Deus reduziu o exerzito de Gideao de 32 mil para 300, usando o metodo do rio. Com tochas, cantaros e trombetas, os 300 venceram os midianitas.', 'Juizes 7:1-25', 'Confiar que Deus vence com pouco', 'A vitoria nao depende do numero, mas do poder de Deus.', [
         mc('De 32 mil para quantos Deus reduziu?', ['1000','300','100','50'], 1, '300 homens'),
@@ -1422,13 +1422,13 @@ add_licoes(t24, [
     ]),
     ('Tiago 2: Fe e Obras', 'Se alguem diz que tem fe e nao tem obras, que lhe aproveita? A fe sem obras e morta. Mostra-me a tua fe pelas tuas obras.', 'Tiago 2:14-26', 'Viver uma fé que se demonstra em acoes', 'Fe genuina se manifesta em obras.', [
         mc('Fe sem obras e:', ['Morta','Boa','Maior','Mais valiosa'], 0, 'A fe, se nao tiver obras, e morta'),
-        vf('Apenas a fé no coracao basta, sem obras.', 'Apenas a fé basta.', 0, 'A fe sem obras e morta'),
+        vf('A fe que nao produz obras e morta.', 'A fe que nao produz obras e morta.', 1, 'Tiago 2:17 - a fe sem obras e morta'),
         mc('Como mostramos nossa fe?', ['Só com palavras','Pelas obras que fazemos','Guardando dinheiro','Dormindo'], 1, 'Pelas obras'),
     ]),
     ('1 Corintios 13: O Amor', 'Sem amor, nada temos. O amor e paciente, bondoso, nao busca seus interesses, nao se irrita. A fe, a esperanca e o amor permanecem, mas o maior e o amor.', '1 Corintios 13:1-13', 'Amar como Deus ama', 'O amor e o mais excelente caminho.', [
-        mc('Qual e a primeira coisa do amor?', ['Impaciencia','Bondade','Raiva','Medo'], 1, 'O amor e paciente e bondoso'),
+        mc('Qual e a primeira coisa do amor?', ['Paciencia','Bondade','Raiva','Medo'], 0, '1 Corintios 13:4 - o amor e paciente, e bondoso'),
         vf('O amor busca seus proprios interesses.', 'Busca seus interesses.', 0, 'Nao busca seus interesses'),
-        mc('Qual dos tres permanece?', ['Fe','Esperanca','Amor','Todas'], 2, 'O maior e o amor'),
+        mc('Qual dos tres permanece?', ['Fe','Esperanca','Amor','Todas'], 3, '1 Corintios 13:13 - permanecem a fe, a esperanca e o amor; mas o maior e o amor'),
     ]),
     ('1 Pedro 2: Pedras Vivas', 'Voces sao pedras vivas, edificados espiritualmente. Cristo e a pedra angular. Somos uma casa sacerdotal espiritual para oferecer sacrificios espirituais.', '1 Pedro 2:1-10', 'Ser parte viva da igreja de Cristo', 'Cada crente e uma pedra viva na casa de Deus.', [
         mc('Que somos como pedras?', ['Mortas','Vivas','Pesadas','Frias'], 1, 'Pedras vivas'),
@@ -1481,7 +1481,7 @@ add_licoes(t25, [
     ('Romanos 8: Glorificacao', 'Nao ha condenacao para quem esta em Cristo. O Espirito nos vivifica. Nada pode nos separar do amor de Deus. Todos os que foram predestinados serao chamados e justificados.', 'Romanos 8:1-39', 'Compreender a glorificacao como etapa final da salvacao', 'Deus completa Sua obra em nos. A gloria eterna e certa.', [
         mc('Ha condenacao?', ['Sim','Nunca','As vezes','Depende'], 1, 'Nao ha nenhuma condenacao'),
         mc('O que pode nos separar do amor de Deus?', ['Nada','Pecado','O diabo','A morte'], 0, 'Nada pode nos separar do amor de Deus'),
-        vf('Todos que Deus predestinou serao justificados.', 'Todos serao - Romanos 8:30.', 1, 'Todos os predestinados serao chamados, justificados e glorificados'),
+        vf('Todos que Deus predestinou serao justificados.', 'Todos que Deus predestinou serao justificados.', 1, 'Romanos 8:30 - os predestinados sao chamados, justificados e glorificados'),
     ]),
     ('Efesios 1: Eleição', 'Deus nos escolheu em Cristo antes da fundacao do mundo, predestinando-nos para adocao. Tudo segundo o proposito da Sua vontade.', 'Efesios 1:3-14', 'Entender a doutrina da eleição divina', 'Deus e soberano na Sua escolha, por amor e para Sua gloria.', [
         mc('Quando Deus nos escolheu?', ['Quando nascemos','Depois de pecar','Antes da fundacao do mundo','Quando aceitamos'], 2, 'Antes da fundacao do mundo'),
@@ -1535,7 +1535,7 @@ mk_serie_ouro(t1, 'Ouro: Patriarcas - Dominio Total', 'Prove que conhece toda a 
 
 # Serie Ouro - Trilha 3 (Davi)
 mk_serie_ouro(t3, 'Ouro: Davi - Conhecimento Profundo', 'Dominio total sobre a vida de Davi', 'adulto', 'avancado', 400, [
-    mc('Quantos filhos teve Davi?', ['10','15','20','Nao se sabe'], 2, 'Aproximadamente 20'),
+    mc('Quantos filhos de Davi sao nomeados na Biblia?', ['6','19','22','40'], 1, '1 Cronicas 3 - seis em Hebron e treze em Jerusalem'),
     vf('Salmo 23 foi escrito por Salomao.', 'Salmo 23 foi escrito por Salomao.', 0, 'Foi escrito por Davi'),
     mc('Qual cidade Davi conquistou para ser capital?', ['Betlehem','Jerusalem','Hebron','Ninive'], 1, '2 Samuel 5'),
     vf('Davi nunca cometeu pecado.', 'Davi nunca cometeu pecado.', 0, 'Cometeu adultério e assassinato'),

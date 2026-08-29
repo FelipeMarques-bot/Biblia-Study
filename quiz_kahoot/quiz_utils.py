@@ -130,8 +130,8 @@ def selecionar_perguntas(room):
         dados = ex.dados or {}
 
         if ex.tipo == 'VF':
-            opcoes = [limpar_texto('Verdadeiro'), limpar_texto('Falso')]
-            correta_idx = 0 if dados.get('resposta_correta', True) else 1
+            opcoes = [limpar_texto('Falso'), limpar_texto('Verdadeiro')]
+            correta_idx = int(dados.get('indice_correto', 1) or 1) % 2
             afirmativa = limpar_texto(dados.get('afirmativa', ''))
         else:
             opcoes = [limpar_texto(a) for a in dados.get('alternativas', [])]

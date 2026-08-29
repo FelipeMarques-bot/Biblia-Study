@@ -93,7 +93,7 @@ class Command(BaseCommand):
             'Deus deu os Dez Mandamentos e a Lei no Monte Sinai. A Lei revela a justiça de Deus e a incapacidade humana de cumpri-la perfeitamente.',
             'Êxodo 20-24', 'Entender o propósito da Lei na economia da salvação',
             'A Lei é espelho que mostra nosso pecado e guia que aponta para Cristo.', 2)
-        mk_ex(l5, *mc('Onde Deus deu os Dez Mandamentos?', ['Jerusalém', 'Sinai', 'Canaã', 'Betel'], 1, 'Êxodo 19:20'))
+        mk_ex(l5, *mc('Onde Deus deu os Dez Mandamentos?', ['Jerusalém', 'Sinai', 'Canaã', 'Betel'], 1, 'Êxodo 20:1-17'))
 
         # ── TRILHA 3: Salmos e Adoração ──
         t3 = mk_trilha(
@@ -146,7 +146,7 @@ class Command(BaseCommand):
             'Jesus foi crucificado em Jerusalém, morrendo como cordeiro pascal pelos nossos pecados. No terceiro dia, ressuscitou vencendo a morte.',
             'Mateus 26-28', 'Entender o alcance redentor da morte e ressurreição de Cristo',
             'Na cruz, Deus julgou o pecado em Cristo. Na ressurreição, venceu a morte.', 2)
-        mk_ex(l11, *mc('Em que dia Jesus ressuscitou?', ['Quinto', 'Sexto', 'Sétimo', 'Terceiro'], 1, 'Mateus 28:1'))
+        mk_ex(l11, *mc('Em que dia Jesus ressuscitou?', ['Quinto', 'Sexto', 'Sétimo', 'Terceiro'], 3, 'Mateus 28:1'))
         mk_ex(l11, *vf('Jesus foi crucificado e ressuscitou.', 'Jesus foi crucificado e ressuscitou.', 1, '1 Coríntios 15:3-4'))
 
         # ── TRILHA 6: Atos e a Igreja Primitiva ──

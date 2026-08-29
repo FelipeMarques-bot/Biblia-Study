@@ -332,7 +332,7 @@ criar_recompensa('medalha', 'Herói da Fé', 'Complete a trilha Heróis da Fé',
 criar_recompensa('medalha', 'Doutrinador', 'Complete a trilha Doutrinas Centrais', '📚', 500, licoes=6)
 criar_recompensa('medalha', 'Discípulo', 'Complete a trilha Discipulado e Chamado', '🔥', 300, licoes=4)
 criar_recompensa('versiculo', 'João 3:16', 'O amor de Deus em um versículo', '📜', 50, xp_min=200)
-criar_recompensa('medalha', 'Colecionador de Estreak', 'Complete 30 dias de streak', '⭐', 1000, streak=30)
+criar_recompensa('medalha', 'Colecionador de Streak', 'Complete 30 dias de streak', '⭐', 1000, streak=30)
 criar_recompensa('xp_bonus', 'Bônus de 10 Lições', 'Complete 10 lições', '🎯', 400, licoes=10)
 
 # ============================================================
@@ -367,11 +367,11 @@ criar_pool_exercicio('proverbios', 'MULTIPLA_ESCOLHA', 'O começo da sabedoria �
 criar_pool_exercicio('proverbios', 'VF', 'Provérbios ensina que o orgulho precede a destruição.', {"afirmativa":"Provérbios ensina que o orgulho precede a destruição.","alternativas":["Falso","Verdadeiro"],"indice_correto":1,"dica":"Pv 16:18"}, 2, 'adolescente', 'Pv 16:18')
 
 # --- Isaías ---
-criar_pool_exercicio('isaias', 'MULTIPLA_ESCOLHA', 'O que Isaías 53 descreve?', {"alternativas":["A criação do mundo","O sofrimento do Servo Suficiente","A queda de Jerusalém","A lei de Moisés"],"indice_correto":1,"dica":"Isaías 53 é profecia messiânica"}, 3, 'adulto', 'Is 53')
+criar_pool_exercicio('isaias', 'MULTIPLA_ESCOLHA', 'O que Isaías 53 descreve?', {"alternativas":["A criação do mundo","O sofrimento do Servo Sofredor","A queda de Jerusalém","A lei de Moisés"],"indice_correto":1,"dica":"Isaías 53 é profecia messiânica"}, 3, 'adulto', 'Is 53')
 criar_pool_exercicio('isaias', 'VF', 'Isaías 9:6 profetiza o nascimento de Jesus.', {"afirmativa":"Isaías 9:6 profetiza o nascimento de Jesus.","alternativas":["Falso","Verdadeiro"],"indice_correto":1,"dica":"Is 9:6 — Um menino nos é nascido"}, 2, 'adulto', 'Is 9:6')
 
 # --- Mateus ---
-criar_pool_exercicio('mateus', 'MULTIPLA_ESCOLHA', 'Qual o primeiro milagre de Jesus em João 2?', {"alternativas":["Cego ver","Água em vinho","Multiplicação de pães","Caminhar sobre águas"],"indice_correto":1,"dica":"Jo 2:1-11"}, 2, 'adulto', 'Jo 2:1-11')
+criar_pool_exercicio('joao', 'MULTIPLA_ESCOLHA', 'Qual o primeiro milagre de Jesus em João 2?', {"alternativas":["Cego ver","Água em vinho","Multiplicação de pães","Caminhar sobre águas"],"indice_correto":1,"dica":"Jo 2:1-11"}, 2, 'adulto', 'Jo 2:1-11')
 criar_pool_exercicio('mateus', 'VF', 'Jesus nasceu em Belém.', {"afirmativa":"Jesus nasceu em Belém.","alternativas":["Falso","Verdadeiro"],"indice_correto":1,"dica":"Mt 2:1"}, 1, 'crianca', 'Mt 2:1')
 criar_pool_exercicio('mateus', 'MULTIPLA_ESCOLHA', 'O que as bem-aventuranças ensinam?', {"alternativas":["Como ser rico","O caráter do Reino de Deus","Como governar","Como ser famoso"],"indice_correto":1,"dica":"Mt 5:1-12"}, 2, 'adolescente', 'Mt 5:1-12')
 
