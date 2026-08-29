@@ -2,6 +2,11 @@
 {% load static %}
 {% block title %}Criar Conta - Plataforma Bíblica{% endblock %}
 {% block topbar %}{% endblock %}
+{% block extra_head %}
+<style>
+  #global-donation-banner { display: none !important; }
+</style>
+{% endblock %}
 {% block content %}
 <div class="min-h-screen bg-dark flex items-center justify-center px-4 py-8">
   <div class="max-w-md w-full animate-slide-up">
