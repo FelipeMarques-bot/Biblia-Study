@@ -8,7 +8,6 @@ na semana seguinte.
 """
 from datetime import date, timedelta
 from math import ceil
-import os
 
 from django.contrib.auth.models import User
 from django.db.models import Sum
@@ -17,12 +16,9 @@ from users.models import UserProfile
 
 from .models import Liga, LigaParticipacao, UserActivityLog
 
-# Conta administrativa criada pelo seed (ensure_admin) não compete no ranking.
-# Demais membros da equipe (staff) participam como usuário comum.
-USUARIOS_ADMIN = tuple(
-    nome for nome in {os.environ.get('DJANGO_SUPERUSER_USERNAME', '').strip(), 'admin'}
-    if nome
-)
+# Apenas a conta demo "admin" criada pelo seed não compete no ranking.
+# Membro sênior (incl. superusuário) participa como usuário comum.
+USUARIOS_ADMIN = ('admin',)
 
 # Quantos usuários no topo/bottom de cada liga sobem/descem
 TOP_PROMOCAO = 0.30
