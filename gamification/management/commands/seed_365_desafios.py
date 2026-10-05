@@ -382,32 +382,28 @@ CHALLENGES = [
 
 
 class Command(BaseCommand):
-    help = 'Seed 365 daily challenges (idempotent, skips if 365+ exist).'
+    help = 'Seed 365 daily challenges (idempotent, creates only missing dates).'
 
     def handle(self, *args, **options):
-        current = DesafioDiario.objects.count()
-        if current >= 365:
-            self.stdout.write(self.style.SUCCESS(f'Database already has {current} daily challenges. Skipping.'))
-            return
+        from datetime import date, timedelta
 
-        DesafioDiario.objects.all().delete()
-        self.stdout.write(f'Cleared {current} old challenges. Creating 365 new ones...')
-
-        from datetime import date
         base = date(2024, 1, 1)
+        criados = 0
 
         for i, (titulo, descricao, versiculo, pergunta) in enumerate(CHALLENGES):
-            DesafioDiario.objects.create(
-                data=base,
-                titulo=titulo,
-                descricao=descricao,
-                versiculo=versiculo,
-                pergunta=pergunta,
-                xp_recompensa=30,
-                ativo=True,
+            _, created = DesafioDiario.objects.get_or_create(
+                data=base + timedelta(days=i),
+                defaults={
+                    'titulo': titulo,
+                    'descricao': descricao,
+                    'versiculo': versiculo,
+                    'pergunta': pergunta,
+                    'xp_recompensa': 30,
+                    'ativo': True,
+                },
             )
-            base = base + __import__('datetime').timedelta(days=1)
+            criados += int(created)
 
         self.stdout.write(self.style.SUCCESS(
-            f'Created {DesafioDiario.objects.count()} daily challenges!'
+            f'Daily challenges: {criados} created, {DesafioDiario.objects.count()} total.'
         ))
