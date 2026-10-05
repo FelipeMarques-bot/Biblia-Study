@@ -77,7 +77,8 @@ CHANNEL_LAYERS = {
 DATABASES = {
     'default': dj_database_url.config(
         default=f'sqlite:///{BASE_DIR / "db.sqlite3"}',
-        conn_max_age=600,
+        conn_max_age=int(config('CONN_MAX_AGE', default=60)),
+        conn_health_checks=True,
     )
 }
 

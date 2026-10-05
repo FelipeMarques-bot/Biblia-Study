@@ -22,9 +22,9 @@ services:
       - key: DJANGO_SUPERUSER_PASSWORD
         sync: false
       - key: DATABASE_URL
-        fromDatabase:
-          name: biblia-db
-          property: connectionString
+        sync: false
+      - key: CONN_MAX_AGE
+        value: "60"
       - key: REDIS_URL
         fromService:
           name: biblia-redis
@@ -36,8 +36,3 @@ services:
     name: biblia-redis
     plan: free
     ipAllowList: []
-
-databases:
-  - name: biblia-db
-    plan: free
-    databaseName: biblia_db
